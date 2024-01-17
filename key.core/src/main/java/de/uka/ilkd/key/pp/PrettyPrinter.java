@@ -844,21 +844,21 @@ public class PrettyPrinter implements Visitor {
     }
 
     private void beginBlock() {
-        l.print("{");
+//        l.print("{");
         l.beginRelativeC();
     }
 
     private void endBlock() {
-        l.end().nl().print("}");
+//        l.end().nl().print("}");
     }
 
     public boolean printStatementBlock(StatementBlock x) {
         boolean emptyBlock = x.getBody() == null || x.getBody().isEmpty();
         if (emptyBlock) {
             // We have an empty statement block ...
-            markStart(x);
-            l.print("{}");
-            markEnd(x);
+//            markStart(x);
+//            l.print("{}");
+//            markEnd(x);
             return false;
         } else {
             beginBlock();

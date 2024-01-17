@@ -1692,15 +1692,16 @@ public class LogicPrinter {
 
         layouter.markModPosTbl();
         layouter.startTerm(phi.arity());
-        layouter.print(left);
+//        layouter.print(left);
         layouter.markStartJavaBlock();
         printJavaBlock(jb);
         layouter.markEndJavaBlock();
-        layouter.print(right + " ");
+//        layouter.print(right + " ");
+        layouter.print(" : ");
         if (phi.arity() == 1) {
             maybeParens(phi.sub(0), ass);
         } else if (phi.arity() > 1) {
-            layouter.print("(");
+            layouter.print("");
             for (int i = 0; i < phi.arity(); i++) {
                 layouter.markStartSub();
                 printTerm(phi.sub(i));
@@ -1709,7 +1710,7 @@ public class LogicPrinter {
                     layouter.print(",").brk(1, 0);
                 }
             }
-            layouter.print(")");
+            layouter.print("");
         }
     }
 
