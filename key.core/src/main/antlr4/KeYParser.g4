@@ -339,7 +339,8 @@ equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=chop_term (AND b+=chop_term)*;
-chop_term: a=term60 (CHOP b+=term60)*;
+chop_term: a=conc_term (CHOP b+=conc_term)*;
+conc_term: a=term60 (DOT b+=term60)*;
 term60: unary_formula | equality_term;
 unary_formula:
     NOT sub=term60                                #negation_term

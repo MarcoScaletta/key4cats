@@ -233,15 +233,24 @@ public class ExpressionBuilder extends DefaultBuilder {
         }
         return t;
     }
+
     @Override
     public Term visitChop_term(KeYParser.Chop_termContext ctx) {
         Term t = accept(ctx.a);
-        for (KeYParser.Term60Context c : ctx.b) {
+        for (KeYParser.Conc_termContext c : ctx.b) {
             t = binaryTerm(ctx, Junctor.CHOP, t, accept(c));
         }
         return t;
     }
 
+    @Override
+    public Term visitConc_term(KeYParser.Conc_termContext ctx) {
+        Term t = accept(ctx.a);
+        for (KeYParser.Term60Context c : ctx.b) {
+            t = binaryTerm(ctx, Junctor.CONC, t, accept(c));
+        }
+        return t;
+    }
     @Override
     public Term visitStateFml_term(KeYParser.StateFml_termContext ctx) {
         Term termL = accept(ctx.sub);
