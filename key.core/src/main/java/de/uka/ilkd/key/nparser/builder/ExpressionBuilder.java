@@ -180,6 +180,16 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
 
     @Override
+    public Term visitSequential_term(KeYParser.Sequential_termContext ctx) {
+        List<Term> t = mapOf(ctx.parallel_term());
+        Term a = t.get(0);
+        for (int i = 1; i < t.size(); i++) {
+            a = getTermFactory().createTerm(UpdateJunctor.SEQUENTIAL_UPDATE, a, t.get(i));
+        }
+        return updateOrigin(a, ctx, services);
+    }
+
+    @Override
     public Term visitTermEOF(KeYParser.TermEOFContext ctx) {
         return accept(ctx.term());
     }

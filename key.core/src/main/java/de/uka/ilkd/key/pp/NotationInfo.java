@@ -185,6 +185,7 @@ public final class NotationInfo {
         tbl.put(WarySubstOp.SUBST, new Notation.Subst());
         tbl.put(UpdateApplication.UPDATE_APPLICATION, new Notation.UpdateApplicationNotation());
         tbl.put(UpdateJunctor.PARALLEL_UPDATE, new Notation.ParallelUpdateNotation());
+        tbl.put(UpdateJunctor.SEQUENTIAL_UPDATE, new Notation.SequentialUpdateNotation());
 
         tbl.put(Function.class, new Notation.FunctionNotation());
         tbl.put(LogicVariable.class, new Notation.VariableNotation());

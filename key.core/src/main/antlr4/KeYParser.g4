@@ -331,8 +331,9 @@ literals:
 ;
 
 emptyset: UTF_EMPTY;
-term: parallel_term; // weigl: should normally be equivalence_term
+term: sequential_term; // weigl: should normally be equivalence_term
 //labeled_term: a=parallel_term (LGUILLEMETS labels=label RGUILLEMETS)?;
+sequential_term: a=parallel_term (SEMI b=parallel_term)*;
 parallel_term: a=elementary_update_term (PARALLEL b=elementary_update_term)*;
 elementary_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
@@ -353,7 +354,7 @@ comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRE
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
-update_term: (LBRACE u=parallel_term RBRACE) (atom_prefix | unary_formula);
+update_term: (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula);
 
 substitution_term:
  LBRACE SUBST  bv=one_bound_variable SEMI

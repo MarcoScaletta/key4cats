@@ -253,6 +253,19 @@ public abstract class Notation {
         }
     }
 
+    public static final class SequentialUpdateNotation extends Notation {
+
+        public SequentialUpdateNotation() {
+            super(90);
+        }
+
+        public void print(Term t, LogicPrinter sp) {
+            assert t.op() == UpdateJunctor.SEQUENTIAL_UPDATE;
+
+            sp.printParallelUpdate(";", t, 10);
+        }
+    }
+
 
     /**
      * The standard concrete syntax for substitution terms.

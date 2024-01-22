@@ -1464,6 +1464,32 @@ public class LogicPrinter {
         maybeParens(t.sub(0), ass2);
     }
 
+    private void printSequentialUpdateHelper(String separator, Term t, int ass) {
+        assert t.arity() == 2;
+        layouter.startTerm(2);
+
+        if (t.sub(0).op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
+            layouter.markStartSub();
+            printSequentialUpdateHelper(separator, t.sub(0), ass);
+            layouter.markEndSub();
+        } else {
+            maybeParens(t.sub(0), ass);
+        }
+
+        layouter.brk().print(separator + " ");
+
+        if (t.sub(1).op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
+            layouter.markStartSub();
+            layouter.print("(");
+            printSequentialUpdateHelper(separator, t.sub(1), ass);
+            layouter.print(")");
+            layouter.markEndSub();
+        } else {
+            maybeParens(t.sub(1), ass);
+        }
+    }
+
+
     private void printParallelUpdateHelper(String separator, Term t, int ass) {
         assert t.arity() == 2;
         layouter.startTerm(2);
@@ -1492,6 +1518,12 @@ public class LogicPrinter {
     public void printParallelUpdate(String separator, Term t, int ass) {
         layouter.beginC(0);
         printParallelUpdateHelper(separator, t, ass);
+        layouter.end();
+    }
+
+    public void printSequentialUpdate(String separator, Term t, int ass) {
+        layouter.beginC(0);
+        printSequentialUpdateHelper(separator, t, ass);
         layouter.end();
     }
 
