@@ -334,8 +334,11 @@ emptyset: UTF_EMPTY;
 term: sequential_term; // weigl: should normally be equivalence_term
 //labeled_term: a=parallel_term (LGUILLEMETS labels=label RGUILLEMETS)?;
 sequential_term: a=parallel_term (SEMI b=parallel_term)*;
-parallel_term: a=elementary_update_term (PARALLEL b=elementary_update_term)*;
+parallel_term: a=event_term (PARALLEL b=event_term)*;
+event_term: el=elementary_update_term | tr=event_trace_term ;
 elementary_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
+event_trace_term : name=event_update_name ;
+////event_trace_term : name=event_update_name args=argument_list ;
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
@@ -354,9 +357,7 @@ comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRE
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
-update_term:
-    (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula)
-  | (event_update_name argument_list) (atom_prefix | unary_formula);
+update_term: (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula);
 
 event_update_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
 

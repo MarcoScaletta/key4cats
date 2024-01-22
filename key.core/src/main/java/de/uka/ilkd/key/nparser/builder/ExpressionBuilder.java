@@ -171,7 +171,7 @@ public class ExpressionBuilder extends DefaultBuilder {
 
     @Override
     public Term visitParallel_term(KeYParser.Parallel_termContext ctx) {
-        List<Term> t = mapOf(ctx.elementary_update_term());
+        List<Term> t = mapOf(ctx.event_term());
         Term a = t.get(0);
         for (int i = 1; i < t.size(); i++) {
             a = getTermFactory().createTerm(UpdateJunctor.PARALLEL_UPDATE, a, t.get(i));
@@ -202,6 +202,18 @@ public class ExpressionBuilder extends DefaultBuilder {
             return updateOrigin(getServices().getTermBuilder().elementary(a, b), ctx, services);
         }
         return updateOrigin(a, ctx, services);
+    }
+
+    @Override
+    public Term visitEvent_term(KeYParser.Event_termContext ctx) {
+        if(ctx.el != null)
+            return accept(ctx.el);
+        else
+            return accept(ctx.tr);
+    }
+    @Override
+    public Term visitEvent_trace_term(KeYParser.Event_trace_termContext ctx) {
+        return getTermFactory().createTerm(UpdateJunctor.EVENT_UPDATE);
     }
 
     @Override
@@ -1099,6 +1111,10 @@ public class ExpressionBuilder extends DefaultBuilder {
     @Override
     public Object visitUpdate_term(KeYParser.Update_termContext ctx) {
         Term t = oneOf(ctx.atom_prefix(), ctx.unary_formula());
+        if(t == null){
+            int a;
+
+        }
         if (ctx.u.isEmpty()) {
             return t;
         }
