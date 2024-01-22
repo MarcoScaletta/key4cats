@@ -213,7 +213,15 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
     @Override
     public Term visitEvent_trace_term(KeYParser.Event_trace_termContext ctx) {
-        return getTermFactory().createTerm(UpdateJunctor.EVENT_UPDATE);
+        Term upJ = null;
+        ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
+        if(ctx.name.RUN_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.RUN_EV, args, null, null));
+         }
+         else
+             semanticError(ctx, "Unexpected token: %s", ctx.name);
+
+         return upJ;
     }
 
     @Override
