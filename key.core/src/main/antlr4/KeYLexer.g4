@@ -220,6 +220,15 @@ PROOFSCRIPT : '\\proofScript';
 CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
 
+// Event updates keywords
+RUN_EV: '\\runEv';
+INVOC_EV: '\\invocEv';
+START_EV: '\\startEv';
+RET_EV: '\\retEv';
+POP_EV: '\\popEv';
+SYNC: '\\sync';
+ASYNC: '\\async';
+
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';
 

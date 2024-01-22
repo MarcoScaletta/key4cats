@@ -354,7 +354,11 @@ comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRE
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
-update_term: (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula);
+update_term:
+    (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula)
+  | (event_update_name argument_list) (atom_prefix | unary_formula);
+
+event_update_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
 
 substitution_term:
  LBRACE SUBST  bv=one_bound_variable SEMI
