@@ -3,7 +3,7 @@ class Traces{
     int x;
     static int y;
 
-    private static void m(){
+    private static void m(boolean sync){
         y += 1;
     }
 
