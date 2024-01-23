@@ -292,6 +292,11 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder CONSTANT =
         new ConstructorBasedBuilder("isConstant", ConstantCondition.class, ASV);
 
+    public static final AbstractConditionBuilder METHOD_NAME_CONSTANT =
+            new ConstructorBasedBuilder("methodNameConstant",
+                    MethodNameConstant.class, SV, SV, SV);
+
+
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
 
@@ -373,7 +378,7 @@ public class TacletBuilderManipulators {
             applyUpdateOnRigid, DROP_EFFECTLESS_ELEMENTARIES, SIMPLIFY_ITE_UPDATE, SUBFORMULAS,
             STATIC_FIELD, MODEL_FIELD, SUBFORMULA, DROP_EFFECTLESS_STORES, EQUAL_UNIQUE,
             META_DISJOINT,
-            IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP);
+            IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();
