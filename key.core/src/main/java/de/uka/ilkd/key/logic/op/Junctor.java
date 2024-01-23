@@ -54,7 +54,6 @@ public final class Junctor extends AbstractSortedOperator {
     public static final Junctor CHOP = new Junctor(new Name("chop"), 2);
     public static final Junctor CONC = new Junctor(new Name("conc"), 2);
 
-    public static final Junctor SCHEM_TRACE = new Junctor(new Name("schemTr"), 0);
 
     public static final Junctor STATEFML = new Junctor(new Name("stateFml"), 1);
 

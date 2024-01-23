@@ -226,7 +226,20 @@ public class ExpressionBuilder extends DefaultBuilder {
 
     @Override
     public Term visitSchem_trace_term(KeYParser.Schem_trace_termContext ctx) {
-        return getTermFactory().createTerm(Junctor.SCHEM_TRACE);
+        if(ctx.args.a == null) {
+            return capsulateTf(ctx, () -> getTermFactory().createTerm(SchematicTrace.SCHEM_TRACE_TRIV, new ImmutableArray<>(), null, null));
+        }
+        else
+            return capsulateTf(ctx, () -> getTermFactory().createTerm( SchematicTrace.SCHEM_TRACE, new ImmutableArray<>((Term) accept(ctx.args)), null, null));
+    }
+
+    @Override
+    public Term visitMethod_names_list(KeYParser.Method_names_listContext ctx){
+        Term t = accept(ctx.a);
+        for (KeYParser.TermContext c : ctx.b) {
+            t = binaryTerm(ctx, SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR, t, accept(c));
+        }
+        return t;
     }
 
     @Override
