@@ -216,7 +216,7 @@ public class ExpressionBuilder extends DefaultBuilder {
         Term upJ = null;
         ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
         if(ctx.name.RUN_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.RUN_EV, args, null, null));
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getRunEv(services), args, null, null));
          }
          else
              semanticError(ctx, "Unexpected token: %s", ctx.name);

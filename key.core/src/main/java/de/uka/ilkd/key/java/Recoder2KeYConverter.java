@@ -28,6 +28,7 @@ import de.uka.ilkd.key.java.recoderext.ImplicitIdentifier;
 import de.uka.ilkd.key.java.reference.*;
 import de.uka.ilkd.key.java.statement.*;
 import de.uka.ilkd.key.ldt.HeapLDT;
+import de.uka.ilkd.key.ldt.MethodNameLDT;
 import de.uka.ilkd.key.logic.Name;
 import de.uka.ilkd.key.logic.NamespaceSet;
 import de.uka.ilkd.key.logic.ProgramElementName;
@@ -1183,6 +1184,13 @@ public class Recoder2KeYConverter {
                 heapSort, heapLDT == null ? 1 : heapLDT.getAllHeaps().size() - 1);
 
             insertToMap(md, result);
+            Name name =new ProgramElementName(methDecl.getFullName(), containerType.getFullName()) ;
+            if(services.getNamespaces().functions().lookup(name) == null) {
+                final MethodNameLDT methodNameLDT = rec2key.getTypeConverter().getTypeConverter().getMethodNameLDT();
+                Function methodNameF = new Function(name, methodNameLDT.targetSort(),
+                        new ImmutableArray<>(), null, true);
+                services.getNamespaces().functions().addSafely(methodNameF);
+            }
         }
         methodsDeclaring.remove(md);
         result = (IProgramMethod) getMapping().toKeY(md);

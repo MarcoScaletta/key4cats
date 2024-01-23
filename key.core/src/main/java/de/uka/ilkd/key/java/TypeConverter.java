@@ -114,6 +114,11 @@ public final class TypeConverter {
         return (CharListLDT) getLDT(CharListLDT.NAME);
     }
 
+    public MethodNameLDT getMethodNameLDT() {
+        return (MethodNameLDT) getLDT(MethodNameLDT.NAME);
+    }
+
+
     public Collection<LDT> getLDTs() {
         return LDTs.values();
     }
