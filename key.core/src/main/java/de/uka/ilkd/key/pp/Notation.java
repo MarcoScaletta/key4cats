@@ -348,21 +348,20 @@ public abstract class Notation {
         }
     }
 
-//    public static final class SchemTrNotation extends Notation {
-//
-//        final String pre, post;
-//
-//        public SchemTrNotation(String pre, String post) {
-//            super(130);
-//            this.pre = pre;
-//            this.post = post;
-//        }
-//
-//        public void print(Term t, LogicPrinter sp) {
-//            sp.printSchemTr(pre, post, t);
-//        }
-//    }
+    public static final class SchemTrNotation extends Notation {
 
+        final String pre, post;
+
+        public SchemTrNotation(String pre, String post) {
+            super(130);
+            this.pre = pre;
+            this.post = post;
+        }
+
+        public void print(Term t, LogicPrinter sp) {
+            sp.printSchemTrace(pre, post, t);
+        }
+    }
 
     /**
      * The standard concrete syntax for observer function terms.

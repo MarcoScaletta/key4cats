@@ -979,16 +979,21 @@ public class LogicPrinter {
         layouter.print(post);
     }
 
-//    public void printSchemTr(String pre, String post, Term t) {
-//
-//        layouter.startTerm(t.arity());
-//        layouter.print(pre);
-//        layouter.startTerm(1);
-//        layouter.markStartSub(0);
-//        printTerm(t);
-//        layouter.markEndSub();
-//        layouter.print(post);
-//    }
+    public void printSchemTrace(String pre, String post, Term t) {
+
+        layouter.startTerm(t.arity());
+        layouter.print(pre);
+        if(!t.subs().isEmpty()) {
+            layouter.print("(");
+            layouter.startTerm(1);
+            layouter.markStartSub(0);
+            printTerm(t.sub(0));
+            layouter.markEndSub();
+            layouter.print(")");
+        }
+        layouter.print(post);
+
+    }
 
     protected boolean printEmbeddedHeapConstructorTerm(Term t) {
 
