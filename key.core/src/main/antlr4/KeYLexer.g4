@@ -221,6 +221,9 @@ PROOFSCRIPT : '\\proofScript';
 CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
 
+// Schematic Trace
+SCHEM_TRACE : '~';
+
 // Event updates keywords
 RUN_EV: '\\runEv';
 INVOC_EV: '\\invocEv';

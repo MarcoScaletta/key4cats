@@ -205,6 +205,7 @@ public final class NotationInfo {
         tbl.put(Junctor.CONC, new Notation.Infix(".", PRIORITY_CHOP,PRIORITY_CHOP,PRIORITY_CHOP));
         tbl.put(Junctor.CHOP, new Notation.Infix("**", PRIORITY_CHOP,PRIORITY_CHOP,PRIORITY_CHOP));
         tbl.put(Junctor.STATEFML, new Notation.StateFmlNotation("`","`"));
+        tbl.put(Junctor.SCHEM_TRACE, new Notation.Constant("~",PRIORITY_ATOM));
 
         return tbl;
     }

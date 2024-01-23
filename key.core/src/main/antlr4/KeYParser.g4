@@ -345,13 +345,14 @@ disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=chop_term (AND b+=chop_term)*;
 chop_term: a=conc_term (CHOP b+=conc_term)*;
 conc_term: a=term60 (DOT b+=term60)*;
-term60: unary_formula | equality_term;
+term60: unary_formula | equality_term | schem_trace_term;
 unary_formula:
     NOT sub=term60                                #negation_term
   | (FORALL | EXISTS) bound_variables sub=term60  #quantifierterm
   | MODALITY sub=term60                           #modality_term
   | STATEFML sub=term60 STATEFML                  #stateFml_term
 ;
+schem_trace_term: SCHEM_TRACE ;
 equality_term: a=comparison_term ((NOT_EQUALS|EQUALS) b=comparison_term)?;
 comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRECEDES|UTF_SUBSET_EQ|UTF_SUBSEQ|UTF_IN) b=weak_arith_term)?;
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;

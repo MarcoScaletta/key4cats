@@ -225,6 +225,11 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
 
     @Override
+    public Term visitSchem_trace_term(KeYParser.Schem_trace_termContext ctx) {
+        return getTermFactory().createTerm(Junctor.SCHEM_TRACE);
+    }
+
+    @Override
     public Term visitEquivalence_term(KeYParser.Equivalence_termContext ctx) {
         Term a = accept(ctx.a);
         if (ctx.b.isEmpty()) {
