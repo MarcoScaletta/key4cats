@@ -212,7 +212,7 @@ public class ExpressionBuilder extends DefaultBuilder {
             return accept(ctx.tr);
     }
     @Override
-    public Term visitEvent_trace_term(KeYParser.Event_trace_termContext ctx) {
+    public Term visitEvent_update_trace_term(KeYParser.Event_update_trace_termContext ctx) {
         Term upJ = null;
         ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
         if(ctx.name.RUN_EV() != null) {
@@ -222,6 +222,19 @@ public class ExpressionBuilder extends DefaultBuilder {
              semanticError(ctx, "Unexpected token: %s", ctx.name);
 
          return upJ;
+    }
+
+    @Override
+    public Term visitTrace_event_term(KeYParser.Trace_event_termContext ctx) {
+        Term upJ = null;
+        ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
+        if(ctx.name.START_TR_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getStartEv(services), args, null, null));
+        }
+        else
+            semanticError(ctx, "Unexpected token: %s", ctx.name);
+
+        return upJ;
     }
 
     @Override

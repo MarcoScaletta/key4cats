@@ -224,12 +224,17 @@ INVARIANTS : '\\invariants';
 // Schematic Trace
 SCHEM_TRACE : '~';
 
-// Event updates keywords
+// Event keywords
 RUN_EV: '\\runEv';
 INVOC_EV: '\\invocEv';
 START_EV: '\\startEv';
 RET_EV: '\\retEv';
 POP_EV: '\\popEv';
+
+START_TR_EV: '\\startTrEv';
+RET_TR_EV: '\\retTrEv';
+POP_TR_EV: '\\popTrEv';
+
 SYNC: '\\sync';
 ASYNC: '\\async';
 
