@@ -4,10 +4,7 @@
 package de.uka.ilkd.key.nparser.builder;
 
 import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -227,9 +224,16 @@ public class ExpressionBuilder extends DefaultBuilder {
     @Override
     public Term visitTrace_event_term(KeYParser.Trace_event_termContext ctx) {
         Term upJ = null;
-        ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
+        List<Term> argsList = accept(ctx.args);
+        if(argsList == null)
+            return null;
+        ImmutableArray<Term> args = new ImmutableArray<>(argsList);
         if(ctx.name.START_TR_EV() != null) {
             upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getStartEv(services), args, null, null));
+        }else if(ctx.name.POP_TR_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getPopEv(services), args, null, null));
+        }else if(ctx.name.RET_TR_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getRetEv(services), args, null, null));
         }
         else
             semanticError(ctx, "Unexpected token: %s", ctx.name);
