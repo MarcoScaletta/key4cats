@@ -238,6 +238,9 @@ POP_TR_EV: '\\popTrEv';
 SYNC: '\\sync';
 ASYNC: '\\async';
 
+// Observation
+OBS: '\\obs';
+
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';
 
@@ -295,7 +298,7 @@ DOTRANGE
 COMMA
 :	','
 	;
-
+AS : ':-:' ;
 LPAREN
 :
 	'('

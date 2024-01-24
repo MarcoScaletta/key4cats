@@ -260,6 +260,26 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
 
     @Override
+    public Term visitObs_term(KeYParser.Obs_termContext ctx){
+        Term t = accept(ctx.obs_args());
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(Observation.OBS, new ImmutableArray<>(t), null, null));
+    }
+
+    @Override
+    public Term visitObs_args(KeYParser.Obs_argsContext ctx){
+        Term t = accept(ctx.a);
+        for (KeYParser.Obs_argContext c : ctx.b) {
+            t = binaryTerm(ctx, ObservationArgJunctor.OBS_ARG_JUNCTOR, t, accept(c));
+        }
+        return t;
+    }
+
+    @Override
+    public Term visitObs_arg(KeYParser.Obs_argContext ctx){
+        return binaryTerm(ctx, ObservationArg.OBS_ARG, accept(ctx.observed), accept(ctx.observing));
+    }
+
+    @Override
     public Term visitEquivalence_term(KeYParser.Equivalence_termContext ctx) {
         Term a = accept(ctx.a);
         if (ctx.b.isEmpty()) {
