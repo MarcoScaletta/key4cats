@@ -64,8 +64,11 @@ public class MethodNameLDT extends LDT{
     }
 
     public Function getUniqueMethodConstant(TypeReference type, ProgramElementName methodName, Services services) {
-        ProgramElementName uniqueName = new ProgramElementName(methodName.getProgramName(),
-                type.getName());
+        return getUniqueMethodConstant(type.getName(), methodName.getProgramName(), services);
+    }
+
+    public Function getUniqueMethodConstant(String typeName, String methodName, Services services){
+        ProgramElementName uniqueName = new ProgramElementName(methodName, typeName);
         return (Function) services.getNamespaces().functions().lookup(uniqueName);
     }
 }

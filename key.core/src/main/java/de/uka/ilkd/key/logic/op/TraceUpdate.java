@@ -9,15 +9,16 @@ import de.uka.ilkd.key.util.Triple;
 
 import java.lang.ref.WeakReference;
 import java.security.Key;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
 public class TraceUpdate extends AbstractSortedOperator {
-
-    private final static WeakHashMap<Triple<Sort,Sort,Sort>,WeakReference<TraceUpdate>> RUN_EV = new WeakHashMap<>();
-    private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> START_EV = new WeakHashMap<>();
-    private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> INVOC_EV = new WeakHashMap<>();
-    private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> POP_EV = new WeakHashMap<>();
-    private final static WeakHashMap<Sort,WeakReference<TraceUpdate>> RET_EV = new WeakHashMap<>();
+    // TODO: possible memory leak, need to keep weak hash map
+    private final static HashMap<Triple<Sort,Sort,Sort>,WeakReference<TraceUpdate>> RUN_EV = new HashMap<>();
+    private final static HashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> START_EV = new HashMap<>();
+    private final static HashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> INVOC_EV = new HashMap<>();
+    private final static HashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> POP_EV = new HashMap<>();
+    private final static HashMap<Sort,WeakReference<TraceUpdate>> RET_EV = new HashMap<>();
 
 
     public synchronized static TraceUpdate getRunEv(Services services){
@@ -43,9 +44,9 @@ public class TraceUpdate extends AbstractSortedOperator {
 
         final Sort methodNameSort = services.getTypeConverter().getMethodNameLDT().targetSort();
         final Sort intSort = services.getTypeConverter().getIntegerLDT().targetSort();
-        final Pair runEvSig = new Pair(methodNameSort,intSort);
+        final Pair<Sort,Sort> runEvSig = new Pair<>(methodNameSort,intSort);
         String nameStr = null;
-        WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> event = null;
+        HashMap<Pair<Sort,Sort>,WeakReference<TraceUpdate>> event = null;
             switch(evId){
                 case KeYLexer.START_EV -> {
                     event = START_EV;
@@ -71,7 +72,6 @@ public class TraceUpdate extends AbstractSortedOperator {
             result = new TraceUpdate(new Name(nameStr), methodNameSort, intSort);
             event.put(runEvSig, new WeakReference<>(result));
         }
-
         return result;
     }
 

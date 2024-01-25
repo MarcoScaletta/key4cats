@@ -116,6 +116,7 @@ DISJOINTMODULONULL  : '\\disjointModuloNull';
 DROP_EFFECTLESS_ELEMENTARIES : '\\dropEffectlessElementaries';
 DROP_EFFECTLESS_STORES : '\\dropEffectlessStores';
 METHOD_NAME_CONSTANT : '\\methodNameConstant';
+PENDING_INVOCATION_CONDITION : '\\pendingInvocationCondition';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
 ENUM_CONST : '\\enumConstant';
 FREELABELIN : '\\freeLabelIn';

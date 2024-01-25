@@ -39,7 +39,7 @@ public class MethodNameConstant implements VariableCondition {
         if (methodConstantInst != null && !result.equals(methodConstantInst)) {
             return null; //failed, strange
         } else {
-            return matchCond.setInstantiations(matchCond.getInstantiations().add(methodConstant, result, services));
+            return matchCond.setInstantiations(svInst.add(methodConstant, result, services));
         }
     }
 }
