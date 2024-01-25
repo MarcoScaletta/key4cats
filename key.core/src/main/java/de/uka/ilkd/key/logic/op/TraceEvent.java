@@ -16,43 +16,42 @@ public class TraceEvent extends AbstractSortedOperator {
     private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceEvent>> POP_EV = new WeakHashMap<>();
     private final static WeakHashMap<Sort,WeakReference<TraceEvent>> RET_EV = new WeakHashMap<>();
 
-    public synchronized static TraceEvent getStartEv(Services services){
+    public synchronized static TraceEvent getMethodIntSortEv(int eventId, Services services){
 
         final Sort methodNameSort = services.getTypeConverter().getMethodNameLDT().targetSort();
         final Sort intSort = services.getTypeConverter().getIntegerLDT().targetSort();
         final Pair<Sort,Sort> runEvSig = new Pair<>(methodNameSort,intSort);
 
-        WeakReference<TraceEvent> ref = START_EV.get(runEvSig);
+        WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceEvent>> eventMap = null;
+        String nameStr = null;
+
+        switch(eventId){
+            case(KeYLexer.START_TR_EV)->{eventMap = START_EV; nameStr="\\startEv";}
+            case(KeYLexer.POP_TR_EV)->{eventMap = POP_EV; nameStr="\\popEv";}
+        }
+
+        if(eventMap == null)
+            return null;
+
+        WeakReference<TraceEvent> ref = eventMap.get(runEvSig);
         TraceEvent result = null;
         if (ref != null) {
             result = ref.get();
         }
         if(result == null){
-            result = new TraceEvent(new Name("\\startEv"), methodNameSort, intSort);
-            START_EV.put(runEvSig, new WeakReference<>(result));
+            result = new TraceEvent(new Name(nameStr), methodNameSort, intSort);
+            eventMap.put(runEvSig, new WeakReference<>(result));
         }
 
         return result;
     }
 
 
+    public synchronized static TraceEvent getStartEv(Services services){
+        return getMethodIntSortEv(KeYLexer.START_TR_EV,services);
+    }
     public synchronized static TraceEvent getPopEv(Services services){
-
-        final Sort methodNameSort = services.getTypeConverter().getMethodNameLDT().targetSort();
-        final Sort intSort = services.getTypeConverter().getIntegerLDT().targetSort();
-        final Pair<Sort,Sort> runEvSig = new Pair<>(methodNameSort,intSort);
-
-        WeakReference<TraceEvent> ref = POP_EV.get(runEvSig);
-        TraceEvent result = null;
-        if (ref != null) {
-            result = ref.get();
-        }
-        if(result == null){
-            result = new TraceEvent(new Name("\\popEv"), methodNameSort, intSort);
-            POP_EV.put(runEvSig, new WeakReference<>(result));
-        }
-
-        return result;
+        return getMethodIntSortEv(KeYLexer.POP_TR_EV,services);
     }
 
     public synchronized static TraceEvent getRetEv(Services services){

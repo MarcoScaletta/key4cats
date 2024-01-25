@@ -211,11 +211,27 @@ public class ExpressionBuilder extends DefaultBuilder {
     @Override
     public Term visitEvent_update_trace_term(KeYParser.Event_update_trace_termContext ctx) {
         Term upJ = null;
-        ImmutableArray<Term> args = new ImmutableArray<>((List<Term>) accept(ctx.args));
+
+        List<Term> argsList = accept(ctx.args);
+        if(argsList == null)
+            return null;
+        ImmutableArray<Term> args = new ImmutableArray<>(argsList);
         if(ctx.name.RUN_EV() != null) {
             upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getRunEv(services), args, null, null));
-         }
-         else
+        }
+        else if(ctx.name.START_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getStartEv(services), args, null, null));
+        }
+        else if(ctx.name.INVOC_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getInvocEv(services), args, null, null));
+        }
+        else if(ctx.name.POP_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getPopEv(services), args, null, null));
+        }
+        else if(ctx.name.RET_EV() != null) {
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceUpdate.getRetEv(services), args, null, null));
+        }
+        else
              semanticError(ctx, "Unexpected token: %s", ctx.name);
 
          return upJ;
