@@ -1745,7 +1745,10 @@ public class LogicPrinter {
         printJavaBlock(jb);
         layouter.markEndJavaBlock();
 //        layouter.print(right + " ");
-        layouter.print(" : ");
+        if(left == "\\<")
+            layouter.print(" : ");
+        else
+            layouter.print(" :G ");
         if (phi.arity() == 1) {
             maybeParens(phi.sub(0), ass);
         } else if (phi.arity() > 1) {
