@@ -97,7 +97,7 @@ public class TraceUpdate extends AbstractSortedOperator {
             result = ref.get();
         }
         if(result == null){
-            result = new TraceUpdate(new Name("\\runEv"), intSort);
+            result = new TraceUpdate(new Name("\\retEv"), intSort);
             RET_EV.put(intSort, new WeakReference<>(result));
         }
 
