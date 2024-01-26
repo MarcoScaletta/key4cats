@@ -242,6 +242,9 @@ ASYNC: '\\async';
 // Observation
 OBS: '\\obs';
 
+// CATs
+TRACE_CONTRACT : '\\traceContract';
+
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';
 

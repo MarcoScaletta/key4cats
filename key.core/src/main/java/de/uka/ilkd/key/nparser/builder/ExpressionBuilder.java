@@ -29,6 +29,7 @@ import de.uka.ilkd.key.pp.AbbrevMap;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.parsing.BuildingException;
 
+import org.antlr.v4.runtime.RuleContext;
 import org.key_project.util.collection.ImmutableArray;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSet;
@@ -293,6 +294,17 @@ public class ExpressionBuilder extends DefaultBuilder {
     @Override
     public Term visitObs_arg(KeYParser.Obs_argContext ctx){
         return binaryTerm(ctx, ObservationArg.OBS_ARG, accept(ctx.observed), accept(ctx.observing));
+    }
+
+    @Override
+    public Term visitTrace_contract(KeYParser.Trace_contractContext ctx){
+        Term methodName = accept(ctx.methodName);
+        Term preTrace = accept(ctx.preTrace);
+        Term innerTrace = accept(ctx.innerTrace);
+        Term postTrace = accept(ctx.postTrace);
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(TraceContract.TRACE_CONTRACT, new ImmutableArray<>(
+                methodName,preTrace,innerTrace,postTrace
+        ), null, null));
     }
 
     @Override
