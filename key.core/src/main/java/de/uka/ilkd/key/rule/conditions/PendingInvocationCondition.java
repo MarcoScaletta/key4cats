@@ -1,19 +1,13 @@
 package de.uka.ilkd.key.rule.conditions;
 
 import de.uka.ilkd.key.java.Services;
-import de.uka.ilkd.key.java.reference.MethodName;
-import de.uka.ilkd.key.java.reference.TypeReference;
-import de.uka.ilkd.key.ldt.BooleanLDT;
-import de.uka.ilkd.key.ldt.MethodNameLDT;
 import de.uka.ilkd.key.logic.ProgramElementName;
 import de.uka.ilkd.key.logic.Term;
-import de.uka.ilkd.key.logic.TermFactory;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
-import org.key_project.util.collection.ImmutableArray;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +27,7 @@ public class PendingInvocationCondition implements VariableCondition {
         this.callId = callId;
     }
 
-    private Map<Term, Pair<Term, Boolean>> getScheduleHelper(Term update, Map<Term, Pair<Term, Boolean>> map, Services services){
+    private static Map<Term, Pair<Term, Boolean>> getScheduleHelper(Term update, Map<Term, Pair<Term, Boolean>> map, Services services){
         if(update.op() == UpdateJunctor.SEQUENTIAL_UPDATE)
             map = getScheduleHelper(update.sub(1), getScheduleHelper(update.sub(0), map, services ), services);
         else if (update.op() == TraceUpdate.getInvocEv(services)) {
@@ -64,7 +58,7 @@ public class PendingInvocationCondition implements VariableCondition {
         return map;
     }
 
-    private Term getSchedule(Term update, Services services){
+    public static Term getSchedule(Term update, Services services){
         Map<Term, Pair<Term, Boolean>> mapSchedule = getScheduleHelper(update, new HashMap<>(), services);
 
         List<Pair<Term,Boolean>> idlingInvocactions = mapSchedule.values().stream().filter(pair -> pair.second).toList();
@@ -82,16 +76,12 @@ public class PendingInvocationCondition implements VariableCondition {
         if (update == null || methodName==null || callId==null) {
             return mc;
         }
-        TermFactory tf = services.getTermFactory();
         Term idlingInvoEv = getSchedule(update,services);
         if(idlingInvoEv == null)
             return null;
-        Term t = (Term) idlingInvoEv.sub(0);
-        Term t1 = idlingInvoEv.sub(1);
-        Term result = services.getTermBuilder().func(services.getTypeConverter().getMethodNameLDT().getUniqueMethodConstant(
-                ((ProgramElementName) t.op().name()).getQualifier(),
-                ((ProgramElementName) t.op().name()).getProgramName(),services));
+        Term methodNameTerm =  idlingInvoEv.sub(0);
+        Term callIdTerm = idlingInvoEv.sub(1);
 
-        return mc.setInstantiations(svInst.add(methodName, result, services).add(callId, t1, services));
+        return mc.setInstantiations(svInst.add(methodName, methodNameTerm, services).add(callId, callIdTerm, services));
     }
 }
