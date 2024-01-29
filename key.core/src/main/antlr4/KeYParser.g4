@@ -351,7 +351,7 @@ unary_formula:
   | MODALITY sub=term60                           #modality_term
   | STATEFML sub=term60 STATEFML                  #stateFml_term
 ;
-schem_trace_term: SCHEM_TRACE args=method_names_list SCHEM_TRACE;
+schem_trace_term: TILDE args=method_names_list TILDE;
 equality_term: a=comparison_term ((NOT_EQUALS|EQUALS) b=comparison_term)?;
 comparison_term: a=weak_arith_term ((LESS|LESSEQUAL|GREATER|GREATEREQUAL|UTF_PRECEDES|UTF_SUBSET_EQ|UTF_SUBSEQ|UTF_IN) b=weak_arith_term)?;
 weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|UTF_SETMINUS) b+=strong_arith_term_1)*;
