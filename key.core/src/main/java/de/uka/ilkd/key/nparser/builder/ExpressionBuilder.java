@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import de.uka.ilkd.key.java.*;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
+import de.uka.ilkd.key.java.abstraction.PrimitiveType;
 import de.uka.ilkd.key.java.expression.literal.StringLiteral;
 import de.uka.ilkd.key.ldt.IntegerLDT;
 import de.uka.ilkd.key.ldt.LDT;
@@ -19,6 +20,7 @@ import de.uka.ilkd.key.logic.label.TermLabel;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ProgramSVSort;
 import de.uka.ilkd.key.logic.sort.Sort;
+import de.uka.ilkd.key.macros.scripts.meta.Type;
 import de.uka.ilkd.key.nparser.KeYLexer;
 import de.uka.ilkd.key.nparser.KeYParser;
 import de.uka.ilkd.key.nparser.KeYParser.DoubleLiteralContext;
@@ -278,34 +280,11 @@ public class ExpressionBuilder extends DefaultBuilder {
 
     @Override
     public Term visitObs_term(KeYParser.Obs_termContext ctx){
-        Term t = accept(ctx.obs_args());
-        return capsulateTf(ctx, () -> getTermFactory().createTerm(Observation.OBS, new ImmutableArray<>(t), null, null));
+        Term observed = accept(ctx.observed);
+        Term observing = accept(ctx.observing);
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(Observation.getInstance((LocationVariable) observed.op()), new ImmutableArray<>(observing), null, null));
     }
 
-    @Override
-    public Term visitObs_args(KeYParser.Obs_argsContext ctx){
-        Term t = accept(ctx.a);
-        for (KeYParser.Obs_argContext c : ctx.b) {
-            t = binaryTerm(ctx, ObservationArgJunctor.OBS_ARG_JUNCTOR, t, accept(c));
-        }
-        return t;
-    }
-
-    @Override
-    public Term visitObs_arg(KeYParser.Obs_argContext ctx){
-        return binaryTerm(ctx, ObservationArg.OBS_ARG, accept(ctx.observed), accept(ctx.observing));
-    }
-
-    @Override
-    public Term visitTrace_contract(KeYParser.Trace_contractContext ctx){
-        Term methodName = accept(ctx.methodName);
-        Term preTrace = accept(ctx.preTrace);
-        Term innerTrace = accept(ctx.innerTrace);
-        Term postTrace = accept(ctx.postTrace);
-        return capsulateTf(ctx, () -> getTermFactory().createTerm(TraceContract.TRACE_CONTRACT, new ImmutableArray<>(
-                methodName,preTrace,innerTrace,postTrace
-        ), null, null));
-    }
 
     @Override
     public Term visitEquivalence_term(KeYParser.Equivalence_termContext ctx) {

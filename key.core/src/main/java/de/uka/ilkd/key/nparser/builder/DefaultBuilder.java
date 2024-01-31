@@ -201,6 +201,8 @@ public class DefaultBuilder extends AbstractBuilder<Object> {
      * restarts
      */
     protected Sort lookupSort(String name) {
+        if(name.equals("$Formula"))
+            return Sort.FORMULA;
         Sort result = sorts().lookup(new Name(name));
         if (result == null) {
             if (name.equals(NullSort.NAME.toString())) {

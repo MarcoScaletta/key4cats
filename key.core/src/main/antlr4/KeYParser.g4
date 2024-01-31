@@ -344,7 +344,7 @@ disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=chop_term (AND b+=chop_term)*;
 chop_term: a=conc_term (CHOP b+=conc_term)*;
 conc_term: a=term60 (DOT b+=term60)*;
-term60: unary_formula | equality_term | schem_trace_term | trace_event_term | obs_term | trace_contract;
+term60: unary_formula | equality_term | schem_trace_term | trace_event_term | obs_term ;
 unary_formula:
     NOT sub=term60                                #negation_term
   | (FORALL | EXISTS) bound_variables sub=term60  #quantifierterm
@@ -364,13 +364,11 @@ update_event_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
 trace_event_name : START_TR_EV | RET_TR_EV | POP_TR_EV ;
 
 // observation: \obs(observed_1 :-: observing_1, ..., observed_N :-: observing_N,)
-obs_term : OBS obs_args;
-obs_args: LPAREN a=obs_arg (COMMA b+=obs_arg)* RPAREN;
-obs_arg:  observed=term AS observing=term;
+obs_term : OBS LPAREN observed=term AS observing=term RPAREN;
 
-// trace contract: \traceContract(methodName, preTrace,innerTrace,postTrace)
-trace_contract : TRACE_CONTRACT LBRACKET methodName=term RBRACKET  LPAREN  preTrace=term COMMA innerTrace=term COMMA postTrace=term RPAREN ;
-
+//trace_contract : TRACE_CONTRACT LBRACKET methodName=term RBRACKET call;
+//trace_contract : TRACE_CONTRACT observing=decl_observing   LPAREN  preTrace=term COMMA innerTrace=term COMMA postTrace=term RPAREN ;
+decl_observing : LBRACE (simple_ident SEMI)+ RBRACE  ;
 substitution_term:
  LBRACE SUBST  bv=one_bound_variable SEMI
      replacement=comparison_term RBRACE
@@ -467,7 +465,7 @@ accessterm
   // OLD
   (sortId DOUBLECOLON)?
   firstName=simple_ident
-
+  (LBRACKET methodName=term RBRACKET)?
   /*Faster version
   simple_ident_dots
   ( EMPTYBRACKETS*
