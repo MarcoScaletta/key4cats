@@ -302,7 +302,7 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder FINISH_CONDITION =
             new ConstructorBasedBuilder("finishCondition",
-                    FinishCondition.class, SV, SV, SV);
+                    FinishCondition.class, SV);
 
     public static final AbstractConditionBuilder OBSERVATION_CONDITION =
             new ConstructorBasedBuilder("observationCondition",

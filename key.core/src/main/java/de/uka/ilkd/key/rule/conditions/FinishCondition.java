@@ -19,13 +19,9 @@ public class FinishCondition implements VariableCondition {
 
 
     private final SchemaVariable u;
-    private final SchemaVariable modality;
-    private final SchemaVariable post;
 
-    public FinishCondition(SchemaVariable u, SchemaVariable modality, SchemaVariable post) {
+    public FinishCondition(SchemaVariable u) {
         this.u = u;
-        this.modality = modality;
-        this.post = post;
     }
 
     @Override
@@ -33,7 +29,6 @@ public class FinishCondition implements VariableCondition {
 
         SVInstantiations svInst = mc.getInstantiations();
         Term update = (Term) svInst.getInstantiation(u);
-        Term postTerm = (Term) svInst.getInstantiation(post);
 
         if (update == null) {
             return mc;
@@ -41,7 +36,6 @@ public class FinishCondition implements VariableCondition {
         Term idlingInvoEv = PendingInvocationCondition.getSchedule(update,services);
         if(idlingInvoEv != null)
             return null;
-        Term localJudge = services.getTermBuilder().prog(Modality.DIA, JavaBlock.EMPTY_JAVABLOCK,postTerm) ;
-        return mc.setInstantiations(svInst.add(modality,localJudge, services));
+        return mc;
     }
 }
