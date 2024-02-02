@@ -465,7 +465,7 @@ accessterm
   // OLD
   (sortId DOUBLECOLON)?
   firstName=simple_ident
-  (LBRACKET methodName=term RBRACKET)?
+//  (LBRACKET methodName=term RBRACKET)?
   /*Faster version
   simple_ident_dots
   ( EMPTYBRACKETS*
@@ -655,6 +655,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | METHOD_NAME_CONSTANT
   | PENDING_INVOCATION_CONDITION
   | FINISH_CONDITION
+  | OBSERVATION_CONDITION
   | DIFFERENTFIELDS
   | SIMPLIFY_IF_THEN_ELSE_UPDATE
   | CONTAINS_ASSIGNMENT
