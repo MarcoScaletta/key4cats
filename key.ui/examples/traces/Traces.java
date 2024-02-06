@@ -1,10 +1,10 @@
 class Traces{
 
     int x;
-    static int y;
 
-    private static void m(boolean sync){
-        y += 1;
+    public static void m(boolean sync){
+        int y;
+        y = y + 1;
     }
 
     private void m1(){

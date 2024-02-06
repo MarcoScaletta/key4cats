@@ -1,9 +1,12 @@
 package de.uka.ilkd.key.rule.conditions;
 
 import de.uka.ilkd.key.java.Services;
+import de.uka.ilkd.key.java.abstraction.KeYJavaType;
+import de.uka.ilkd.key.java.reference.MethodName;
 import de.uka.ilkd.key.java.reference.TypeReference;
 import de.uka.ilkd.key.logic.ProgramElementName;
 import de.uka.ilkd.key.logic.Term;
+import de.uka.ilkd.key.logic.op.Function;
 import de.uka.ilkd.key.logic.op.SVSubstitute;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
 import de.uka.ilkd.key.rule.MatchConditions;
@@ -31,7 +34,15 @@ public class MethodNameConstant implements VariableCondition {
         Term methodConstantInst = (Term) svInst.getInstantiation(methodConstant);
 
         if (methodNameInst == null || typeInst == null) {
-            return matchCond;
+            if(methodConstantInst == null)
+                return matchCond;
+            else {
+                ProgramElementName methodNameConstant = (ProgramElementName) methodConstantInst.op().name();
+                KeYJavaType kjt = services.getJavaInfo().getKeYJavaType(methodNameConstant.getQualifier());
+                TypeReference tf = services.getJavaInfo().createTypeReference(kjt);
+                ProgramElementName mn = new ProgramElementName(((ProgramElementName) methodConstantInst.op().name()).getProgramName());
+                return matchCond.setInstantiations(svInst.add(typeSV, tf, services).add(methodName, mn,services));
+            }
         }
 
         Term result = services.getTermBuilder().func(
