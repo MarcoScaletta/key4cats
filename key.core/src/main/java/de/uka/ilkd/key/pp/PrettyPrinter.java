@@ -856,9 +856,10 @@ public class PrettyPrinter implements Visitor {
         boolean emptyBlock = x.getBody() == null || x.getBody().isEmpty();
         if (emptyBlock) {
             // We have an empty statement block ...
-//            markStart(x);
+            markStart(x);
+            l.print("");
 //            l.print("{}");
-//            markEnd(x);
+            markEnd(x);
             return false;
         } else {
             beginBlock();
