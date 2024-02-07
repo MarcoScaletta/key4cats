@@ -335,9 +335,10 @@ term: sequential_term; // weigl: should normally be equivalence_term
 //labeled_term: a=parallel_term (LGUILLEMETS labels=label RGUILLEMETS)?;
 sequential_term: a=parallel_term (SEMI b=parallel_term)*;
 parallel_term: a=event_term (PARALLEL b=event_term)*;
-event_term: el=elementary_update_term | tr=event_update_trace_term ;
+event_term: el=elementary_update_term | tr=event_update_trace_term | havoc=havoc_update_term;
 elementary_update_term: a=equivalence_term (ASSIGN b=equivalence_term)?;
-event_update_trace_term : name=update_event_name args=argument_list ;
+havoc_update_term: HAVOC LPAREN id=term RPAREN;
+event_update_trace_term: name=update_event_name args=argument_list ;
 equivalence_term: a=implication_term (EQV b+=implication_term)*;
 implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;

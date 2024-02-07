@@ -1126,36 +1126,36 @@ public class PrettyPrinter implements Visitor {
 
     @Override
     public void performActionOnMethodFrame(MethodFrame x) {
-        l.keyWord("method-frame");
-        l.print(" ");
-        beginMultilineBracket();
-
-        IProgramVariable var = x.getProgramVariable();
-        var exec = x.getExecutionContext();
-        if (var != null) {
-            l.beginRelativeC().print("result->");
-            var.visit(this);
-            if (exec != null) {
-                l.print(",");
-            }
-            l.end();
-            if (exec != null) {
-                l.brk();
-            }
-        }
-
-        if (exec instanceof ExecutionContext) {
-            performActionOnExecutionContext((ExecutionContext) exec);
-        } else if (exec != null) {
-            performActionOnSchemaVariable((SchemaVariable) exec);
-        }
-
-        endMultilineBracket();
-        l.print(" ");
-
-        if (x.getBody() != null) {
-            printStatementBlock(x.getBody());
-        }
+//        l.keyWord("method-frame");
+//        l.print(" ");
+//        beginMultilineBracket();
+//
+//        IProgramVariable var = x.getProgramVariable();
+//        var exec = x.getExecutionContext();
+//        if (var != null) {
+//            l.beginRelativeC().print("result->");
+//            var.visit(this);
+//            if (exec != null) {
+//                l.print(",");
+//            }
+//            l.end();
+//            if (exec != null) {
+//                l.brk();
+//            }
+//        }
+//
+//        if (exec instanceof ExecutionContext) {
+//            performActionOnExecutionContext((ExecutionContext) exec);
+//        } else if (exec != null) {
+//            performActionOnSchemaVariable((SchemaVariable) exec);
+//        }
+//
+//        endMultilineBracket();
+//        l.print(" ");
+//
+//        if (x.getBody() != null) {
+//            printStatementBlock(x.getBody());
+//        }
     }
 
     @Override

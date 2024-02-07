@@ -5,6 +5,7 @@ class Traces{
     public static void m(boolean sync){
         int y;
         y = y + 1;
+        return;
     }
 
     private void m1(){

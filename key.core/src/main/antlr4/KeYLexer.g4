@@ -235,6 +235,8 @@ START_TR_EV: '\\startTrEv';
 RET_TR_EV: '\\retTrEv';
 POP_TR_EV: '\\popTrEv';
 
+HAVOC: '\\havoc';
+
 SYNC: '\\sync';
 ASYNC: '\\async';
 

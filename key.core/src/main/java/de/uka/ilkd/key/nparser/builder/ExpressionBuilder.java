@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import de.uka.ilkd.key.java.*;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
-import de.uka.ilkd.key.java.abstraction.PrimitiveType;
 import de.uka.ilkd.key.java.expression.literal.StringLiteral;
 import de.uka.ilkd.key.ldt.IntegerLDT;
 import de.uka.ilkd.key.ldt.LDT;
@@ -20,7 +19,6 @@ import de.uka.ilkd.key.logic.label.TermLabel;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ProgramSVSort;
 import de.uka.ilkd.key.logic.sort.Sort;
-import de.uka.ilkd.key.macros.scripts.meta.Type;
 import de.uka.ilkd.key.nparser.KeYLexer;
 import de.uka.ilkd.key.nparser.KeYParser;
 import de.uka.ilkd.key.nparser.KeYParser.DoubleLiteralContext;
@@ -31,7 +29,6 @@ import de.uka.ilkd.key.pp.AbbrevMap;
 import de.uka.ilkd.key.util.Debug;
 import de.uka.ilkd.key.util.parsing.BuildingException;
 
-import org.antlr.v4.runtime.RuleContext;
 import org.key_project.util.collection.ImmutableArray;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSet;
@@ -206,10 +203,13 @@ public class ExpressionBuilder extends DefaultBuilder {
 
     @Override
     public Term visitEvent_term(KeYParser.Event_termContext ctx) {
-        if(ctx.el != null)
-            return accept(ctx.el);
-        else
-            return accept(ctx.tr);
+        return oneOf(ctx.el,ctx.tr,ctx.havoc);
+    }
+
+    @Override
+    public Term visitHavoc_update_term(KeYParser.Havoc_update_termContext ctx){
+        Term idTerm = accept(ctx.id);
+        return capsulateTf(ctx, () -> getTermFactory().createTerm( HavocUpdate.getHavocUpdate(services), new ImmutableArray<>(idTerm), null, null));
     }
     @Override
     public Term visitEvent_update_trace_term(KeYParser.Event_update_trace_termContext ctx) {
