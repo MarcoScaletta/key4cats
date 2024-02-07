@@ -1154,9 +1154,9 @@ public class PrettyPrinter implements Visitor {
 //        endMultilineBracket();
 //        l.print(" ");
 //
-//        if (x.getBody() != null) {
-//            printStatementBlock(x.getBody());
-//        }
+        if (x.getBody() != null) {
+            printStatementBlock(x.getBody());
+        }
     }
 
     @Override
