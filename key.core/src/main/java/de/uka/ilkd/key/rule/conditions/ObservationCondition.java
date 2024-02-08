@@ -25,7 +25,7 @@ public class ObservationCondition implements VariableCondition {
         SVInstantiations svInst = matchCond.getInstantiations();
         Term observationTerm = (Term) svInst.getInstantiation(observation);
         if (observationTerm == null || !(observationTerm.op() instanceof  Observation)) {
-            return matchCond;
+            return null;
         }
         Term observedVar = services.getTermFactory().createTerm(((Observation) observationTerm.op()).observed());
         Term observingTerm = observationTerm.sub(0);
