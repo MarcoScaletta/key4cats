@@ -793,13 +793,14 @@ public class ExpressionBuilder extends DefaultBuilder {
                     capsulateTf(ctx, () -> getServices().getTermBuilder().dotLength(finalResult));
             } else {
                 ProgramVariable pv = (ProgramVariable) attribute;
-                Function fieldSymbol = getServices().getTypeConverter().getHeapLDT()
-                        .getFieldSymbolForPV((LocationVariable) pv, getServices());
-                if (pv.isStatic()) {
-                    result = getServices().getTermBuilder().staticDot(pv.sort(), fieldSymbol);
-                } else {
-                    result = getServices().getTermBuilder().dot(pv.sort(), result, fieldSymbol);
-                }
+                result = services.getTermBuilder().var(pv);
+//                Function fieldSymbol = getServices().getTypeConverter().getHeapLDT()
+//                        .getFieldSymbolForPV((LocationVariable) pv, getServices());
+//                if (pv.isStatic()) {
+//                    result = getServices().getTermBuilder().staticDot(pv.sort(), fieldSymbol);
+//                } else {
+//                    result = getServices().getTermBuilder().dot(pv.sort(), result, fieldSymbol);
+//                }
             }
         }
         return result;

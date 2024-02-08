@@ -13,6 +13,7 @@ import de.uka.ilkd.key.java.JavaProgramElement;
 import de.uka.ilkd.key.java.ProgramElement;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.StatementBlock;
+import de.uka.ilkd.key.java.reference.FieldReference;
 import de.uka.ilkd.key.java.visitor.ProgramContextAdder;
 import de.uka.ilkd.key.java.visitor.ProgramReplaceVisitor;
 import de.uka.ilkd.key.logic.*;
@@ -207,12 +208,15 @@ public class SyntacticalReplaceVisitor extends DefaultVisitor {
             }
 
             final UpdateableOperator newLhs;
+            if(lhsInst instanceof FieldReference field){
+                lhsInst = field.getProgramVariable();
+            }
             if (lhsInst instanceof UpdateableOperator) {
                 newLhs = (UpdateableOperator) lhsInst;
             } else {
                 assert false : "not updateable: " + lhsInst;
                 throw new IllegalStateException("Encountered non-updateable operator " + lhsInst
-                    + " on left-hand side of update.");
+                    + " on left-hand side of update. " + lhsInst.getClass());
             }
             return newLhs == originalLhs ? op : ElementaryUpdate.getInstance(newLhs);
         } else {

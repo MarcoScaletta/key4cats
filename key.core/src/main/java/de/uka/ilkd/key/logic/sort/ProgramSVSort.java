@@ -377,11 +377,11 @@ public abstract class ProgramSVSort extends AbstractSort {
             } else if (pe instanceof ProgramVariable) {
                 accessedField = (ProgramVariable) pe;
             }
-
-            if (accessedField != null && accessedField.isStatic()
-                    && !(accessedField instanceof ProgramConstant)) {
-                return false;
-            }
+            // MARCO
+//            if (accessedField != null && accessedField.isStatic()
+//                    && !(accessedField instanceof ProgramConstant)) {
+//                return false;
+//            }
             return super.canStandFor(pe, services);
         }
 

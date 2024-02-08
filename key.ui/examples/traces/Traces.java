@@ -1,11 +1,13 @@
 class Traces{
 
-    int x;
+    public static int x;
 
     public static void m(boolean sync){
-        int y;
-        y = y + 1;
+        x = x + 1;
         return;
+//        int y;
+//        y = y + 1;
+//        return;
     }
 
     private void m1(){
