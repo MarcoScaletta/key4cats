@@ -56,17 +56,15 @@ public class PostStateCondition implements VariableCondition {
         Term traceTerm = (Term) svInst.getInstantiation(trace);
         Term stateFmlTerm = (Term) svInst.getInstantiation(stateFml);
         MatchConditions result = null;
-        if(stateFmlTerm.op() == Junctor.STATEFML) {
-            Set<Name> observingVariables = getObservingVariable(traceTerm);
-            if(observingVariables.isEmpty())
+        Set<Name> observingVariables = getObservingVariable(traceTerm);
+        if(observingVariables.isEmpty())
+            result = matchCond;
+        else {
+            Set<Name> stateFmlVariables = getStateFmlVariable(stateFmlTerm);
+            stateFmlVariables.retainAll(observingVariables);
+            if(stateFmlVariables.isEmpty())
                 result = matchCond;
-            else {
-                Set<Name> stateFmlVariables = getStateFmlVariable(stateFmlTerm);
-                stateFmlVariables.retainAll(observingVariables);
-                if(stateFmlVariables.isEmpty())
-                    result = matchCond;
 
-            }
         }
         return result;
     }
