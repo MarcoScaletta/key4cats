@@ -5,6 +5,8 @@ package de.uka.ilkd.key.rule.conditions;
 
 
 import de.uka.ilkd.key.java.Services;
+import de.uka.ilkd.key.logic.Term;
+import de.uka.ilkd.key.logic.op.ProgramVariable;
 import de.uka.ilkd.key.logic.op.SVSubstitute;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
 import de.uka.ilkd.key.rule.VariableConditionAdapter;
@@ -27,13 +29,22 @@ public final class DifferentInstantiationCondition extends VariableConditionAdap
             Services services) {
         if (var == var1) {
             final Object inst2 = svInst.getInstantiation(var2);
-            return inst2 == null || !inst2.equals(candidate);
+            return inst2 == null || !checkHelper(candidate,inst2);
         } else if (var == var2) {
             final Object inst1 = svInst.getInstantiation(var1);
-            return inst1 == null || !inst1.equals(candidate);
+            return inst1 == null || !checkHelper(inst1, candidate);
         } else {
             return true;
         }
+    }
+
+    private boolean checkHelper(Object sv1, Object sv2){
+        if(sv1 instanceof ProgramVariable && sv2 instanceof Term){
+            return sv1.equals(((Term) sv2).op());
+        }else if(sv2 instanceof ProgramVariable && sv1 instanceof Term){
+            return sv2.equals(((Term) sv1).op());
+        }else
+            return sv1.equals(sv2);
     }
 
 

@@ -254,18 +254,19 @@ public final class TypeConverter {
         } else if (var == services.getJavaInfo().getArrayLength()) {
             return tb.dotLength(convertReferencePrefix(prefix, ec));
         } else if (var.isStatic()) {
-            final Function fieldSymbol =
-                heapLDT.getFieldSymbolForPV((LocationVariable) var, services);
-            return tb.staticDot(var.sort(), fieldSymbol);
+//            final Function fieldSymbol =
+//                heapLDT.getFieldSymbolForPV((LocationVariable) var, services);
+//            return tb.staticDot(var.sort(), fieldSymbol);
+            return tb.var(var);
         } else if (prefix == null) {
-            if (var.isMember()) {
-                final Function fieldSymbol =
-                    heapLDT.getFieldSymbolForPV((LocationVariable) var, services);
-                return tb.dot(var.sort(), findThisForSort(var.getContainerType().getSort(), ec),
-                    fieldSymbol);
-            } else {
+//            if (var.isMember()) {
+//                final Function fieldSymbol =
+//                    heapLDT.getFieldSymbolForPV((LocationVariable) var, services);
+//                return tb.dot(var.sort(), findThisForSort(var.getContainerType().getSort(), ec),
+//                    fieldSymbol);
+//            } else {
                 return tb.var(var);
-            }
+//            }
         } else if (!(prefix instanceof PackageReference)) {
             final Function fieldSymbol =
                 heapLDT.getFieldSymbolForPV((LocationVariable) var, services);

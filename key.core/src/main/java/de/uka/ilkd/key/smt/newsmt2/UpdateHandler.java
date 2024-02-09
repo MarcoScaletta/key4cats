@@ -51,7 +51,7 @@ public class UpdateHandler implements SMTHandler {
     }
 
     private void collectUpdates(Term update, List<SExpr> individualUpdates, MasterHandler trans) {
-        if (update.op() == UpdateJunctor.PARALLEL_UPDATE) {
+        if (update.op() == UpdateJunctor.PARALLEL_UPDATE || update.op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
             for (Term subUpd : update.subs()) {
                 collectUpdates(subUpd, individualUpdates, trans);
             }
