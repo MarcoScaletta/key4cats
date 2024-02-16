@@ -312,6 +312,10 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("postStateCondition",
                     PostStateCondition.class, SV,SV);
 
+    public static final AbstractConditionBuilder CONTAINS_OBSERVATIONS =
+            new ConstructorBasedBuilder("containsObservations",
+                    ContainsObservations.class, SV);
+
 
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
@@ -396,7 +400,7 @@ public class TacletBuilderManipulators {
             STATIC_FIELD, MODEL_FIELD, SUBFORMULA, DROP_EFFECTLESS_STORES, EQUAL_UNIQUE,
             META_DISJOINT,
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
-            PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,POSTSTATE_CONDITION);
+            PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,POSTSTATE_CONDITION, CONTAINS_OBSERVATIONS);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

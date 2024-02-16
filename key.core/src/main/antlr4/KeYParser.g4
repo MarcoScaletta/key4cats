@@ -344,7 +344,7 @@ implication_term: a=disjunction_term (IMP b=implication_term)?;
 disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=chop_term (AND b+=chop_term)*;
 chop_term: a=conc_term (CHOP b+=conc_term)*;
-conc_term: a=term60 (DOT b+=term60)*;
+conc_term: a=term60 (CONC b+=term60)*;
 term60: unary_formula | equality_term | schem_trace_term | trace_event_term | obs_term ;
 unary_formula:
     NOT sub=term60                                #negation_term
@@ -658,6 +658,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | FINISH_CONDITION
   | OBSERVATION_CONDITION
   | POSTSTATE_CONDITION
+  | CONTAINS_OBSERVATIONS
   | DIFFERENTFIELDS
   | SIMPLIFY_IF_THEN_ELSE_UPDATE
   | CONTAINS_ASSIGNMENT

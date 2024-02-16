@@ -120,6 +120,7 @@ PENDING_INVOCATION_CONDITION : '\\pendingInvocationCondition';
 FINISH_CONDITION : '\\finishCondition';
 OBSERVATION_CONDITION : '\\observationCondition';
 POSTSTATE_CONDITION:'\\postStateCondition';
+CONTAINS_OBSERVATIONS : '\\containsObservations';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
 ENUM_CONST : '\\enumConstant';
 FREELABELIN : '\\freeLabelIn';
@@ -405,6 +406,11 @@ GREATEREQUAL
 
 CHOP
 :   '**'
+      ;
+
+
+CONC
+:   '$.'
       ;
 
 STATEFML
