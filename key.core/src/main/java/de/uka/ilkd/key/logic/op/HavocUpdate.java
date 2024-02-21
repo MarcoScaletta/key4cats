@@ -21,7 +21,7 @@ public class HavocUpdate extends AbstractSortedOperator {
             result = ref.get();
         }
         if(result == null){
-            result = new HavocUpdate(new Name("\\anon"), intSort);
+            result = new HavocUpdate(new Name("\\havoc"), intSort);
             ANON.put(intSort, new WeakReference<>(result));
         }
 
