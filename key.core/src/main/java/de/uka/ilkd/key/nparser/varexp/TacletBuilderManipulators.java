@@ -308,6 +308,7 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("observationCondition",
                     ObservationCondition.class, SV, SV, SV);
 
+
     public static final AbstractConditionBuilder POSTSTATE_CONDITION =
             new ConstructorBasedBuilder("postStateCondition",
                     PostStateCondition.class, SV,SV);
@@ -315,6 +316,11 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder CONTAINS_OBSERVATIONS =
             new ConstructorBasedBuilder("containsObservations",
                     ContainsObservations.class, SV);
+
+    public static final AbstractConditionBuilder UPDATE_STARTS_WITH =
+            new ConstructorBasedBuilder("updateStartsWith",
+                    UpdateStartsWith.class, SV, SV,SV);
+
 
 
 
@@ -400,7 +406,8 @@ public class TacletBuilderManipulators {
             STATIC_FIELD, MODEL_FIELD, SUBFORMULA, DROP_EFFECTLESS_STORES, EQUAL_UNIQUE,
             META_DISJOINT,
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
-            PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,POSTSTATE_CONDITION, CONTAINS_OBSERVATIONS);
+            PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,POSTSTATE_CONDITION,
+            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();
