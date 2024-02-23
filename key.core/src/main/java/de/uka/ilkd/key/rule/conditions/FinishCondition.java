@@ -10,6 +10,7 @@ import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
 
+import java.rmi.server.ServerCloneException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,22 @@ public class FinishCondition implements VariableCondition {
 
 
     private final SchemaVariable u;
+    private final SchemaVariable methodNameSV;
 
-    public FinishCondition(SchemaVariable u) {
+    public FinishCondition(SchemaVariable u, SchemaVariable methodNameSV) {
         this.u = u;
+        this.methodNameSV = methodNameSV;
+    }
+
+    public Term getStartEvent(Term update, Services services){
+        if(update.op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
+            if (update.sub(0).op() == HavocUpdate.getHavocUpdate(services)) {
+                if (update.sub(1).op() == TraceUpdate.getStartEv(services))
+                    return update.sub(1);
+            } else
+                return getStartEvent(update.sub(0), services);
+        }
+        return null;
     }
 
     @Override
@@ -34,8 +48,11 @@ public class FinishCondition implements VariableCondition {
             return mc;
         }
         Term idlingInvoEv = PendingInvocationCondition.getSchedule(update,services);
-        if(idlingInvoEv != null)
+        Term startEv = getStartEvent(update, services);
+
+        if(idlingInvoEv != null || startEv == null)
             return null;
-        return mc;
+
+        return mc.setInstantiations(svInst.add(this.methodNameSV, startEv.sub(0), services));
     }
 }
