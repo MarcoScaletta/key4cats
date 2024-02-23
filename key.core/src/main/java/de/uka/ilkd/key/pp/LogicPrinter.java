@@ -1406,6 +1406,7 @@ public class LogicPrinter {
     public void printInfixTermContinuingBlock(Term l, int assLeft, String name, Term t, Term r,
             int assRight) {
         boolean isKeyword = false;
+        layouter.print("(");
         if (services != null) {
             LocSetLDT loc = services.getTypeConverter().getLocSetLDT();
             isKeyword = (t.op() == Junctor.AND || t.op() == Junctor.OR || t.op() == Junctor.IMP
@@ -1425,6 +1426,7 @@ public class LogicPrinter {
         }
         layouter.ind(1, 0);
         maybeParens(r, assRight);
+        layouter.print(")");
     }
 
     /**
