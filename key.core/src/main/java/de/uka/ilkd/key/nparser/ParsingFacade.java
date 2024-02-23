@@ -138,6 +138,7 @@ public final class ParsingFacade {
             ctx = p.file();
         } catch (ParseCancellationException ex) {
             LOGGER.warn("SLL was not enough");
+            stream.seek(0);
             p = createParser(stream);
             ctx = p.file();
         }
