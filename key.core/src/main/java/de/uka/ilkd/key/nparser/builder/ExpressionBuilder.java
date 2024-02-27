@@ -280,9 +280,14 @@ public class ExpressionBuilder extends DefaultBuilder {
 
     @Override
     public Term visitObs_term(KeYParser.Obs_termContext ctx){
-        Term observed = accept(ctx.observed);
+        LocationVariable observed;
         Term observing = accept(ctx.observing);
-        return capsulateTf(ctx, () -> getTermFactory().createTerm(Observation.getInstance((LocationVariable) observed.op()), new ImmutableArray<>(observing), null, null));
+        if(ctx.observed != null) {
+             observed = (LocationVariable) ((Term) accept(ctx.observed)).op();
+        }else{
+            observed = (LocationVariable)services.getJavaInfo().getCanonicalFieldProgramVariable(ctx.id.getText(), services.getJavaInfo().getKeYJavaType(ctx.IDENT().getText().substring(1)));
+        }
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(Observation.getInstance(observed), new ImmutableArray<>(observing), null, null));
     }
 
 

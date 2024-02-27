@@ -202,7 +202,7 @@ public final class NotationInfo {
             new Notation.CastFunction("(", ")", PRIORITY_CAST, PRIORITY_BOTTOM));
         tbl.put(TermLabel.class, new Notation.LabelNotation("<<", ">>", PRIORITY_LABEL));
 
-        tbl.put(Junctor.CONC, new Notation.Infix(".", PRIORITY_CHOP,PRIORITY_CHOP,PRIORITY_CHOP));
+        tbl.put(Junctor.CONC, new Notation.Infix("$.", PRIORITY_CHOP,PRIORITY_CHOP,PRIORITY_CHOP));
         tbl.put(Junctor.CHOP, new Notation.Infix("**", PRIORITY_CHOP,PRIORITY_CHOP,PRIORITY_CHOP));
         tbl.put(Junctor.STATEFML, new Notation.StateFmlNotation("`","`"));
         tbl.put(SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR, new Notation.Infix(",", PRIORITY_ATOM,PRIORITY_ATOM,PRIORITY_ATOM));

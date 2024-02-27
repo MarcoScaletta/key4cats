@@ -365,7 +365,7 @@ update_event_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
 trace_event_name : START_TR_EV | RET_TR_EV | POP_TR_EV ;
 
 // observation: \obs(observed_1 :-: observing_1, ..., observed_N :-: observing_N,)
-obs_term : OBS LPAREN observed=term AS observing=term RPAREN;
+obs_term : OBS ( LPAREN observed=term AS observing=term RPAREN | IDENT DOUBLECOLON id=simple_ident LPAREN observing=term RPAREN );
 
 //trace_contract : TRACE_CONTRACT LBRACKET methodName=term RBRACKET call;
 //trace_contract : TRACE_CONTRACT observing=decl_observing   LPAREN  preTrace=term COMMA innerTrace=term COMMA postTrace=term RPAREN ;
