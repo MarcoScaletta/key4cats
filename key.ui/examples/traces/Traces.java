@@ -3,8 +3,8 @@ class Traces{
     public static int x;
 
     public static void m(boolean sync){
-        Traces.m1(true);
         x = x + 1;
+        Traces.m1(true);
         return;
 //        int y;
 //        y = y + 1;

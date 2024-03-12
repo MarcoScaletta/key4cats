@@ -319,7 +319,7 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder UPDATE_STARTS_WITH =
             new ConstructorBasedBuilder("updateStartsWith",
-                    UpdateStartsWith.class, SV, SV,SV);
+                    UpdateStartsWith.class, SV, SV,SV,SV,SV,SV);
 
 
 

@@ -25,6 +25,8 @@ public class ContainsObservations extends VariableConditionAdapter {
     }
 
     public boolean containsObservations(Term formula){
+        if(formula == null)
+            return false;
         if(formula.op() == Junctor.CHOP || formula.op() == Junctor.CONC)
             return containsObservations(formula.sub(0)) || containsObservations(formula.sub(1));
         return (formula.op() instanceof Observation);
