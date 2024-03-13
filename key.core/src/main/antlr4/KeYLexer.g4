@@ -122,6 +122,7 @@ OBSERVATION_CONDITION : '\\observationCondition';
 POSTSTATE_CONDITION: '\\postStateCondition';
 CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
+CHOP_FOR_CALL: '\\chopForCall';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
 ENUM_CONST : '\\enumConstant';
 FREELABELIN : '\\freeLabelIn';
