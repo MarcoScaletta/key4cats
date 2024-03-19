@@ -324,7 +324,7 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder CHOP_FOR_CALL =
             new ConstructorBasedBuilder("chopForCall",
-                    ChopForCall.class, SV, SV);
+                    ChopForCall.class, SV, SV, SV, SV);
 
 
 

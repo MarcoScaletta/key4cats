@@ -2,14 +2,10 @@ package de.uka.ilkd.key.rule.conditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
-import de.uka.ilkd.key.logic.op.Junctor;
-import de.uka.ilkd.key.logic.op.SVSubstitute;
-import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.UpdateJunctor;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
-import de.uka.ilkd.key.util.Pair;
 import de.uka.ilkd.key.util.Triple;
 
 import java.util.ArrayList;
@@ -31,61 +27,7 @@ public class ChopForCall implements VariableCondition {
         this.postFmlSV = postFml;
     }
 
-    private List<Term> updateToList(Term update){
-        List<Term> updateList = new ArrayList<>();
-        if(update.op() instanceof UpdateJunctor op){
-            if(op != UpdateJunctor.SEQUENTIAL_UPDATE)
-                return null;
-            List<Term> updateSub0 = updateToList(update.sub(0));
-            if(updateSub0 == null)
-                return null;
-            updateList.addAll(updateSub0);
-            updateList.add(update.sub(1));
-        }else {
-            updateList.add(update);
-        }
-        return updateList;
-    }
-//
-    private Pair<Term,Integer> postAssociate(Term trace, Services services){
-        if(trace.op() instanceof Junctor junctor && junctor.arity() > 1)
-            return postAssociate(junctor, trace.sub(0), trace.sub(1), 1, services);
-        else return new Pair<>(trace, 1);
-    }
-//
-    private Pair<Term,Integer> postAssociate(Junctor junctor, Term tracePreAssociated, Term tracePostAssociated, int count, Services services){
-
-        if(tracePreAssociated.op() instanceof Junctor j && j.arity() > 1){
-            Term newPostAssociated = services.getTermFactory().createTerm(junctor, tracePreAssociated.sub(1),tracePostAssociated);
-            return postAssociate(j, tracePreAssociated.sub(0),  newPostAssociated, count + 1, services);
-        }else {
-            Term newPostAssociated = services.getTermFactory().createTerm(junctor, tracePreAssociated,tracePostAssociated);
-            return new Pair<>(newPostAssociated, count+1);
-        }
-
-    }
-
-
-    private Term traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
-        if(postAssociatedFullTrace.op() instanceof Junctor){
-            // full trace contains more than 1 elem
-            if(postAssociatedFullTrace.op() == postAssociatedPrefixTrace.op()){
-                // also prefix contains more than 1 elem and the junctors coincide
-                if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace.sub(0))
-                    // the first elements of both traces coincide
-                    return traceStartsWithHelper(postAssociatedFullTrace.sub(1), postAssociatedPrefixTrace.sub(1));
-
-            }else if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace){
-                // prefix is only one element and it matches the first element of full trace
-                return postAssociatedFullTrace.sub(1);
-            }
-
-        }
-        return null;
-    }
-
     private List<Term> choppingTrace(Term trace, Services services){
-
 
         LinkedList<Term> chops = new LinkedList<>();
         Term traceEl = trace;
@@ -94,7 +36,6 @@ public class ChopForCall implements VariableCondition {
 
 
         while(traceEl.arity() > 1 && traceEl.op() instanceof Junctor j){
-            System.out.println("AA");
             if(concatTrace == null) {
                 concatTrace= traceEl.sub(1);
             }
@@ -120,23 +61,41 @@ public class ChopForCall implements VariableCondition {
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
     }
 
+    private boolean containsSchemTr(Term trace){
+        if(trace.op() instanceof SchematicTrace)
+            return true;
+        if(trace.op() == Junctor.CHOP || trace.op() == Junctor.CONC){
+            return containsSchemTr(trace.sub(0)) || containsSchemTr(trace.sub(1));
+        }
+        return false;
+    }
+
+    private boolean containsSchemTr(List<Term> traceList){
+        return traceList.stream().anyMatch(this::containsSchemTr);
+    }
+
     private List<Triple<Term, Term, Term>> getChoppings(List<Term> choppedTrace, Services services){
+//        System.out.println("Total chops: " + choppedTrace.size());
         List<Triple<Term, Term, Term>> triples = new ArrayList<>();
+        if(choppedTrace.size() < 3)
+            return null;
         for (int i = 0; i < choppedTrace.size()-2; i++) {
             for (int j = i+2; j < choppedTrace.size(); j++) {
-                triples.add(new Triple<>(
-                        unchop(choppedTrace.subList(0,i),services),
-                        unchop(choppedTrace.subList(i+1,j-1),services),
-                        unchop(choppedTrace.subList(j,choppedTrace.size()-1),services)));
+                List<Term> preTraceList = choppedTrace.subList(0,i+1);
+                List<Term> innerTraceList = choppedTrace.subList(i+1,j);
+                List<Term> postTraceList = choppedTrace.subList(j,choppedTrace.size());
+
+                if(containsSchemTr(preTraceList) && containsSchemTr(innerTraceList) && containsSchemTr(postTraceList))
+                    triples.add(new Triple<>(
+                            unchop(preTraceList,services),
+                            unchop(innerTraceList, services),
+                            unchop(postTraceList, services)
+                    ));
             }
         }
         return triples;
     }
 
-//    private Term disjunctChops(Term trace, Services services){
-//        List<Term> t = choppingTrace(trace,services);
-//        List<Triple<Term, Term, Term>>  triples = getChoppings(t, services);
-//    }
 
 
     @Override
@@ -146,13 +105,17 @@ public class ChopForCall implements VariableCondition {
         Term fullFmlTerm = (Term) svInst.getInstantiation(fullFmlSV);
 
 
-        List<Term> t = choppingTrace(fullFmlTerm,services);
-        if(t.size() < 3)
+        List<Triple<Term,Term,Term>> choppings = getChoppings(choppingTrace(fullFmlTerm,services),services);
+        if(choppings == null  || choppings.isEmpty())
             return null;
+
+//        System.out.println("Possible suitable choppings: " + choppings.size());
+
+
         return matchCond.setInstantiations(
-                svInst.add(preFmlSV,t.get(0),services)
-                        .add(innerFmlSV,t.get(1),services)
-                        .add(postFmlSV,t.get(2),services)
+                svInst.add(preFmlSV,choppings.get(0).first,services)
+                        .add(innerFmlSV,choppings.get(0).second,services)
+                        .add(postFmlSV,choppings.get(0).third,services)
         );
     }
 }
