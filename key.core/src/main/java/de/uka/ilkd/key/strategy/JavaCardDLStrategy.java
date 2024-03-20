@@ -51,14 +51,7 @@ import de.uka.ilkd.key.strategy.termfeature.OperatorClassTF;
 import de.uka.ilkd.key.strategy.termfeature.PrimitiveHeapTermFeature;
 import de.uka.ilkd.key.strategy.termfeature.SimplifiedSelectTermFeature;
 import de.uka.ilkd.key.strategy.termfeature.TermFeature;
-import de.uka.ilkd.key.strategy.termgenerator.AllowedCutPositionsGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.HeapGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.MultiplesModEquationsGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.RootsGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.SequentFormulasGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.SubtermGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.SuperTermGenerator;
-import de.uka.ilkd.key.strategy.termgenerator.TriggeredInstantiations;
+import de.uka.ilkd.key.strategy.termgenerator.*;
 import de.uka.ilkd.key.util.MiscTools;
 
 /**
@@ -466,6 +459,13 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
 
         setupUserTaclets(d);
 
+
+        bindRuleSet(d, "traceCall", add(
+                not(isInstantiated("preFormula")),
+                not(isInstantiated("innerFormula")),
+                not(isInstantiated("postFormula")),
+                longConst(-100))); // smarter costs!!
+
         setupArithPrimaryCategories(d);
         setupPolySimp(d, numbers);
         setupInEqSimp(d, numbers);
@@ -671,6 +671,19 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "replace_known_right",
             add(commonF, ifZero(DirectlyBelowSymbolFeature.create(Junctor.IMP, 1), longConst(100),
                 ifZero(DirectlyBelowSymbolFeature.create(Equality.EQV), longConst(100)))));
+    }
+
+    private void setupCallTaclets(RuleSetDispatchFeature d){
+        TermBuffer chopping = new TermBuffer();
+        TermGenerator choppingGenerator = new ChoppingGenerator();
+
+        Feature instantiateTraceCall = forEach(chopping, choppingGenerator,
+                add(
+                        instantiate("preFormula", sub(chopping, 0)),
+                        instantiate("innerFormula", sub(chopping, 1)),
+                        instantiate("postFormula", sub(chopping, 2))
+                        ));
+        bindRuleSet(d, "traceCall", instantiateTraceCall); //use smarter costs for each instantiation of formulas
     }
 
     private void setupUserTaclets(RuleSetDispatchFeature d) {
@@ -1933,7 +1946,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         // without changing the sequent for a really long time. This is tested by
         // TestSymbolicExecutionTreeBuilder#testInstanceOfNotInEndlessLoop()
         bindRuleSet(d, "apply_equations", EqNonDuplicateAppFeature.INSTANCE);
-
+        bindRuleSet(d,"traceCall", NonDuplicateAppModPositionFeature.INSTANCE );
         return d;
     }
 
@@ -1998,6 +2011,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         setupInEqSimpInstantiation(d);
 
         setClassAxiomInstantiation(d);
+        setupCallTaclets(d);
 
         disableInstantiate();
         return d;

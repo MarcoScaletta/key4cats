@@ -27,7 +27,7 @@ public class ChopForCall implements VariableCondition {
         this.postFmlSV = postFml;
     }
 
-    private List<Term> choppingTrace(Term trace, Services services){
+    private static List<Term> choppingTrace(Term trace, Services services){
 
         LinkedList<Term> chops = new LinkedList<>();
         Term traceEl = trace;
@@ -55,13 +55,13 @@ public class ChopForCall implements VariableCondition {
         return chops;
     }
 
-    private Term unchop(List<Term> traces, Services services){
+    private static Term unchop(List<Term> traces, Services services){
         return traces.subList(1, traces.size()).stream().reduce(traces.get(0),
                 (subUnchopped, trace) ->
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
     }
 
-    private boolean containsSchemTr(Term trace){
+    private static boolean containsSchemTr(Term trace){
         if(trace.op() instanceof SchematicTrace)
             return true;
         if(trace.op() == Junctor.CHOP || trace.op() == Junctor.CONC){
@@ -70,11 +70,12 @@ public class ChopForCall implements VariableCondition {
         return false;
     }
 
-    private boolean containsSchemTr(List<Term> traceList){
-        return traceList.stream().anyMatch(this::containsSchemTr);
+    private static boolean containsSchemTr(List<Term> traceList){
+        return traceList.stream().anyMatch(ChopForCall::containsSchemTr);
     }
 
-    private List<Triple<Term, Term, Term>> getChoppings(List<Term> choppedTrace, Services services){
+    public static List<Triple<Term, Term, Term>> getChoppings(Term choppedTraceTerm, Services services){
+        List<Term> choppedTrace = choppingTrace(choppedTraceTerm,services);
 //        System.out.println("Total chops: " + choppedTrace.size());
         List<Triple<Term, Term, Term>> triples = new ArrayList<>();
         if(choppedTrace.size() < 3)
@@ -104,8 +105,7 @@ public class ChopForCall implements VariableCondition {
 
         Term fullFmlTerm = (Term) svInst.getInstantiation(fullFmlSV);
 
-
-        List<Triple<Term,Term,Term>> choppings = getChoppings(choppingTrace(fullFmlTerm,services),services);
+        List<Triple<Term,Term,Term>> choppings = getChoppings(fullFmlTerm,services);
         if(choppings == null  || choppings.isEmpty())
             return null;
 
