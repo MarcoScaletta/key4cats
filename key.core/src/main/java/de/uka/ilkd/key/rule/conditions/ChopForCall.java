@@ -76,7 +76,6 @@ public class ChopForCall implements VariableCondition {
 
     public static List<Triple<Term, Term, Term>> getChoppings(Term choppedTraceTerm, Services services){
         List<Term> choppedTrace = choppingTrace(choppedTraceTerm,services);
-//        System.out.println("Total chops: " + choppedTrace.size());
         List<Triple<Term, Term, Term>> triples = new ArrayList<>();
         if(choppedTrace.size() < 3)
             return null;
@@ -108,9 +107,6 @@ public class ChopForCall implements VariableCondition {
         List<Triple<Term,Term,Term>> choppings = getChoppings(fullFmlTerm,services);
         if(choppings == null  || choppings.isEmpty())
             return null;
-
-//        System.out.println("Possible suitable choppings: " + choppings.size());
-
 
         return matchCond.setInstantiations(
                 svInst.add(preFmlSV,choppings.get(0).first,services)

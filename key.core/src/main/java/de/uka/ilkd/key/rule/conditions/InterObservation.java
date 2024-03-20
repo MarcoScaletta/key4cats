@@ -96,8 +96,6 @@ public class InterObservation implements VariableCondition {
             }else if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace){
                 if(postAssociatedFullTrace.sub(1).op() instanceof Junctor j && (j == Junctor.CHOP ||  j == Junctor.CONC)) {
                     Term firstEl = postAssociatedFullTrace.sub(1).sub(0);
-                    System.out.println(firstEl);
-                    System.out.println(postAssociatedFullTrace.sub(1).sub(1));
                     return new Pair<>(firstEl, postAssociatedFullTrace.sub(1).sub(1));
                 }
             }
