@@ -1946,7 +1946,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         // without changing the sequent for a really long time. This is tested by
         // TestSymbolicExecutionTreeBuilder#testInstanceOfNotInEndlessLoop()
         bindRuleSet(d, "apply_equations", EqNonDuplicateAppFeature.INSTANCE);
-        bindRuleSet(d,"traceCall", NonDuplicateAppModPositionFeature.INSTANCE );
+        bindRuleSet(d,"traceCall", add(EqNonDuplicateAppFeature.INSTANCE,NonDuplicateAppModPositionFeature.INSTANCE) );
         return d;
     }
 
