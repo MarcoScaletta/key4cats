@@ -81,9 +81,23 @@ public class ChopForCall implements VariableCondition {
             return null;
         for (int i = 0; i < choppedTrace.size()-2; i++) {
             for (int j = i+2; j < choppedTrace.size(); j++) {
-                List<Term> preTraceList = choppedTrace.subList(0,i+1);
-                List<Term> innerTraceList = choppedTrace.subList(i+1,j);
-                List<Term> postTraceList = choppedTrace.subList(j,choppedTrace.size());
+                LinkedList<Term> preTraceList = new LinkedList<>(choppedTrace.subList(0,i+1));
+                LinkedList<Term> innerTraceList =  new LinkedList<>(choppedTrace.subList(i+1,j));
+                LinkedList<Term> postTraceList =   new LinkedList<>(choppedTrace.subList(j,choppedTrace.size()));
+
+                // (pre ** ~~, in, _) --> (pre ** ~~, ~~ ** in, _)
+                if(preTraceList.getLast().op() instanceof SchematicTrace)
+                    innerTraceList.addFirst(preTraceList.getLast());
+                // (pre, ~~ ** in, _) --> (pre ** ~~, ~~ ** in, _)
+                if(innerTraceList.getFirst().op() instanceof SchematicTrace)
+                    preTraceList.addLast(innerTraceList.getFirst());
+                // (_, in ** ~~, post) --> (_, in ** ~~, ~~ ** post)
+                if(innerTraceList.getLast().op() instanceof SchematicTrace)
+                    postTraceList.addFirst(innerTraceList.getLast());
+                // (_, in, ~~ ** post) --> (_, in ** ~~, ~~ ** post)
+                if(postTraceList.getFirst().op() instanceof SchematicTrace)
+                    innerTraceList.addLast(postTraceList.getFirst());
+
 
                 if(containsSchemTr(preTraceList) && containsSchemTr(innerTraceList) && containsSchemTr(postTraceList))
                     triples.add(new Triple<>(
