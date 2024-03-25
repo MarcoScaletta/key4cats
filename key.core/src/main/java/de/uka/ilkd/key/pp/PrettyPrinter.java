@@ -849,7 +849,7 @@ public class PrettyPrinter implements Visitor {
     }
 
     private void endBlock() {
-//        l.end().nl().print("}");
+        l.end(); //.nl().print("}");
     }
 
     public boolean printStatementBlock(StatementBlock x) {

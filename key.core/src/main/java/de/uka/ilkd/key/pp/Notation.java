@@ -261,8 +261,7 @@ public abstract class Notation {
 
         public void print(Term t, LogicPrinter sp) {
             assert t.op() == UpdateJunctor.SEQUENTIAL_UPDATE;
-
-            sp.printParallelUpdate(";", t, 10);
+            sp.printSequentialUpdate(";", t, 10);
         }
     }
 
