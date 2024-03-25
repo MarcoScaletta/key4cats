@@ -6,24 +6,29 @@ import de.uka.ilkd.key.logic.op.Modality;
 import de.uka.ilkd.key.logic.op.UpdateApplication;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.rule.RuleApp;
+import de.uka.ilkd.key.rule.SuccTaclet;
 import de.uka.ilkd.key.rule.Taclet;
 import de.uka.ilkd.key.rule.TacletApp;
 import de.uka.ilkd.key.rule.conditions.ChopForCall;
 import de.uka.ilkd.key.strategy.feature.MutableState;
 import de.uka.ilkd.key.util.Triple;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ChoppingGenerator implements TermGenerator {
+
+
+
+
     @Override
     public Iterator<Term> generate(RuleApp app, PosInOccurrence pos, Goal goal, MutableState mState) {
         TacletApp tApp = (TacletApp) app;
         Term fullFormula = (Term) tApp.instantiations().lookupValue(new Name("fullFormula"));
         Services services = goal.proof().getServices();
         List<Triple<Term,Term,Term>> choppings = ChopForCall.getChoppings(fullFormula, services);
-
+        if(choppings == null)
+            return new LinkedList<Term>().iterator();
 //        // UNUSED OPTIMIZATION
 //        Sequent seq = goal.sequent();
 //        int maxSize = 0;
@@ -37,7 +42,14 @@ public class ChoppingGenerator implements TermGenerator {
 //        List<Triple<Term,Term,Term>> filteredChoppings = choppings.stream().filter( chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(max) > - 1) ).toList();
 //        return (!filteredChoppings.isEmpty() ? filteredChoppings : choppings).stream().map(triple -> services.getTermBuilder().ife(triple.first,triple.second,triple.third)).toList().iterator();
 //      // END UNUSED OPTIMIZATION
-        return choppings.stream().map(triple -> services.getTermBuilder().ife(triple.first,triple.second,triple.third)).toList().iterator();
+        System.out.println(((SuccTaclet) ((TacletApp) app).taclet() ).find().sub(1).sub(1));
+        System.out.println("Size: " + choppings.size());
+        return choppings.stream().map(triple -> {
+            System.out.println("1>>" + triple.first);
+            System.out.println("2>>" + triple.second);
+            System.out.println("3>>" + triple.third);
+            return services.getTermBuilder().ife(triple.first, triple.second, triple.third);
+        }).collect(Collectors.toSet()).iterator();
 
     }
 
