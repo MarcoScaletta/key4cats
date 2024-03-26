@@ -4,14 +4,24 @@ class Traces{
 
     public static void m(boolean sync){
         Traces.m1(true);
-        x= x + 1;
+        Traces.m1(true);
+//        x= x + 1;
         return;
     }
 
 
     public static void m2(boolean sync){
+
         Traces.m1(true);
         Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+        Traces.m1(true);
+
         return;
     }
 

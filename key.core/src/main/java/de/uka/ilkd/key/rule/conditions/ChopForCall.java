@@ -6,6 +6,7 @@ import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
+import de.uka.ilkd.key.util.Pair;
 import de.uka.ilkd.key.util.Triple;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ public class ChopForCall implements VariableCondition {
         Term concatTrace = null;
         Junctor junctor = null;
 
-
         while(traceEl.arity() > 1 && traceEl.op() instanceof Junctor j){
             if(concatTrace == null) {
                 concatTrace= traceEl.sub(1);
@@ -56,6 +56,7 @@ public class ChopForCall implements VariableCondition {
     }
 
     private static Term unchop(List<Term> traces, Services services){
+
         return traces.subList(1, traces.size()).stream().reduce(traces.get(0),
                 (subUnchopped, trace) ->
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
@@ -77,8 +78,13 @@ public class ChopForCall implements VariableCondition {
     public static List<Triple<Term, Term, Term>> getChoppings(Term choppedTraceTerm, Services services){
         List<Term> choppedTrace = choppingTrace(choppedTraceTerm,services);
         List<Triple<Term, Term, Term>> triples = new ArrayList<>();
-        if(choppedTrace.size() < 3)
-            return null;
+        if(choppedTrace.size() < 3) {
+            if (choppedTrace.get(0).op() instanceof SchematicTrace) {
+                choppedTrace.add(0, choppedTrace.get(0));
+            } else {
+                return null;
+            }
+        }
         for (int i = 0; i < choppedTrace.size()-2; i++) {
             for (int j = i+2; j < choppedTrace.size(); j++) {
                 LinkedList<Term> preTraceList = new LinkedList<>(choppedTrace.subList(0,i+1));
@@ -86,16 +92,16 @@ public class ChopForCall implements VariableCondition {
                 LinkedList<Term> postTraceList =   new LinkedList<>(choppedTrace.subList(j,choppedTrace.size()));
 
                 // (pre ** ~~, in, _) --> (pre ** ~~, ~~ ** in, _)
-                if(preTraceList.getLast().op() instanceof SchematicTrace)
+                if(preTraceList.getLast().op() instanceof SchematicTrace && !containsSchemTr(innerTraceList))
                     innerTraceList.addFirst(preTraceList.getLast());
                 // (pre, ~~ ** in, _) --> (pre ** ~~, ~~ ** in, _)
-                if(innerTraceList.getFirst().op() instanceof SchematicTrace)
+                if(innerTraceList.getFirst().op() instanceof SchematicTrace && !containsSchemTr(preTraceList))
                     preTraceList.addLast(innerTraceList.getFirst());
                 // (_, in ** ~~, post) --> (_, in ** ~~, ~~ ** post)
-                if(innerTraceList.getLast().op() instanceof SchematicTrace)
+                if(innerTraceList.getLast().op() instanceof SchematicTrace && !containsSchemTr(postTraceList))
                     postTraceList.addFirst(innerTraceList.getLast());
                 // (_, in, ~~ ** post) --> (_, in ** ~~, ~~ ** post)
-                if(postTraceList.getFirst().op() instanceof SchematicTrace)
+                if(postTraceList.getFirst().op() instanceof SchematicTrace && !containsSchemTr(innerTraceList))
                     innerTraceList.addLast(postTraceList.getFirst());
 
 
@@ -109,7 +115,6 @@ public class ChopForCall implements VariableCondition {
         }
         return triples;
     }
-
 
 
     @Override

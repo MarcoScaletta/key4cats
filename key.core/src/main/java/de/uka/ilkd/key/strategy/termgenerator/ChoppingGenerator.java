@@ -27,31 +27,27 @@ public class ChoppingGenerator implements TermGenerator {
         Term fullFormula = (Term) tApp.instantiations().lookupValue(new Name("fullFormula"));
         Services services = goal.proof().getServices();
         List<Triple<Term,Term,Term>> choppings = ChopForCall.getChoppings(fullFormula, services);
+
         if(choppings == null)
             return new LinkedList<Term>().iterator();
 //        // UNUSED OPTIMIZATION
-//        Sequent seq = goal.sequent();
-//        int maxSize = 0;
-//        List<TraceManager> traces = seq.antecedent().asList().stream()
-//                .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
-//                .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
+        Sequent seq = goal.sequent();
+        List<TraceManager> traces = seq.antecedent().asList().stream()
+                .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
+                .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
 //
-//        TraceManager max = traces.stream().max(Comparator.comparingInt(TraceManager::getSize)).get();
-//        if(choppings == null)
-//            return null;
-//        List<Triple<Term,Term,Term>> filteredChoppings = choppings.stream().filter( chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(max) > - 1) ).toList();
-//        return (!filteredChoppings.isEmpty() ? filteredChoppings : choppings).stream().map(triple -> services.getTermBuilder().ife(triple.first,triple.second,triple.third)).toList().iterator();
-//      // END UNUSED OPTIMIZATION
-        System.out.println(((SuccTaclet) ((TacletApp) app).taclet() ).find().sub(1).sub(1));
-        System.out.println("Size: " + choppings.size());
-        return choppings.stream().map(triple -> {
-            System.out.println("1>>" + triple.first);
-            System.out.println("2>>" + triple.second);
-            System.out.println("3>>" + triple.third);
-            return services.getTermBuilder().ife(triple.first, triple.second, triple.third);
-        }).collect(Collectors.toSet()).iterator();
+        TraceManager max = traces.stream().max(Comparator.comparingInt(TraceManager::getSize)).get();
+//
+        List<Triple<Term,Term,Term>> filteredChoppings = choppings.stream().filter(
+                chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(max) > -1)).toList();
+
+        if(filteredChoppings.size() > 1)
+            System.out.println("More than one option for chopping. Number of options: " + filteredChoppings.size());
+        return filteredChoppings.stream().map(triple ->
+            services.getTermBuilder().ife(triple.first, triple.second, triple.third)).toList().iterator();
 
     }
+
 
 
 }
