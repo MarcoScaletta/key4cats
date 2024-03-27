@@ -81,13 +81,6 @@ public class InterObservation implements VariableCondition {
 
     }
 
-    private Term getFirstFromPostAssoc(Term trace){
-        if(trace.op() instanceof Junctor && trace.op().arity() > 1){
-            return trace.sub(0);
-        }
-        return trace;
-    }
-
     private Pair<Term,Term> traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
         if(postAssociatedFullTrace.op() instanceof Junctor){
             if(postAssociatedFullTrace.op() == postAssociatedPrefixTrace.op()){

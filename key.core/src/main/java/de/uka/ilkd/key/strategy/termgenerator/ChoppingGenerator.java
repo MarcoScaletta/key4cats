@@ -26,17 +26,17 @@ public class ChoppingGenerator implements TermGenerator {
         List<Triple<Term,Term,Term>> choppings = ChopForCall.getChoppings(fullFormula, services);
 
         if(choppings == null)
-            return new LinkedList<Term>().iterator();
+            return Collections.emptyIterator();
         Sequent seq = goal.sequent();
         List<TraceManager> traces = seq.antecedent().asList().stream()
                 .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
                 .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
-        TraceManager max = traces.stream().max(Comparator.comparingInt(TraceManager::getSize)).get();
+        Optional<TraceManager> optionalMax = traces.stream().max(Comparator.comparingInt(TraceManager::getSize));
+        if(optionalMax.isEmpty())
+            return Collections.emptyIterator();
         List<Triple<Term,Term,Term>> filteredChoppings = choppings.stream().filter(
-                chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(max) > -1)).toList();
+                chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(optionalMax.get()) > -1)).toList();
 
-        if(filteredChoppings.size() > 1)
-            System.out.println("More than one option for chopping. Number of options: " + filteredChoppings.size());
         return filteredChoppings.stream().map(triple ->
             services.getTermBuilder().ife(triple.first, triple.second, triple.third)).toList().iterator();
 

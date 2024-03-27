@@ -11,13 +11,6 @@ class Traces{
 
 
     public static void m2(boolean sync){
-
-        Traces.m1(true);
-        Traces.m1(true);
-        Traces.m1(true);
-        Traces.m1(true);
-        Traces.m1(true);
-        Traces.m1(true);
         Traces.m1(true);
         Traces.m1(true);
         Traces.m1(true);
@@ -25,6 +18,20 @@ class Traces{
         return;
     }
 
+    public static void removeOne(boolean sync){
+        x = x - 1;
+    }
+
+
+    public static void removeTwo(boolean sync){
+        x = x - 2;
+    }
+
+    public static void removeThree(boolean sync){
+        Traces.removeOne(true);
+        Traces.removeTwo(true);
+        return;
+    }
     public static void m1(boolean sync){
         x = x + 1;
         return;

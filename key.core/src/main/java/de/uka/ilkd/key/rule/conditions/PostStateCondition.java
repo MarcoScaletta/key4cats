@@ -56,7 +56,10 @@ public class PostStateCondition implements VariableCondition {
         Term traceTerm = (Term) svInst.getInstantiation(trace);
         Term stateFmlTerm = (Term) svInst.getInstantiation(stateFml);
         MatchConditions result = null;
+        if(traceTerm == null || (stateFmlTerm == null) || stateFmlTerm.op() == Junctor.TRUE)
+            return null;
         Set<Name> observingVariables = getObservingVariable(traceTerm);
+
         if(observingVariables.isEmpty())
             result = matchCond;
         else {
