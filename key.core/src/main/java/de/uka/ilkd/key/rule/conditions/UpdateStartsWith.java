@@ -2,10 +2,7 @@ package de.uka.ilkd.key.rule.conditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
-import de.uka.ilkd.key.logic.op.Junctor;
-import de.uka.ilkd.key.logic.op.SVSubstitute;
-import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.UpdateJunctor;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
@@ -76,14 +73,23 @@ public class UpdateStartsWith implements VariableCondition {
         if(pairFullTrace.second <= pairPrefixTrace.second)
             // prefix exceeds length of full trace or postfix is empty
             return null;
-        return traceStartsWithHelper(pairFullTrace.first, pairPrefixTrace.first);
+        Pair<Term,Junctor> pair = traceStartsWithHelper(pairFullTrace.first, pairPrefixTrace.first);
+        if(pair != null) {
+            Term postfix = pair.first;
+            Term lastTerm = (prefixTrace.op() == Junctor.CHOP || prefixTrace.op() == Junctor.CONC) ? prefixTrace.sub(1) : prefixTrace;
+            if(lastTerm.op() instanceof SchematicTrace){
+                postfix = services.getTermFactory().createTerm(pair.second, lastTerm, postfix);
+            }
+            return postfix;
+        }
+        return null;
 
     }
 
-    private Term traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
-        if(postAssociatedFullTrace.op() instanceof Junctor){
+    private Pair<Term,Junctor> traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
+        if(postAssociatedFullTrace.op() instanceof Junctor j){
             // full trace contains more than 1 elem
-            if(postAssociatedFullTrace.op() == postAssociatedPrefixTrace.op()){
+            if(j == postAssociatedPrefixTrace.op()){
                 // also prefix contains more than 1 elem and the junctors coincide
                 if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace.sub(0))
                     // the first elements of both traces coincide
@@ -91,7 +97,7 @@ public class UpdateStartsWith implements VariableCondition {
 
             }else if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace){
                 // prefix is only one element and it matches the first element of full trace
-                return postAssociatedFullTrace.sub(1);
+                return new Pair<>(postAssociatedFullTrace.sub(1), j);
             }
 
         }
