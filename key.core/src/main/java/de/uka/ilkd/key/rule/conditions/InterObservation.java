@@ -24,7 +24,7 @@ public class InterObservation implements VariableCondition {
 
     public InterObservation(SchemaVariable updateFull, SchemaVariable updatePrefix,
                             SchemaVariable traceFull, SchemaVariable tracePrefix, SchemaVariable tracePostfix,
-                            SchemaVariable observing, SchemaVariable observed) {
+                            SchemaVariable observed,SchemaVariable observing) {
         this.updateFullSV = updateFull;
         this.updatePrefixSV = updatePrefix;
         this.traceFullSV = traceFull;
