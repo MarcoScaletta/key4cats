@@ -6,15 +6,12 @@ import de.uka.ilkd.key.logic.op.Modality;
 import de.uka.ilkd.key.logic.op.UpdateApplication;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.rule.RuleApp;
-import de.uka.ilkd.key.rule.SuccTaclet;
-import de.uka.ilkd.key.rule.Taclet;
 import de.uka.ilkd.key.rule.TacletApp;
 import de.uka.ilkd.key.rule.conditions.ChopForCall;
 import de.uka.ilkd.key.strategy.feature.MutableState;
 import de.uka.ilkd.key.util.Triple;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ChoppingGenerator implements TermGenerator {
 
@@ -30,14 +27,11 @@ public class ChoppingGenerator implements TermGenerator {
 
         if(choppings == null)
             return new LinkedList<Term>().iterator();
-//        // UNUSED OPTIMIZATION
         Sequent seq = goal.sequent();
         List<TraceManager> traces = seq.antecedent().asList().stream()
                 .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
                 .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
-//
         TraceManager max = traces.stream().max(Comparator.comparingInt(TraceManager::getSize)).get();
-//
         List<Triple<Term,Term,Term>> filteredChoppings = choppings.stream().filter(
                 chopping -> (new TraceManager(chopping.first, services).hasPrefixOrIsEquals(max) > -1)).toList();
 

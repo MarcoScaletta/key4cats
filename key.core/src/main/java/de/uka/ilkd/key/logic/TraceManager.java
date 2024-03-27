@@ -45,7 +45,6 @@ public class TraceManager  {
         return separatedTrace;
     }
 
-    // works correctly only with pre associated traces
     private LinkedList<Pair<Term,Junctor>> aa(Term trace){
 
         Term traceEl = trace;
