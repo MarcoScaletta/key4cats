@@ -67,3 +67,4 @@ key/key.ui/examples/**/**.proof
 
 scripts/tools/checkstyle/key_checks_incremental.xml
 checkstyle-diff.txt
+/cats/src/main/java/key4cats/parsers/*
