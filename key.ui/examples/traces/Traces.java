@@ -2,29 +2,15 @@ class Traces{
 
     public static int x;
 
-    public static void m(boolean sync){
-        Traces.m1(true);
-        Traces.m1(true);
-//        x= x + 1;
-        return;
-    }
-
-
-    public static void m2(boolean sync){
-        Traces.m1(true);
-        Traces.m1(true);
-        Traces.m1(true);
-
-        return;
-    }
-
     public static void removeOne(boolean sync){
         x = x - 1;
+        return;
     }
 
 
     public static void removeTwo(boolean sync){
         x = x - 2;
+        return;
     }
 
     public static void removeThree(boolean sync){
