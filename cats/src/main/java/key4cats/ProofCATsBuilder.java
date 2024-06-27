@@ -15,8 +15,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private final List<String> include = List.of("traceRules.key");
     private final String javaSource = ".";
 
-    public ProofCATsBuilder() {
-        String problemStr = "{}; a : <<~~|~~ ; x::y . `y=0`|~~>>";
+    public ProofCATsBuilder(String problemStr) {
+//        String problemStr = "{}; a : <<~~|~~ ; x::y . `y=0`|~~>>";
         CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(problemStr));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
         Problem problem = (Problem) parser.problem().accept(this);
