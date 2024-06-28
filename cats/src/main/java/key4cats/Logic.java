@@ -1,9 +1,6 @@
 package key4cats;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 ;
 interface Predicate extends KeYGen{}
 
@@ -49,16 +46,16 @@ record StateFml(Predicate pred) implements Trace{
     }
 }
 
-record Obs(Identifier observing, Identifier observed) implements KeYGen{
+record Obs(Identifier observed, Identifier observing) implements KeYGen{
     @Override
     public String toKeY() {
-        return String.format("\\obs(Traces.%s:-:%s)",observing.toKeY(),observed.toKeY());
+        return String.format("\\obs(%s:-:%s)",observed.toKeY(),observing.toKeY());
     }
 }
 
 class ObsTr extends Operator implements Trace {
     public ObsTr(Obs elem1, Trace elem2) {
-        super(elem1, elem2, ".");
+        super(elem1, elem2, "$.");
     }
 }
 
@@ -84,11 +81,45 @@ record AbsTr(List<Identifier> methods) implements Trace{
     }
 }
 
-record CAT(Trace preTr, Trace inTr, Trace postTr) implements KeYGen{
+class CAT implements KeYGen{
+
+    Trace preTr;Trace inTr;Trace postTr;
+    final List<Identifier> observingVars;
+
+    public CAT(Trace preTr, Trace inTr, Trace postTr){
+
+        this.observingVars = new ArrayList<>();
+        this.preTr = preTr;
+        this.inTr = inTr;
+        this.postTr = postTr;
+        getObsVars(preTr);
+        getObsVars(inTr);
+        getObsVars(postTr);
+    }
+
+    private void getObsVars(Trace trace){
+        switch (trace) {
+            case TraceOp op:
+                getObsVars((Trace) op.elem1);
+                getObsVars((Trace) op.elem2);
+                break;
+            case ObsTr obsTr:
+                Identifier observingVar = ((Obs) obsTr.elem1).observing();
+                if(observingVars.contains(observingVar))
+                    throw new RuntimeException(String.format("Multiple declaration for observing variable %s in %s  ", observingVar.toKeY(), this.toKeY()));
+                observingVars.addLast(observingVar);
+                getObsVars((Trace) obsTr.elem2);
+                break;
+            default: break;
+        };
+    }
 
     @Override
     public String toKeY() {
-
-        return String.format("CAT(%s)", Utils.listToKeY(List.of(preTr,inTr,postTr)));
+        String CATtoKeY = String.format("CAT(%s)", Utils.listToKeY(List.of(preTr,inTr,postTr)));
+        for(Identifier var : observingVars.reversed()){
+            CATtoKeY = String.format("bind{ int %s;}(%s)", var.toKeY(),CATtoKeY);
+        }
+        return CATtoKeY;
     }
 }

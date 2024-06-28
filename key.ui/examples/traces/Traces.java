@@ -2,6 +2,7 @@ class Traces{
 
     public static int x;
 
+
     public static void removeOne(boolean sync){
         x = x - 1;
         return;
@@ -24,5 +25,14 @@ class Traces{
 //        int y;
 //        y = y + 1;
 //        return;
+    }
+
+
+//    CASINO CASE STUDY
+    public static int bet,amountToBet,wallet;
+    public static void placeBet(boolean sync){
+        bet = amountToBet;
+        wallet = wallet - bet;
+        return;
     }
 }

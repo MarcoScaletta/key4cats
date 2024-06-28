@@ -58,8 +58,8 @@ subprojects {
     version = rootProject.version
 
     java {
-        sourceCompatibility = 17
-        targetCompatibility = 17
+        sourceCompatibility = 21
+        targetCompatibility = 21
     }
 
     repositories {
@@ -88,7 +88,7 @@ subprojects {
         // Setting UTF-8 as the java source encoding.
         options.encoding = "UTF-8"
         // Setting the release to Java 17
-        options.release = 17
+        options.release = 21
     }
 
     tasks.withType(Javadoc) {
@@ -477,7 +477,7 @@ task alldoc(type: Javadoc) {
         docTitle = "KeY JavaDoc ($project.version) -- ${getDate()}"
         bottom = "Copyright &copy; 2003-2023 <a href=\"http://key-project.org\">The KeY-Project</a>."
         use = true
-        links += "https://docs.oracle.com/en/java/javase/17/docs/api/"
+        links += "https://docs.oracle.com/en/java/javase/21/docs/api/"
         links += "http://www.antlr2.org/javadoc/"
         links += "http://www.antlr3.org/api/Java/"
         links += "https://www.antlr.org/api/Java/"

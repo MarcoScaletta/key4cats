@@ -41,7 +41,7 @@ record Identifier(String id) implements ExprElem{
     public String toKeY() {return this.id;}
 }
 
-class ExprOp extends Operator{
+class ExprOp extends Operator implements Expr{
     public ExprOp(Expr elem1, Expr elem2, String op) {
         super(elem1, elem2, op);
     }

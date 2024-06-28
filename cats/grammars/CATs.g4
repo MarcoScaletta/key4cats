@@ -1,7 +1,7 @@
 grammar CATs;
 import CATSLexer;
 
-
+problemId : BRACKL id BRACKR problem;
 problem : assumeCats SEMI  target=catOf;
 
 id: ALPHA+ DIGIT*;
@@ -20,7 +20,7 @@ predicate :
     |   boolExpr=booleanExpr;
 
 boolExprOp : EQ | NEQ | GT | GE | LT | LE;
-booleanExpr : expr1=exprElem op=boolExprOp expr2=exprElem;
+booleanExpr : expr1=expr op=boolExprOp expr2=expr;
 
 assumeCats : LBRACE (a=catOf (SEMI b=catOf)*)? RBRACE;
 catOf : method=id COL cat;
@@ -33,7 +33,7 @@ trace :
     |   tr1=trace op=traceOp tr2=trace;
 absTr : ABSTR(LBRACE id (COMMA id)* RBRACE)?ABSTR;
 traceOp : CHOP | SEMI;
-obs: observing=id OBS_AS observed=id;
+obs: observed=id OBS_AS observing=id;
 stateFml : STATEFML pred=predicate STATEFML;
 
 

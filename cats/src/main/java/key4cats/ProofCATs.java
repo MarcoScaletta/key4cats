@@ -4,10 +4,10 @@ import java.util.List;
 
 
 class Proof implements KeYGen{
-    List<String> include;
+    String include;
     String javaSource;
     Problem problem;
-    Proof(List<String> include, String javaSource, Problem problem){
+    Proof(String include, String javaSource, Problem problem){
         this.include = include;
         this.javaSource = javaSource;
         this.problem = problem;
@@ -18,20 +18,28 @@ class Proof implements KeYGen{
                 "\\include %s;\n" +
                 "\\javaSource \"%s\";\n" +
                 "%s\n",
-        String.join(", ", this.include),
+                this.include,
                 this.javaSource,
                 this.problem.toKeY()
         );
     }
 }
 
-record Problem(List<CATof> assumptionCATs, CATof target) implements KeYGen{
+record Problem(List<AssumeCAT> assumptionCATs, CATof target) implements KeYGen{
 
     @Override
     public String toKeY() {
         return String.format(
                 "\\problem{\n%s\n==>\n%s\n}",
                 Utils.listToKeY(assumptionCATs), target.toKeY());
+    }
+}
+
+record AssumeCAT(CATof catof) implements KeYGen{
+
+    @Override
+    public String toKeY() {
+        return String.format("assumeCATof(%s,%s)", catof.id().toKeY(), catof.cat().toKeY());
     }
 }
 

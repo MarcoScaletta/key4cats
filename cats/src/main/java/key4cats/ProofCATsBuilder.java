@@ -12,17 +12,32 @@ import java.util.List;
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
 
-    private final List<String> include = List.of("traceRules.key");
+    private final String include = "traceRules.key";
+    private final String className = "Traces";
     private final String javaSource = ".";
+    private final Proof proof;
+    private final String pathProblem;
 
-    public ProofCATsBuilder(String problemStr) {
-//        String problemStr = "{}; a : <<~~|~~ ; x::y . `y=0`|~~>>";
-        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(problemStr));
+    public ProofCATsBuilder(String catsProblem) {
+        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsProblem));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
-        Problem problem = (Problem) parser.problem().accept(this);
-        Proof proof = new Proof(include, javaSource,problem);
-        System.out.println(proof.toKeY());
+        CATsParser.ProblemIdContext problemIdCtx =  parser.problemId();
+        String problemName =  problemIdCtx.id().getText();
+        pathProblem = problemName;
+        CATsParser.ProblemContext probCtx = problemIdCtx.problem();
+        Problem problem = (Problem) probCtx.accept(this);
+        this.proof = new Proof(String.format("\"%s\"",include), javaSource,problem);
+    }
 
+    public String getKeYProof() {
+        return proof.toKeY();
+    }
+
+    public String getPathProblem(){
+        return pathProblem;
+    }
+    public String getKeYProblemFile() {
+        return proof.toKeY();
     }
 
     @Override
@@ -30,7 +45,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
         List<CATof> assumeCats = ctx.assumeCats().catOf().stream().map(
                 x -> (CATof) x.accept(this)).toList();
         CATof target = (CATof) ctx.target.accept(this);
-        return new Problem(assumeCats, target);
+        return new Problem(assumeCats.stream().map(AssumeCAT::new).toList(), target);
 
     }
 
@@ -38,30 +53,23 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     @Override
     public KeYGen visitCatOf(CATsParser.CatOfContext ctx) {
         return new CATof(
-                (Identifier) ctx.id().accept(this),
+                new Identifier(className +"::"+ ctx.id().getText()),
                 (CAT) ctx.cat().accept(this));
     }
 
     @Override
     public KeYGen visitCat(CATsParser.CatContext ctx) {
-        System.out.println(ctx.getText());
-        System.out.println(ctx.preTr.getText());
-        System.out.println(ctx.innerTr.getText());
-        System.out.println(ctx.postTr.getText());
 
         Trace preTr = (Trace)ctx.preTr.accept(this);
         Trace inTr = (Trace)ctx.innerTr.accept(this);
         Trace postTr = (Trace)ctx.postTr.accept(this);
 
-        System.out.println(preTr + " | " + inTr + " | " + postTr);
-        System.out.println(ctx.innerTr.getText());
-        System.out.println(ctx.postTr.getText());
         return new CAT(preTr, inTr, postTr);
     }
 
     @Override
     public KeYGen visitTrace(CATsParser.TraceContext ctx) {
-        String text = ctx.getText();
+
         if(ctx.obs() != null)
             return new ObsTr(
                     (Obs) ctx.obs().accept(this),
@@ -85,14 +93,14 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public KeYGen visitAbsTr(CATsParser.AbsTrContext ctx) {
 
         return new AbsTr(ctx.id()!=null?
-                ctx.id().stream().map(x -> (Identifier) x.accept(this)).toList() : List.of());
+                ctx.id().stream().map(x -> new Identifier(className + "::" + x.getText())).toList()
+    : List.of());
     }
 
     @Override
     public KeYGen visitObs(CATsParser.ObsContext ctx) {
-        return new Obs(
-                (Identifier) ctx.observing.accept(this),
-                (Identifier) ctx.observed.accept(this));
+        Identifier observing = (Identifier) ctx.observing.accept(this);
+        return new Obs(new Identifier (className + "." + ctx.observed.getText()), observing);
     }
 
     @Override
@@ -147,7 +155,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             return new NumExprElem(Integer.parseInt(ctx.getText()));
         }
         if(ctx.var != null)
-            return (Identifier) ctx.var.accept(this);
+            return ctx.var.accept(this);
         return null;
     }
 

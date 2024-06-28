@@ -34,4 +34,11 @@ STATEFML: '`';
 ABSTR: '~';
 COL : ':';
 DOT : '.';
+BRACKL: '[';
+BRACKR: ']';
+SL_COMMENT
+:
+	'//'
+	(~('\n' | '\uFFFF'))* ('\n' | '\uFFFF' | EOF) -> channel(HIDDEN)
+;
 
