@@ -330,6 +330,9 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("interObs",
                     InterObservation.class, SV, SV, SV, SV, SV, SV, SV);
 
+    public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE =
+            new ConstructorBasedBuilder("isSchematicTrace",
+                    IsSchematicTrace.class, SV);
 
 
 
@@ -416,7 +419,7 @@ public class TacletBuilderManipulators {
             META_DISJOINT,
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,POSTSTATE_CONDITION,
-            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS);
+            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

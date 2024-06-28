@@ -76,6 +76,8 @@ public class UpdateStartsWith implements VariableCondition {
         Pair<Term,Junctor> pair = traceStartsWithHelper(pairFullTrace.first, pairPrefixTrace.first);
         if(pair != null) {
             Term postfix = pair.first;
+            if(postfix.subs().get(0).op() instanceof SchematicTrace)
+                return postfix;
             Term lastTerm = (prefixTrace.op() == Junctor.CHOP || prefixTrace.op() == Junctor.CONC) ? prefixTrace.sub(1) : prefixTrace;
             if(lastTerm.op() instanceof SchematicTrace){
                 postfix = services.getTermFactory().createTerm(pair.second, lastTerm, postfix);
