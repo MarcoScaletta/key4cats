@@ -663,6 +663,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | CHOP_FOR_CALL
   | INTER_OBS
   | IS_SCHEMATIC_TRACE
+  | IS_SCHEMATIC_TRACE_OVER_M
   | DIFFERENTFIELDS
   | SIMPLIFY_IF_THEN_ELSE_UPDATE
   | CONTAINS_ASSIGNMENT

@@ -123,6 +123,7 @@ POSTSTATE_CONDITION: '\\postStateCondition';
 CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
 IS_SCHEMATIC_TRACE: '\\isSchematicTrace';
+IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
 CHOP_FOR_CALL: '\\chopForCall';
 INTER_OBS: '\\interObs';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
