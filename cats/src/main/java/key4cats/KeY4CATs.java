@@ -17,7 +17,7 @@ public class KeY4CATs {
         DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
         dataOutputStream.writeBytes(p.getKeYProof());
         dataOutputStream.flush();
-
+//
         File problemToSolve = new File(String.format(keyHome+"/cats/problem_to_proof"));
         DataOutputStream dt = new DataOutputStream(new FileOutputStream(problemToSolve, false));
         dt.writeBytes(contractName);

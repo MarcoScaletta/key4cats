@@ -1,8 +1,11 @@
 grammar CATs;
 import CATSLexer;
 
-problemId : BRACKL id BRACKR problem;
-problem : assumeCats SEMI  target=catOf;
+
+problem: id SEMI (contractWithId)+;
+
+contractWithId : BRACKL id BRACKR contract;
+contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;
 
 id: ALPHA+ DIGIT*;
 
@@ -22,7 +25,6 @@ predicate :
 boolExprOp : EQ | NEQ | GT | GE | LT | LE;
 booleanExpr : expr1=expr op=boolExprOp expr2=expr;
 
-assumeCats : LBRACE (a=catOf (SEMI b=catOf)*)? RBRACE;
 catOf : method=id COL cat;
 cat : CAT_START preTr=trace CAT_SEP innerTr=trace CAT_SEP postTr=trace CAT_END;
 

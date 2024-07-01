@@ -1,7 +1,7 @@
 package key4cats;
 
 import java.util.List;
-
+import java.util.Objects;
 
 
 class Utils{
@@ -37,6 +37,12 @@ record NumExprElem(int val) implements ExprElem{
 }
 
 record Identifier(String id) implements ExprElem{
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof Identifier) && Objects.equals(((Identifier) obj).id, this.id);
+    }
+
     @Override
     public String toKeY() {return this.id;}
 }

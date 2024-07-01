@@ -4,10 +4,8 @@ import key4cats.parsers.CATs.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import javax.swing.plaf.nimbus.State;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
@@ -17,16 +15,57 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private final String javaSource = ".";
     private final Proof proof;
     private final String pathProblem;
+    private final Identifier contractToProve;
+    private final Map<Identifier, Contract> contractsMap;
 
-    public ProofCATsBuilder(String catsProblem) {
-        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsProblem));
+    public ProofCATsBuilder(String catsFileName) {
+        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileName));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
-        CATsParser.ProblemIdContext problemIdCtx =  parser.problemId();
-        String problemName =  problemIdCtx.id().getText();
-        pathProblem = problemName;
-        CATsParser.ProblemContext probCtx = problemIdCtx.problem();
-        Problem problem = (Problem) probCtx.accept(this);
-        this.proof = new Proof(String.format("\"%s\"",include), javaSource,problem);
+        CATsParser.ProblemContext problemContext = parser.problem();
+        this.contractToProve = (Identifier) problemContext.id().accept(this);
+
+        this.contractsMap = createContractMap(problemContext);
+        this.pathProblem = contractToProve.id();
+        this.proof = new Proof(String.format("\"%s\"", include), javaSource, assembleProblem());
+    }
+
+    private Map<Identifier,Contract> createContractMap(CATsParser.ProblemContext problemContext){
+        Map<Identifier,Contract> map = new HashMap<>();
+        problemContext.contractWithId().forEach(
+                ctx->{
+                    Identifier id = (Identifier) ctx.id().accept(this);
+                    if(map.containsKey(id))
+                        throw new RuntimeException(String.format("Multiple declarations for contract %s", id.toKeY()));
+                    map.put(id, this.getContractFromCtx(ctx));
+                }
+        );
+        return map;
+    }
+
+    private Problem assembleProblem(){
+        Contract toProve =this.contractsMap.get(contractToProve);
+        if(toProve == null)
+            throw new RuntimeException(String.format("Cannot prove undefined contract \"%s\"",
+                    contractToProve.toKeY()));
+        CATof target = toProve.target();
+        List<AssumeCAT> assumeCATs = toProve.contractIds().stream().map(
+
+                x-> {
+                    if (this.contractsMap.get(x) == null)
+                        throw new RuntimeException(String.format("Contract \"%s\" is assumed but not declared",
+                                x.toKeY()));
+                    return    new AssumeCAT(this.contractsMap.get(x).target());
+                }
+        ).toList();
+        return new Problem( assumeCATs,target);
+    }
+
+    private Contract getContractFromCtx(CATsParser.ContractWithIdContext ctx){
+        return new Contract(
+                (Identifier) ctx.id().accept(this),
+                ctx.contract().id().stream().map(x -> (Identifier) x.accept(this)).toList(),
+                (CATof) ctx.contract().target.accept(this));
+
     }
 
     public String getKeYProof() {
@@ -38,15 +77,6 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     }
     public String getKeYProblemFile() {
         return proof.toKeY();
-    }
-
-    @Override
-    public KeYGen visitProblem(CATsParser.ProblemContext ctx) {
-        List<CATof> assumeCats = ctx.assumeCats().catOf().stream().map(
-                x -> (CATof) x.accept(this)).toList();
-        CATof target = (CATof) ctx.target.accept(this);
-        return new Problem(assumeCats.stream().map(AssumeCAT::new).toList(), target);
-
     }
 
 

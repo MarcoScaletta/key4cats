@@ -25,6 +25,9 @@ class Proof implements KeYGen{
     }
 }
 
+record Contract(Identifier contractId, List<Identifier> contractIds, CATof target) {
+}
+
 record Problem(List<AssumeCAT> assumptionCATs, CATof target) implements KeYGen{
 
     @Override
