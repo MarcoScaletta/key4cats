@@ -22,10 +22,15 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
         CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileName));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
         CATsParser.ProblemContext problemContext = parser.problem();
-        this.contractToProve = (Identifier) problemContext.id().accept(this);
+        try{
+            this.contractToProve = (Identifier) problemContext.id().accept(this);
 
-        this.contractsMap = createContractMap(problemContext);
-        this.pathProblem = contractToProve.id();
+            this.contractsMap = createContractMap(problemContext);
+            this.pathProblem = contractToProve.id();
+        }catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException(String.format("Exception while parsing: %s", e.getMessage()) );
+        }
         this.proof = new Proof(String.format("\"%s\"", include), javaSource, assembleProblem());
     }
 
@@ -75,10 +80,6 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public String getPathProblem(){
         return pathProblem;
     }
-    public String getKeYProblemFile() {
-        return proof.toKeY();
-    }
-
 
     @Override
     public KeYGen visitCatOf(CATsParser.CatOfContext ctx) {
@@ -113,8 +114,9 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                         ctx.op.getText());
 
         if(ctx.stateFml() != null)
-            return (Trace) ctx.stateFml().accept(this);
-
+            return ctx.stateFml().accept(this);
+        if(ctx.event() != null)
+            return ctx.event().accept(this);
         System.err.print("returning null trace " + ctx.getText());
         return null;
     }
@@ -123,19 +125,32 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public KeYGen visitAbsTr(CATsParser.AbsTrContext ctx) {
 
         return new AbsTr(ctx.id()!=null?
-                ctx.id().stream().map(x -> new Identifier(className + "::" + x.getText())).toList()
+                ctx.id().stream().map(this::getProcName).toList()
     : List.of());
     }
 
     @Override
     public KeYGen visitObs(CATsParser.ObsContext ctx) {
         Identifier observing = (Identifier) ctx.observing.accept(this);
-        return new Obs(new Identifier (className + "." + ctx.observed.getText()), observing);
+        return new Obs(getProgVarName(ctx.observed), observing);
     }
 
     @Override
     public KeYGen visitStateFml(CATsParser.StateFmlContext ctx) {
         return new StateFml((Predicate) ctx.pred.accept(this));
+    }
+
+    @Override
+    public KeYGen visitEvent(CATsParser.EventContext ctx) {
+        KeYGen k = ctx.ctxId.accept(this);
+        if(ctx.STARTEV() != null)
+            return new Event("start", getProcName(ctx.mId), ctx.ctxId.accept(this));
+        if(ctx.POPEV() != null)
+            return new Event("pop", getProcName(ctx.mId), ctx.ctxId.accept(this));
+        if(ctx.RETEV() != null)
+            return new Event("ret", ctx.ctxId.accept(this));
+        System.err.print("returning null event " + ctx.getText());
+        return null;
     }
 
     @Override
@@ -182,15 +197,28 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public KeYGen visitExprElem(CATsParser.ExprElemContext ctx) {
 
         if(ctx.val != null) {
-            return new NumExprElem(Integer.parseInt(ctx.getText()));
+            return ctx.val.accept(this);
         }
         if(ctx.var != null)
             return ctx.var.accept(this);
         return null;
     }
 
+
+    @Override
+    public KeYGen visitNatural(CATsParser.NaturalContext ctx) {
+        return new NumExprElem(Integer.parseInt(ctx.getText()));
+    }
+
     @Override
     public KeYGen visitId(CATsParser.IdContext ctx) {
         return new Identifier (ctx.getText());
+    }
+
+    private Identifier getProcName(CATsParser.IdContext ctx){
+        return new Identifier(className + "::" + ctx.getText());
+    }
+    private Identifier getProgVarName(CATsParser.IdContext ctx){
+        return new Identifier(className + "." + ctx.getText());
     }
 }

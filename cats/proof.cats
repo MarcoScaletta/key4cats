@@ -17,9 +17,11 @@ placeBetInner;
         ~~ ** x::y1 . `y1=y-1` |
         ~~
     >>
-[placeBetInner] placeBet :
+[placeBetInner] placeBet : //working
     <<
         ~~ ** x::y .`true`|
-        ~{removeOne}~ **  x::y1 .`true`|
+        start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
         ~~
     >>
+
+    )

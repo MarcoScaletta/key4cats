@@ -1,5 +1,6 @@
 package key4cats;
 
+import java.lang.reflect.Array;
 import java.util.*;
 ;
 interface Predicate extends KeYGen{}
@@ -56,6 +57,24 @@ record Obs(Identifier observed, Identifier observing) implements KeYGen{
 class ObsTr extends Operator implements Trace {
     public ObsTr(Obs elem1, Trace elem2) {
         super(elem1, elem2, "$.");
+    }
+}
+
+class Event implements Trace{
+    String eventName;
+    List<KeYGen> subs = new ArrayList<>();
+
+    public Event(String eventName, KeYGen... subs){
+        this.eventName = eventName;
+        if(subs != null && subs.length > 0)
+            this.subs = List.of(subs);
+    }
+
+    @Override
+    public String toKeY() {
+        String subsString = (!subs.isEmpty() ? String.format("(%s)", String.join(", ",
+                subs.stream().map(KeYGen::toKeY).toList())) : "");
+        return String.format("\\%sTrEv%s", eventName, subsString);
     }
 }
 

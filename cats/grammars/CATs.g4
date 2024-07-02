@@ -8,8 +8,9 @@ contractWithId : BRACKL id BRACKR contract;
 contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;
 
 id: ALPHA+ DIGIT*;
+natural: DIGIT+;
 
-exprElem : var=id | val=DIGIT+;
+exprElem : var=id | val=natural;
 exprOp : op=(PLUS | MIN | TIMES | DIV) ;
 expr: term=exprElem | expr1=expr op=exprOp expr2=expr;
 
@@ -32,7 +33,11 @@ trace :
         stateFml
     |   absTr
     |   obs DOT tr=trace
-    |   tr1=trace op=traceOp tr2=trace;
+    |   tr1=trace op=traceOp tr2=trace
+    |   event;
+event :
+        (STARTEV | POPEV) LPAREN mId=id COMMA ctxId=natural RPAREN |
+        RETEV LPAREN ctxId=natural RPAREN ;
 absTr : ABSTR(LBRACE id (COMMA id)* RBRACE)?ABSTR;
 traceOp : CHOP | SEMI;
 obs: observed=id OBS_AS observing=id;

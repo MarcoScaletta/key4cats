@@ -26,8 +26,8 @@ public class TraceEvent extends AbstractSortedOperator {
         String nameStr = null;
 
         switch(eventId){
-            case(KeYLexer.START_TR_EV)->{eventMap = START_EV; nameStr="\\startEv";}
-            case(KeYLexer.POP_TR_EV)->{eventMap = POP_EV; nameStr="\\popEv";}
+            case(KeYLexer.START_TR_EV)->{eventMap = START_EV; nameStr="\\startTrEv";}
+            case(KeYLexer.POP_TR_EV)->{eventMap = POP_EV; nameStr="\\popTrEv";}
         }
 
         if(eventMap == null)
@@ -64,7 +64,7 @@ public class TraceEvent extends AbstractSortedOperator {
             result = ref.get();
         }
         if(result == null){
-            result = new TraceEvent(new Name("\\retEv"), intSort);
+            result = new TraceEvent(new Name("\\retTrEv"), intSort);
             RET_EV.put(intSort, new WeakReference<>(result));
         }
 
