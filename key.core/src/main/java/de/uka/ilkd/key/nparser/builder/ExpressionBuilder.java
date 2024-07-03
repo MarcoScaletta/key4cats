@@ -247,12 +247,16 @@ public class ExpressionBuilder extends DefaultBuilder {
         if(argsList == null)
             return null;
         ImmutableArray<Term> args = new ImmutableArray<>(argsList);
+        //replacing old TraceEvent Operators
         if(ctx.name.START_TR_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getStartEv(services), args, null, null));
+//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getStartEv(services), args, null, null));
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.START_TR_EV, args, null, null));
         }else if(ctx.name.POP_TR_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getPopEv(services), args, null, null));
+//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getPopEv(services), args, null, null));
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.POP_TR_EV, args, null, null));
         }else if(ctx.name.RET_TR_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getRetEv(services), args, null, null));
+//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getRetEv(services), args, null, null));
+            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.RET_TR_EV, args, null, null));
         }
         else
             semanticError(ctx, "Unexpected token: %s", ctx.name);

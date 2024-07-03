@@ -12,6 +12,11 @@ import java.util.WeakHashMap;
 
 public class TraceEvent extends AbstractSortedOperator {
 
+    public final static TraceEvent START_TR_EV = new TraceEvent(new Name("\\startTrEv"), Sort.ANY,Sort.ANY);
+    public final static TraceEvent POP_TR_EV = new TraceEvent(new Name("\\popTrEv"), Sort.ANY,Sort.ANY);
+    public final static TraceEvent RET_TR_EV = new TraceEvent(new Name("\\retTrEv"), Sort.ANY);
+
+
     private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceEvent>> START_EV = new WeakHashMap<>();
     private final static WeakHashMap<Pair<Sort,Sort>,WeakReference<TraceEvent>> POP_EV = new WeakHashMap<>();
     private final static WeakHashMap<Sort,WeakReference<TraceEvent>> RET_EV = new WeakHashMap<>();
