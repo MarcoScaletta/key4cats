@@ -23,5 +23,4 @@ placeBetInner;
         start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
         ~~
     >>
-
     )
