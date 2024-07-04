@@ -119,6 +119,7 @@ METHOD_NAME_CONSTANT : '\\methodNameConstant';
 PENDING_INVOCATION_CONDITION : '\\pendingInvocationCondition';
 FINISH_CONDITION : '\\finishCondition';
 OBSERVATION_CONDITION : '\\observationCondition';
+IS_OBSERVATION : '\\isObservation';
 POSTSTATE_CONDITION: '\\postStateCondition';
 CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
@@ -310,7 +311,7 @@ DOTRANGE
 COMMA
 :	','
 	;
-AS : ':-:' ;
+
 LPAREN
 :
 	'('

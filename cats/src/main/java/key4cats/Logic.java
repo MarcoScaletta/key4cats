@@ -50,7 +50,7 @@ record StateFml(Predicate pred) implements Trace{
 record Obs(Identifier observed, Identifier observing) implements KeYGen{
     @Override
     public String toKeY() {
-        return String.format("\\obs(%s:-:%s)",observed.toKeY(),observing.toKeY());
+        return String.format("\\obs(%s,%s)",observed.toKeY(),observing.toKeY());
     }
 }
 

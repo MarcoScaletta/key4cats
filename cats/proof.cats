@@ -1,4 +1,4 @@
-placeBetInner;
+removeThree;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -8,7 +8,7 @@ placeBetInner;
 [removeThree] {removeOne;removeTwo;} removeThree :
     <<
         ~~ ** x::y . `true`|
-        ~~ ** x::y1 . `y1=y-3` |
+        start(removeThree,0) ** ~~ ** x::y1 . `y1=y-3` |
         ~~
     >>
 [removeOne] removeOne :
@@ -17,9 +17,15 @@ placeBetInner;
         ~~ ** x::y1 . `y1=y-1` |
         ~~
     >>
-[placeBetInner] placeBet : //working
+[placeBetInnerSimple] placeBet : //working
     <<
         ~~ ** x::y .`true`|
+        start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
+        ~~
+    >>
+[placeBetInner] placeBet : //working
+    <<
+        ~~ ** amountToBet::b . wallet::w .`b > 0 b <= w`|
         start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
         ~~
     >>
