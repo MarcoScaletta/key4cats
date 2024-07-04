@@ -161,8 +161,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             return new Not((Predicate) ctx.negpred.accept(this));
         if(ctx.op != null)
             return new PredOp(
-                (PredOp) ctx.pred1.accept(this),
-                (PredOp) ctx.pred2.accept(this),
+                (Predicate) ctx.pred1.accept(this),
+                (Predicate) ctx.pred2.accept(this),
                 ctx.op.getText()
         );
         if(ctx.TRUE() != null) return new TruePred();
