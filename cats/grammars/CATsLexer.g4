@@ -8,8 +8,8 @@ FALSE: 'false';
 STARTEV: 'start';
 POPEV: 'pop';
 RETEV:'ret';
-AND: '&&';
-OR: '||';
+AND: '&';
+OR: '|';
 EQ: '=';
 NEQ: '!=';
 GT: '>';
@@ -30,7 +30,6 @@ SEMI: ';';
 
 CAT_START: '<<';
 CAT_END: '>>';
-CAT_SEP: '|';
 OBS_AS: '::';
 CHOP: '**';
 STATEFML: '`';
