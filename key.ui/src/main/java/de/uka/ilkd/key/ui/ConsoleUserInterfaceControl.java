@@ -95,17 +95,25 @@ public class ConsoleUserInterfaceControl extends AbstractMediatorUserInterfaceCo
         LOGGER.info("[ DONE  ... rule application ]");
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("\n== Proof {} ==", (openGoals > 0 ? "open" : "closed"));
-            final Statistics stat = info.getProof().getStatistics();
-            LOGGER.debug("Proof steps: {}", stat.nodes);
-            LOGGER.debug("Branches: {}", stat.branches);
-            LOGGER.debug("Automode Time: {} ms", stat.autoModeTimeInMillis);
-            LOGGER.debug("Time per step: {} ms", stat.timePerStepInMillis);
         }
+        final Statistics stat = info.getProof().getStatistics();
+        System.out.printf("Proof steps: %s%n", stat.nodes);
+        System.out.printf("Branches: %s%n", stat.branches);
+        System.out.printf("Automode Time: %s ms%n", stat.autoModeTimeInMillis);
+        System.out.printf("Time per step: %s ms%n", stat.timePerStepInMillis);
+
         LOGGER.info("Number of goals remaining open: {}", openGoals);
         if (openGoals == 0) {
-            LOGGER.info("Proved");
+//            if(LOGGER.isInfoEnabled())
+//                LOGGER.info("Proved");
+//            else
+            System.out.println("Proved");
         } else {
-            LOGGER.info("Not proved");
+//
+//            if(LOGGER.isInfoEnabled())
+//                LOGGER.info("Not proved");
+//            else
+            System.out.println("Proved");
         }
         // this seems to be a good place to free some memory
         Runtime.getRuntime().gc();
@@ -150,7 +158,7 @@ public class ConsoleUserInterfaceControl extends AbstractMediatorUserInterfaceCo
             }
         } else if (info.getSource() instanceof ProblemLoader) {
             LOGGER.debug("{}", result2);
-            System.exit(-1);
+//            System.exit(-1);
         }
         if (loadOnly || openGoals == 0) {
             LOGGER.info("Number of open goals after loading: {}", openGoals);
@@ -183,9 +191,9 @@ public class ConsoleUserInterfaceControl extends AbstractMediatorUserInterfaceCo
         super.taskStarted(info);
         progressMax = info.size();
         if (TaskKind.Strategy.equals(info.kind())) {
-            System.out.println(info.message() + " ["); // start progress bar
+            LOGGER.info(info.message() + " [ "); // start progress bar
         } else {
-            System.out.println(info.message());
+            LOGGER.info(info.message());
         }
     }
 
