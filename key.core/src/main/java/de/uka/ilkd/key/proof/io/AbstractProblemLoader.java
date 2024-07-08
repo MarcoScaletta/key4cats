@@ -757,6 +757,8 @@ public abstract class AbstractProblemLoader {
                 status = parserResult.status();
                 errors.addAll(parserResult.errors());
             }
+            if(status.isEmpty())
+                System.out.println("Problem loaded successfully.");
             status += (status.isEmpty() ? "Proof replayed successfully." : "\n\n")
                     + (replayResult != null ? replayResult.getStatus()
                             : "Error while loading proof.");

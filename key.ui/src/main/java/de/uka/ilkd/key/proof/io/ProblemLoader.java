@@ -50,7 +50,7 @@ public final class ProblemLoader extends AbstractProblemLoader { // TODO: Rename
     public void runSynchronously() {
         mediator.stopInterface(true);
         fireTaskStarted();
-
+        System.out.println("Loading problem...");
         final long currentTime = System.currentTimeMillis();
         Throwable message;
         try {
