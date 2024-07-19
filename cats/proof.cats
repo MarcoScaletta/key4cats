@@ -1,4 +1,4 @@
-placeBet;
+removeOneFail;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -15,6 +15,18 @@ placeBet;
     <<
         ~~ ** x::y . `true`|
         ~~ ** x::y1 . `y1=y-1` |
+        ~~
+    >>
+[removeOneLT] removeOne :
+    <<
+        ~~ ** x::y . `true`|
+        ~~ ** x::y1 . `y1<=y-1` |
+        ~~
+    >>
+[removeOneFail] removeOne :
+    <<
+        ~~ ** x::y . `true`|
+        ~~ ** x::y1 . `y1!=y-1` |
         ~~
     >>
 [placeBetInnerSimple] placeBet : //working
