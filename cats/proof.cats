@@ -1,14 +1,31 @@
-removeOneFail;
+removeThreeNoCallsRemoveOneFail;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
         ~~ ** x::y1 . `y1=y-2` |
         ~~
     >>
+[removeTwoFail] removeTwo :
+    <<
+        ~~ ** x::y . `true`|
+        ~~ ** x::y1 . `y1>y-2` |
+        ~~
+    >>
 [removeThree] {removeOne;removeTwo;} removeThree :
     <<
         ~~ ** x::y . `true`|
         start(removeThree,0) ** ~~ ** x::y1 . `y1=y-3` |
+        ~~
+    >>
+[removeThreeNoCallsRemoveOneFail] {removeOne;removeTwo;} removeThree :
+    <<
+        ~~ ** x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
+        ~~
+    >>
+[removeThreeFail] {removeOne;removeTwo;} removeThree :
+    <<
+        ~~ ** x::y . `true`|
+        start(removeThree,0) ** ~~ ** x::y1 . `y1>y-3` |
         ~~
     >>
 [removeOne] removeOne :
@@ -29,10 +46,22 @@ removeOneFail;
         ~~ ** x::y1 . `y1!=y-1` |
         ~~
     >>
+
 [placeBetInnerSimple] placeBet : //working
     <<
         ~~ ** x::y .`true`|
         start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
+        ~~
+    >>
+
+[placeBetAbsTrOther] placeBet : //working
+    <<
+        ~~ ** x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
+        ~~
+    >>
+[placeBetAbsTrSelf] placeBet : //working
+    <<
+        ~~ ** x::y .`true`| ~{placeBet}~ ** x::y1 .`true`|
         ~~
     >>
 [placeBet] placeBet : //working

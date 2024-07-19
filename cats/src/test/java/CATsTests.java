@@ -25,6 +25,7 @@ public class CATsTests {
                     "removeOneLT",
                     "removeTwo",
                     "removeThree",
+                    "placeBetAbsTrSelf",
                     "placeBet",
                     "placeBetInner",
                     "placeBetInnerSimple"
@@ -39,6 +40,9 @@ public class CATsTests {
     @ValueSource(strings =
             {
                     "removeOneFail",
+                    "removeTwoFail",
+                    "removeThreeFail",
+                    "removeThreeNoCallsRemoveOneFail",
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
