@@ -3,6 +3,8 @@ lexer grammar CATsLexer;
 WS:  [ \t\n\r\u00a0]+ -> channel(HIDDEN); //U+00A0 = non breakable whitespace
 DIGIT: [0-9];
 ALPHA: [a-zA-Z_];
+TEST: 'test';
+
 TRUE: 'true';
 FALSE: 'false';
 STARTEV: 'start';

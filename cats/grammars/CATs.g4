@@ -2,7 +2,7 @@ grammar CATs;
 import CATSLexer;
 
 
-problem: id SEMI (contractWithId)+;
+problem: (COL TEST | id) (contractWithId)+;
 
 contractWithId : BRACKL id BRACKR contract;
 contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;
