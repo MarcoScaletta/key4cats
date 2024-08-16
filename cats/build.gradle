@@ -4,6 +4,7 @@ plugins {
     id 'antlr'
     id 'application'
 }
+
 description "CATs"
 configurations { antlr4 }
 dependencies {
@@ -31,4 +32,8 @@ application {
     mainClass = 'key4cats.KeY4CATs'
 }
 
+tasks.register('copyRules', Copy) {
+    from "../key.ui/examples/traces/tracerules.key"
+    into "src/test/resources/"
+}
 
