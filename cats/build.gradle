@@ -33,7 +33,9 @@ application {
 }
 
 tasks.register('copyRules', Copy) {
-    from "../key.ui/examples/traces/tracerules.key"
+    from "../key.ui/examples/traces/"
     into "src/test/resources/"
+    include("tracerules.key")
 }
 
+tasks.processTestResources.dependsOn(copyRules)
