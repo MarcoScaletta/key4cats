@@ -74,6 +74,6 @@ removeOneWithCond;
 [removeOneWithCond] removeOneWithCond :
     <<
         ~~ ** x::y . `y>0`|
-        ~~ ** x::y1 . `y1=y-1` |
+        ~~ ** x::y1 . `y1=y-1 && y1 >=0` |
         ~~
     >>
