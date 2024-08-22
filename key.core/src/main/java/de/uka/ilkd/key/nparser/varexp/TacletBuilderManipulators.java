@@ -312,6 +312,12 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("isObservation",
                     IsObservation.class, SV);
 
+    public static final AbstractConditionBuilder INVESTIGATE_TERM =
+            new ConstructorBasedBuilder("investigateTerm",
+                    InvestigateTerm.class, SV);
+
+
+
 
 
     public static final AbstractConditionBuilder POSTSTATE_CONDITION =
@@ -429,6 +435,7 @@ public class TacletBuilderManipulators {
             META_DISJOINT,
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
+                INVESTIGATE_TERM,
             CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);

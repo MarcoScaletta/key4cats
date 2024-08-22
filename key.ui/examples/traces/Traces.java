@@ -4,10 +4,16 @@ class Traces{
 
 
     public static void removeOne(boolean sync){
-        x = x - 1;
+            x = x - 1;
         return;
     }
 
+    public static void removeOneWithCond(boolean sync){
+        if(x > 0) {
+            x = x - 1;
+        }
+        return;
+    }
 
     public static void removeTwo(boolean sync){
         x = x - 2;
@@ -28,7 +34,7 @@ class Traces{
     }
 
 
-//    CASINO CASE STUDY
+    //    CASINO CASE STUDY
     public static int bet,amountToBet,wallet;
     public static void placeBet(boolean sync){
         bet = amountToBet;

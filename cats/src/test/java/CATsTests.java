@@ -22,6 +22,7 @@ public class CATsTests {
     @ValueSource(strings =
             {
                     "removeOne",
+                    "removeOneWithCond",
                     "removeOneLT",
                     "removeTwo",
                     "removeThree",

@@ -1,4 +1,4 @@
-removeThreeNoCallsRemoveOneFail;
+removeOneWithCond;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -68,5 +68,12 @@ removeThreeNoCallsRemoveOneFail;
     <<
         ~~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
         start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
+        ~~
+    >>
+
+[removeOneWithCond] removeOneWithCond :
+    <<
+        ~~ ** x::y . `y>0`|
+        ~~ ** x::y1 . `y1=y-1` |
         ~~
     >>

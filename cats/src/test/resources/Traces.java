@@ -8,6 +8,13 @@ class Traces{
         return;
     }
 
+    public static void removeOneWithCond(boolean sync){
+
+        if(x > 0) {
+            x = x - 1;
+        }
+        return;
+    }
 
     public static void removeTwo(boolean sync){
         x = x - 2;

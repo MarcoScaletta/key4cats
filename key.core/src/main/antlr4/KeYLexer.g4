@@ -120,6 +120,7 @@ PENDING_INVOCATION_CONDITION : '\\pendingInvocationCondition';
 FINISH_CONDITION : '\\finishCondition';
 OBSERVATION_CONDITION : '\\observationCondition';
 IS_OBSERVATION : '\\isObservation';
+INVESTIGATE_TERM : '\\investigateTerm';
 POSTSTATE_CONDITION: '\\postStateCondition';
 CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
