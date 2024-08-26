@@ -2,7 +2,6 @@
  * KeY is licensed under the GNU General Public License Version 2
  * SPDX-License-Identifier: GPL-2.0-only */
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -11,7 +10,6 @@ import de.uka.ilkd.key.control.KeYEnvironment;
 
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -52,7 +50,7 @@ public class CATsTests {
     }
 
     private boolean prove(Path file)
-            throws ProblemLoaderException, IOException {
+            throws ProblemLoaderException {
         KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(file.toFile());
         env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
         return env.getLoadedProof().closed();
