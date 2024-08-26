@@ -44,6 +44,7 @@ public class CATsTests {
                     "removeTwoFail",
                     "removeThreeFail",
                     "removeThreeNoCallsRemoveOneFail",
+                    "removeOneWithCondFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
