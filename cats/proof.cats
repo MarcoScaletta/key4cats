@@ -1,4 +1,4 @@
-trivialMultipleObsCallee;
+trivialMultipleObsCallee
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -50,7 +50,7 @@ trivialMultipleObsCallee;
 [removeOneWithCond] removeOneWithCond :
     <<
         ~~ ** x::y . `y>0`|
-        ~~ ** x::y1 . `y1=y-1 && y1 >=0` |
+        ~~ ** x::y1 . `y1=y-1 & y1 >=0` |
         ~~
     >>
 
@@ -70,7 +70,7 @@ trivialMultipleObsCallee;
 
 [placeBetAbsTrOther] placeBet : //working
     <<
-        (~~ ** x::y2 . x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
+        ~~ ** x::y2 . x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
         ~~
     >>
 [placeBetAbsTrSelf] placeBet : //working
@@ -91,10 +91,30 @@ trivialMultipleObsCallee;
         start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
         ~~
     >>
+[placeBetOnlyOnce] placeBet :
+    <<
+        ~{placeBet}~ ** wallet::w1 . `true`|
+        start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`true`|
+        ~~
+    >>
 
-[trivialMultipleObsCallee] {placeBetAbsTrOther;} casinoCaseStudyMain :
+[trivialMultipleObsCallee] {placeBetAbsTrOther;} trivialMultipleObsCallee :
     << ~~ ** x::y . `true` | ~~ ** x::y1 . `true` | ~~ >>
 
 
-[casinoCaseStudy] {placeBet;} casinoCaseStudyMain :
-    << ~~ ** x::y . `true` | ~~ ** x::y1 . `true` | ~~ >>
+[casinoCaseStudyNoPre] {placeBet;} casinoCaseStudyMain :
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[callRemoveOneAndPlaceBetOnce] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>

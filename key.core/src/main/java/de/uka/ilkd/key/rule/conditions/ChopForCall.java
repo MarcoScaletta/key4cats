@@ -34,7 +34,7 @@ public class ChopForCall implements VariableCondition {
         Term concatTrace = null;
         Junctor junctor = null;
 
-        while(traceEl.arity() > 1 && traceEl.op() instanceof Junctor j){
+        while(traceEl.arity() > 1 && traceEl.op() instanceof Junctor j && (j==Junctor.CHOP || j == Junctor.CONC)){
             if(concatTrace == null) {
                 concatTrace= traceEl.sub(1);
             }
@@ -56,7 +56,7 @@ public class ChopForCall implements VariableCondition {
 
     private static Term unchop(List<Term> traces, Services services){
 
-        return traces.subList(1, traces.size()).stream().reduce(traces.get(0),
+        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
                 (subUnchopped, trace) ->
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
     }
@@ -78,8 +78,8 @@ public class ChopForCall implements VariableCondition {
         List<Term> choppedTrace = choppingTrace(choppedTraceTerm,services);
         List<Triple<Term, Term, Term>> triples = new ArrayList<>();
         if(choppedTrace.size() < 3) {
-            if (choppedTrace.get(0).op() instanceof SchematicTrace) {
-                choppedTrace.add(0, choppedTrace.get(0));
+            if (choppedTrace.getFirst().op() instanceof SchematicTrace) {
+                choppedTrace.addFirst(choppedTrace.getFirst());
             } else {
                 return null;
             }
@@ -127,9 +127,9 @@ public class ChopForCall implements VariableCondition {
             return null;
 
         return matchCond.setInstantiations(
-                svInst.add(preFmlSV,choppings.get(0).first,services)
-                        .add(innerFmlSV,choppings.get(0).second,services)
-                        .add(postFmlSV,choppings.get(0).third,services)
+                svInst.add(preFmlSV,choppings.getFirst().first,services)
+                        .add(innerFmlSV,choppings.getFirst().second,services)
+                        .add(postFmlSV,choppings.getFirst().third,services)
         );
     }
 }

@@ -42,7 +42,19 @@ class Traces{
         return;
     }
 
-    public static void casinoCaseStudyMain(boolean sync){
+    public static void trivialMultipleObsCallee(boolean sync){
+        Traces.placeBet(true);
+        return;
+    }
+
+    public static void callRemoveOneAndPlaceBetOnce(boolean sync){
+        Traces.removeOne(true);
+        Traces.placeBet(true);
+        return;
+    }
+
+    public static void callPlaceBetTwice(boolean sync){
+        Traces.placeBet(true);
         Traces.placeBet(true);
         return;
     }
