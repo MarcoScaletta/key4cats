@@ -41,4 +41,9 @@ class Traces{
         wallet = wallet - bet;
         return;
     }
+
+    public static void casinoCaseStudyMain(boolean sync){
+        Traces.placeBet(true);
+        return;
+    }
 }

@@ -1,4 +1,4 @@
-removeOneWithCondFail;
+trivialMultipleObsCallee;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -47,6 +47,20 @@ removeOneWithCondFail;
         ~~
     >>
 
+[removeOneWithCond] removeOneWithCond :
+    <<
+        ~~ ** x::y . `y>0`|
+        ~~ ** x::y1 . `y1=y-1 && y1 >=0` |
+        ~~
+    >>
+
+[removeOneWithCondFail] removeOneWithCond :
+    <<
+        ~~ ** x::y . `y>0`|
+        ~~ ** x::y1 . `y1 >=1` |
+        ~~
+    >>
+
 [placeBetInnerSimple] placeBet : //working
     <<
         ~~ ** x::y .`true`|
@@ -56,7 +70,7 @@ removeOneWithCondFail;
 
 [placeBetAbsTrOther] placeBet : //working
     <<
-        ~~ ** x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
+        (~~ ** x::y2 . x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
         ~~
     >>
 [placeBetAbsTrSelf] placeBet : //working
@@ -71,16 +85,16 @@ removeOneWithCondFail;
         ~~
     >>
 
-[removeOneWithCond] removeOneWithCond :
+[placeBetWithPre] placeBet :
     <<
-        ~~ ** x::y . `y>0`|
-        ~~ ** x::y1 . `y1=y-1 && y1 >=0` |
+        ~{placeBet}~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
         ~~
     >>
 
-[removeOneWithCondFail] removeOneWithCond :
-    <<
-        ~~ ** x::y . `y>0`|
-        ~~ ** x::y1 . `y1 >=1` |
-        ~~
-    >>
+[trivialMultipleObsCallee] {placeBetAbsTrOther;} casinoCaseStudyMain :
+    << ~~ ** x::y . `true` | ~~ ** x::y1 . `true` | ~~ >>
+
+
+[casinoCaseStudy] {placeBet;} casinoCaseStudyMain :
+    << ~~ ** x::y . `true` | ~~ ** x::y1 . `true` | ~~ >>
