@@ -2,9 +2,11 @@ package de.uka.ilkd.key.logic;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.op.Junctor;
+import de.uka.ilkd.key.logic.op.UpdateJunctor;
 import de.uka.ilkd.key.util.Pair;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class TraceManager  {
 
@@ -16,13 +18,15 @@ public class TraceManager  {
     public TraceManager(Term trace, Services services){
        this.services = services;
         setupTrace(trace);
-
     }
 
     private void setupTrace(Term trace){
         tracePair = new LinkedList<>();
         separateTrace(trace);
     }
+
+
+    public List<Pair<Term,Junctor>> getTracePairs(){return this.tracePair;}
 
     private void separateTrace(Term trace){
         this.tracePair = separateTraceRec(trace);
@@ -45,41 +49,24 @@ public class TraceManager  {
         return separatedTrace;
     }
 
-    private LinkedList<Pair<Term,Junctor>> aa(Term trace){
-
-        Term traceEl = trace;
-        Term concatTrace = null;
-        Junctor junctor = null;
-
-        LinkedList<Pair<Term,Junctor>> tracePairLoc = new LinkedList<>();
-
-        while(traceEl.arity() > 1 && traceEl.op() instanceof Junctor j){
-            if(concatTrace == null) {
-                concatTrace= traceEl.sub(1);
-            }
-            else
-                concatTrace = services.getTermFactory().createTerm(junctor, traceEl.sub(1), concatTrace);
-            if(j == Junctor.CHOP || j == Junctor.CONC){
-                if(concatTrace.arity() > 1 && traceEl.op() instanceof Junctor j1){
-
-                }
-                else {
-                    tracePairLoc.addFirst(new Pair<>(concatTrace, junctor));
-                    concatTrace = null;
-                }
-            }
-            junctor = j;
-            traceEl = traceEl.sub(0);
-
-        }
-        Term lastTerm = concatTrace != null ? services.getTermFactory().createTerm(junctor, traceEl, concatTrace) : traceEl;
-        tracePairLoc.addFirst(new Pair<>(lastTerm, junctor));
-        return tracePairLoc;
+    public Pair<Term, Junctor> lastElem() {
+        if(tracePair.isEmpty())
+            return null;
+        return tracePair.getLast();
     }
 
 
     public int getSize(){
         return tracePair.size();
+    }
+
+    public static Term getTraceFromList(List<Pair<Term,Junctor>> traceAsList, Services services){
+
+        Term trace = traceAsList.getFirst().first;
+        for (int i = 1; i < traceAsList.size(); i++) {
+            trace = services.getTermFactory().createTerm(traceAsList.get(i-1).second, trace, traceAsList.get(i).first);
+        }
+        return trace;
     }
 
 

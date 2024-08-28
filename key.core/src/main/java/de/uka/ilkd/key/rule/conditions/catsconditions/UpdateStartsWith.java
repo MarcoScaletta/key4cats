@@ -2,12 +2,14 @@ package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
+import de.uka.ilkd.key.logic.TraceManager;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
 
+import javax.xml.validation.Schema;
 import java.util.*;
 /**
  * @author Marco Scaletta
@@ -65,6 +67,30 @@ public class UpdateStartsWith implements VariableCondition {
         }
 
     }
+
+
+
+    private Term newTraceStartsWith(Term fullTrace, Term prefixTrace, Services services){
+        List<Pair<Term,Junctor>> tmFull = new TraceManager(fullTrace,services).getTracePairs();
+        List<Pair<Term,Junctor>> tmPrefix =  new TraceManager(prefixTrace,services).getTracePairs();
+        if(tmFull.size() <= tmPrefix.size())
+            // postfix is empty or prefix exceeds length of full trace
+            return null;
+        for(int i=0; i< tmPrefix.size();i++){
+            if(tmFull.get(i).first != tmPrefix.get(i).first)
+                return null;
+            if(tmFull.get(i).second != tmPrefix.get(i).second && tmPrefix.get(i).second!=null)
+                return null;
+        }
+
+        List<Pair<Term,Junctor>> postFixList = tmFull.subList(
+//                tmPrefix.getLast().first.op() instanceof SchematicTrace ? tmPrefix.size() : tmPrefix.size()+1,
+                tmPrefix.size(),
+                tmFull.size());
+
+        return TraceManager.getTraceFromList(postFixList,services);
+    }
+
 
 
     private Term traceStartsWith(Term fullTrace, Term prefixTrace, Services services){
@@ -139,7 +165,7 @@ public class UpdateStartsWith implements VariableCondition {
         if(updateTerm == null || prefixTerm == null || traceTerm == null || tracePrefixTerm == null)
             return matchCond;
         Term updatePostfix = updateStartsWith(updateTerm,prefixTerm, services);
-        Term tracePostfix = traceStartsWith(traceTerm, tracePrefixTerm, services);
+        Term tracePostfix = newTraceStartsWith(traceTerm, tracePrefixTerm, services);
         if(updatePostfix!=null && tracePostfix != null)
             return matchCond.setInstantiations(svInst.add(updatePostfixSV, updatePostfix, services).add(tracePostfixSV, tracePostfix, services));
         return null;
