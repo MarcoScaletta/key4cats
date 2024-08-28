@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.rule.conditions;
+package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
@@ -11,7 +11,9 @@ import de.uka.ilkd.key.util.Triple;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+/**
+ * @author Marco Scaletta
+ */
 public class ChopForCall implements VariableCondition {
 
 

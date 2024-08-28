@@ -1,7 +1,6 @@
-package de.uka.ilkd.key.rule.conditions;
+package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
-import de.uka.ilkd.key.logic.ProgramElementName;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
@@ -12,8 +11,9 @@ import de.uka.ilkd.key.util.Pair;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
+/**
+ * @author Marco Scaletta
+ */
 public class PendingInvocationCondition implements VariableCondition {
 
 

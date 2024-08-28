@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.rule.conditions;
+package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
@@ -8,26 +8,32 @@ import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
 
-import java.util.*;
-
-public class UpdateStartsWith implements VariableCondition {
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * @author Marco Scaletta
+ */
+public class InterObservation implements VariableCondition {
 
 
     private final SchemaVariable updateFullSV;
     private final SchemaVariable updatePrefixSV;
-    private final SchemaVariable updatePostfixSV;
     private final SchemaVariable traceFullSV;
     private final SchemaVariable tracePrefixSV;
     private final SchemaVariable tracePostfixSV;
+    private final SchemaVariable observedSV;
+    private final SchemaVariable observingSV;
 
-    public UpdateStartsWith(SchemaVariable updateFull, SchemaVariable updatePrefix, SchemaVariable updatePostfix,
-                            SchemaVariable traceFull, SchemaVariable tracePrefix, SchemaVariable tracePostfix) {
+    public InterObservation(SchemaVariable updateFull, SchemaVariable updatePrefix,
+                            SchemaVariable traceFull, SchemaVariable tracePrefix, SchemaVariable tracePostfix,
+                            SchemaVariable observed,SchemaVariable observing) {
         this.updateFullSV = updateFull;
         this.updatePrefixSV = updatePrefix;
-        this.updatePostfixSV = updatePostfix;
         this.traceFullSV = traceFull;
         this.tracePrefixSV = tracePrefix;
         this.tracePostfixSV = tracePostfix;
+        this.observedSV = observed;
+        this.observingSV = observing;
     }
 
     private List<Term> updateToList(Term update){
@@ -45,13 +51,13 @@ public class UpdateStartsWith implements VariableCondition {
         }
         return updateList;
     }
-//
+
     private Pair<Term,Integer> postAssociate(Term trace, Services services){
         if(trace.op() instanceof Junctor junctor && junctor.arity() > 1)
             return postAssociate(junctor, trace.sub(0), trace.sub(1), 1, services);
         else return new Pair<>(trace, 1);
     }
-//
+
     private Pair<Term,Integer> postAssociate(Junctor junctor, Term tracePreAssociated, Term tracePostAssociated, int count, Services services){
 
         if(tracePreAssociated.op() instanceof Junctor j && j.arity() > 1){
@@ -65,7 +71,7 @@ public class UpdateStartsWith implements VariableCondition {
     }
 
 
-    private Term traceStartsWith(Term fullTrace, Term prefixTrace, Services services){
+    private Pair<Term,Term> traceStartsWith(Term fullTrace, Term prefixTrace, Services services){
 
         Pair<Term,Integer> pairFullTrace = postAssociate(fullTrace, services);
         Pair<Term,Integer>  pairPrefixTrace = postAssociate(prefixTrace, services);
@@ -73,35 +79,21 @@ public class UpdateStartsWith implements VariableCondition {
         if(pairFullTrace.second <= pairPrefixTrace.second)
             // prefix exceeds length of full trace or postfix is empty
             return null;
-        Pair<Term,Junctor> pair = traceStartsWithHelper(pairFullTrace.first, pairPrefixTrace.first);
-        if(pair != null) {
-            Term postfix = pair.first;
-//            if(postfix.subs().get(0).op() instanceof SchematicTrace)
-                return postfix;
-//            Term lastTerm = (prefixTrace.op() == Junctor.CHOP || prefixTrace.op() == Junctor.CONC) ? prefixTrace.sub(1) : prefixTrace;
-//            if(lastTerm.op() instanceof SchematicTrace){
-//                postfix = services.getTermFactory().createTerm(pair.second, lastTerm, postfix);
-//            }
-//            return postfix;
-        }
-        return null;
+        return traceStartsWithHelper(pairFullTrace.first, pairPrefixTrace.first);
 
     }
 
-    private Pair<Term,Junctor> traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
-        if(postAssociatedFullTrace.op() instanceof Junctor j){
-            // full trace contains more than 1 elem
-            if(j == postAssociatedPrefixTrace.op()){
-                // also prefix contains more than 1 elem and the junctors coincide
+    private Pair<Term,Term> traceStartsWithHelper(Term postAssociatedFullTrace, Term postAssociatedPrefixTrace){
+        if(postAssociatedFullTrace.op() instanceof Junctor){
+            if(postAssociatedFullTrace.op() == postAssociatedPrefixTrace.op()){
                 if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace.sub(0))
-                    // the first elements of both traces coincide
                     return traceStartsWithHelper(postAssociatedFullTrace.sub(1), postAssociatedPrefixTrace.sub(1));
-
             }else if(postAssociatedFullTrace.sub(0) == postAssociatedPrefixTrace){
-                // prefix is only one element and it matches the first element of full trace
-                return new Pair<>(postAssociatedFullTrace.sub(1), j);
+                if(postAssociatedFullTrace.sub(1).op() instanceof Junctor j && (j == Junctor.CHOP ||  j == Junctor.CONC)) {
+                    Term firstEl = postAssociatedFullTrace.sub(1).sub(0);
+                    return new Pair<>(firstEl, postAssociatedFullTrace.sub(1).sub(1));
+                }
             }
-
         }
         return null;
     }
@@ -137,9 +129,21 @@ public class UpdateStartsWith implements VariableCondition {
         if(updateTerm == null || prefixTerm == null || traceTerm == null || tracePrefixTerm == null)
             return matchCond;
         Term updatePostfix = updateStartsWith(updateTerm,prefixTerm, services);
-        Term tracePostfix = traceStartsWith(traceTerm, tracePrefixTerm, services);
-        if(updatePostfix!=null && tracePostfix != null)
-            return matchCond.setInstantiations(svInst.add(updatePostfixSV, updatePostfix, services).add(tracePostfixSV, tracePostfix, services));
+        Pair<Term,Term> traceFirstAndPostFix = traceStartsWith(traceTerm, tracePrefixTerm, services);
+
+        if(updatePostfix!=null && traceFirstAndPostFix != null) {
+
+            if(!(traceFirstAndPostFix.first.op() instanceof  Observation obs)) {
+                return null;
+            }
+            Term observedVar = services.getTermFactory().createTerm(obs.observed());
+            Term observingTerm = traceFirstAndPostFix.first.sub(0);
+
+            return matchCond.setInstantiations(
+                    svInst.add(tracePostfixSV, traceFirstAndPostFix.second, services)
+                            .add(observedSV, observedVar, services)
+                            .add(observingSV, observingTerm, services));
+        }
         return null;
     }
 }

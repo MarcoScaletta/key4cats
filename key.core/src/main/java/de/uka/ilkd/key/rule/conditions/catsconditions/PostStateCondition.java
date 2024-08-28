@@ -1,4 +1,4 @@
-package de.uka.ilkd.key.rule.conditions;
+package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Name;
@@ -10,7 +10,9 @@ import de.uka.ilkd.key.rule.inst.SVInstantiations;
 
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * @author Marco Scaletta
+ */
 public class PostStateCondition implements VariableCondition {
 
     private final SchemaVariable trace;
