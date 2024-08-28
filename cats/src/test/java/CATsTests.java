@@ -29,7 +29,7 @@ public class CATsTests {
                     "placeBetInner",
                     "placeBetInnerSimple",
                     "trivialMultipleObsCallee",
-                    "callRemoveOneAndPlaceBetOnce"
+                    "callPlaceBetOnceSufficientContract"
             })
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
@@ -45,7 +45,8 @@ public class CATsTests {
                     "removeThreeFail",
                     "removeThreeNoCallsRemoveOneFail",
                     "removeOneWithCondFail",
-                    "callBetTwiceFail"
+                    "callBetTwiceFail",
+                    "callPlaceBetOnceInsufficientContractFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

@@ -1,4 +1,4 @@
-trivialMultipleObsCallee
+callPlaceBetOnceInsufficientContractFail
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -108,9 +108,15 @@ trivialMultipleObsCallee
         ~~ ** x::y1 . `true` | ~~ >>
 
 
-[callRemoveOneAndPlaceBetOnce] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
+[callPlaceBetOnceInsufficientContractFail] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
     <<
         ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[callPlaceBetOnceSufficientContract] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
+    <<
+        ~{placeBet}~ ** x::y . `true` |
         ~~ ** x::y1 . `true` | ~~ >>
 
 
