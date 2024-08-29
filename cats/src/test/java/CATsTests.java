@@ -45,7 +45,8 @@ public class CATsTests {
                     "placeBetInner",
                     "placeBetInnerSimple",
                     "trivialMultipleObsCallee",
-                    "callPlaceBetOnceSufficientContract"
+                    "callPlaceBetOnceSufficientContract",
+                    "callPlaceBetDecidedBet"
             })
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

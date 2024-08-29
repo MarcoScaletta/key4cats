@@ -23,7 +23,7 @@ public class FinishCondition implements VariableCondition {
     public Term getStartEvent(Term update, Services services){
         if(update.op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
             if (update.sub(0).op() == HavocUpdate.getHavocUpdate(services)) {
-                if (update.sub(1).op() == TraceUpdate.getStartEv(services))
+                if (update.sub(1).op() == UpdateEvent.getStartEv(services))
                     return update.sub(1);
             } else
                 return getStartEvent(update.sub(0), services);

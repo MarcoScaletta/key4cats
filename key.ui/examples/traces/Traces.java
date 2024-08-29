@@ -35,14 +35,29 @@ class Traces{
 
 
     //    CASINO CASE STUDY
-    public static int bet,amountToBet,wallet;
+    public static int bet,amountToBet,wallet, guess, coinSide;
     public static void placeBet(boolean sync){
         bet = amountToBet;
         wallet = wallet - bet;
         return;
     }
 
-    public static void trivialMultipleObsCallee(boolean sync){
+    public static void decideBet(boolean sync){
+        if(coinSide == guess){
+            wallet += 2*bet;
+        }
+        bet = 0;
+        return;
+    }
+
+    public static void callPlaceBetOnce(boolean sync){
+        Traces.placeBet(true);
+        return;
+    }
+
+
+    public static void callDecideBetAndPlaceBet(boolean sync){
+        Traces.decideBet(true);
         Traces.placeBet(true);
         return;
     }

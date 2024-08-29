@@ -345,7 +345,7 @@ disjunction_term: a=conjunction_term (OR b+=conjunction_term)*;
 conjunction_term: a=chop_term (AND b+=chop_term)*;
 chop_term: a=conc_term (CHOP b+=conc_term)*;
 conc_term: a=term60 (CONC b+=term60)*;
-term60: unary_formula | equality_term | schem_trace_term | trace_event_term | obs_term ;
+term60: unary_formula | equality_term | schem_trace_term | trace_event_term | obs_term | wildcard;
 unary_formula:
     NOT sub=term60                                #negation_term
   | (FORALL | EXISTS) bound_variables sub=term60  #quantifierterm
@@ -359,7 +359,7 @@ weak_arith_term: a=strong_arith_term_1 (op+=(PLUS|MINUS|UTF_UNION|UTF_INTERSECT|
 strong_arith_term_1: a=strong_arith_term_2 (STAR b+=strong_arith_term_2)*;
 strong_arith_term_2: a=atom_prefix (op+=(PERCENT|SLASH) b+=atom_prefix)*;
 update_term: (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula);
-
+wildcard: WILDCARD;
 trace_event_term: name=trace_event_name args=argument_list;
 update_event_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
 trace_event_name : START_TR_EV | RET_TR_EV | POP_TR_EV ;
@@ -666,6 +666,8 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | INTER_OBS
   | IS_SCHEMATIC_TRACE
   | IS_SCHEMATIC_TRACE_OVER_M
+  | IS_UPDATE_EVENT
+  | IS_TRACE_EVENT
   | DIFFERENTFIELDS
   | SIMPLIFY_IF_THEN_ELSE_UPDATE
   | CONTAINS_ASSIGNMENT

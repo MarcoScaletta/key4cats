@@ -331,7 +331,7 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder UPDATE_STARTS_WITH =
             new ConstructorBasedBuilder("updateStartsWith",
-                    UpdateStartsWith.class, SV, SV,SV,SV,SV,SV);
+                    UpdateStartsWith.class, SV, SV,SV,SV,SV,SV,SV);
 
 
     public static final AbstractConditionBuilder CHOP_FOR_CALL =
@@ -350,6 +350,14 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE_OVER_M =
             new ConstructorBasedBuilder("isSchematicTraceOverM",
                     IsSchematicTraceOverM.class, SV,SV);
+
+    public static final AbstractConditionBuilder IS_UPDATE_EVENT =
+            new ConstructorBasedBuilder("isUpdateEvent",
+                    IsUpdateEvent.class, SV);
+
+    public static final AbstractConditionBuilder IS_TRACE_EVENT =
+            new ConstructorBasedBuilder("isTraceEvent",
+                    IsTraceEvent.class, SV);
 
 
 
@@ -437,7 +445,8 @@ public class TacletBuilderManipulators {
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
                 INVESTIGATE_TERM,
-            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M);
+            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
+                IS_UPDATE_EVENT,IS_TRACE_EVENT);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

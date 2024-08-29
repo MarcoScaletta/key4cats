@@ -126,6 +126,8 @@ CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
 IS_SCHEMATIC_TRACE: '\\isSchematicTrace';
 IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
+IS_UPDATE_EVENT: '\\isUpdateEvent';
+IS_TRACE_EVENT: '\\isTraceEvent';
 CHOP_FOR_CALL: '\\chopForCall';
 INTER_OBS: '\\interObs';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
@@ -424,6 +426,7 @@ STATEFML
 :   '`'
       ;
 
+WILDCARD: '$?';
 
 WS:  [ \t\n\r\u00a0]+ -> channel(HIDDEN); //U+00A0 = non breakable whitespace
 STRING_LITERAL:'"' ('\\' . | ~( '"' | '\\') )* '"' ;

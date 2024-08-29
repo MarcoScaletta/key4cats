@@ -22,16 +22,24 @@ public class UpdateStartsWith implements VariableCondition {
     private final SchemaVariable updatePostfixSV;
     private final SchemaVariable traceFullSV;
     private final SchemaVariable tracePrefixSV;
-    private final SchemaVariable tracePostfixSV;
+    private final SchemaVariable tracePostfixExtendedSV;
+    private final SchemaVariable tracePostfixSimpleSV;
 
-    public UpdateStartsWith(SchemaVariable updateFull, SchemaVariable updatePrefix, SchemaVariable updatePostfix,
-                            SchemaVariable traceFull, SchemaVariable tracePrefix, SchemaVariable tracePostfix) {
+    public UpdateStartsWith(
+            SchemaVariable updateFull,
+            SchemaVariable updatePrefix,
+            SchemaVariable updatePostfix,
+            SchemaVariable traceFull,
+            SchemaVariable tracePrefix,
+            SchemaVariable tracePostfixExtended,
+            SchemaVariable tracePostfixSimple) {
         this.updateFullSV = updateFull;
         this.updatePrefixSV = updatePrefix;
         this.updatePostfixSV = updatePostfix;
         this.traceFullSV = traceFull;
         this.tracePrefixSV = tracePrefix;
-        this.tracePostfixSV = tracePostfix;
+        this.tracePostfixExtendedSV = tracePostfixExtended;
+        this.tracePostfixSimpleSV = tracePostfixSimple;
     }
 
     private List<Term> updateToList(Term update){
@@ -70,7 +78,7 @@ public class UpdateStartsWith implements VariableCondition {
 
 
 
-    private Term newTraceStartsWith(Term fullTrace, Term prefixTrace, Services services){
+    private Pair<Term,Term> newTraceStartsWith(Term fullTrace, Term prefixTrace, Services services){
         List<Pair<Term,Junctor>> tmFull = new TraceManager(fullTrace,services).getTracePairs();
         List<Pair<Term,Junctor>> tmPrefix =  new TraceManager(prefixTrace,services).getTracePairs();
         if(tmFull.size() <= tmPrefix.size())
@@ -83,12 +91,16 @@ public class UpdateStartsWith implements VariableCondition {
                 return null;
         }
 
-        List<Pair<Term,Junctor>> postFixList = tmFull.subList(
-//                tmPrefix.getLast().first.op() instanceof SchematicTrace ? tmPrefix.size() : tmPrefix.size()+1,
-                tmPrefix.size(),
+        List<Pair<Term,Junctor>> postFixListExtended = tmFull.subList(
+                tmPrefix.getLast().first.op() instanceof SchematicTrace ?
+                        tmPrefix.size()-1 : tmPrefix.size(),
+//                tmPrefix.size(),
                 tmFull.size());
-
-        return TraceManager.getTraceFromList(postFixList,services);
+        List<Pair<Term,Junctor>> postFixListSimple = tmFull.subList(tmPrefix.size(), tmFull.size());
+// TODO: CHECK WHY IT DOESNT WORK!
+        return new Pair(
+                TraceManager.getTraceFromList(postFixListExtended,services),
+                TraceManager.getTraceFromList(postFixListSimple,services));
     }
 
 
@@ -165,9 +177,11 @@ public class UpdateStartsWith implements VariableCondition {
         if(updateTerm == null || prefixTerm == null || traceTerm == null || tracePrefixTerm == null)
             return matchCond;
         Term updatePostfix = updateStartsWith(updateTerm,prefixTerm, services);
-        Term tracePostfix = newTraceStartsWith(traceTerm, tracePrefixTerm, services);
+        Pair<Term,Term> tracePostfix = newTraceStartsWith(traceTerm, tracePrefixTerm, services);
         if(updatePostfix!=null && tracePostfix != null)
-            return matchCond.setInstantiations(svInst.add(updatePostfixSV, updatePostfix, services).add(tracePostfixSV, tracePostfix, services));
+            return matchCond.setInstantiations(svInst.add(updatePostfixSV, updatePostfix, services)
+                    .add(tracePostfixExtendedSV, tracePostfix.first, services)
+                    .add(tracePostfixSimpleSV, tracePostfix.second, services));
         return null;
     }
 }
