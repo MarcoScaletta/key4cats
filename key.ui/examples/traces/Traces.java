@@ -73,4 +73,26 @@ class Traces{
         Traces.placeBet(true);
         return;
     }
+
+    public static void callPlaceDecidePlaceBet(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        Traces.placeBet(true);
+        Traces.decideBet(true);
+        wallet = 1;
+        amountToBet = 1;
+        Traces.placeBet(true);
+        return;
+    }
+
+    public static void dummyProc1(boolean sync){return;}
+    public static void dummyProc2(boolean sync){return;}
+    public static void dummyProc3(boolean sync){return;}
+
+    public static void callDummyProc1And2And3(boolean sync){
+        Traces.dummyProc1(true);
+        Traces.dummyProc2(true);
+        Traces.dummyProc3(true);
+        return;
+    }
 }

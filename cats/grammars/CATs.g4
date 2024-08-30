@@ -7,7 +7,7 @@ problem: (COL TEST | id) (contractWithId)+;
 contractWithId : BRACKL id BRACKR contract;
 contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;
 
-id: ALPHA+ DIGIT*;
+id: (ALPHA+ DIGIT*)+;
 natural: DIGIT+;
 
 exprElem : var=id | val=natural;

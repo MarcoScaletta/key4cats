@@ -65,7 +65,8 @@ public class CATsTests {
                     "removeThreeNoCallsRemoveOneFail",
                     "removeOneWithCondFail",
                     "callBetTwiceFail",
-                    "callPlaceBetOnceInsufficientContractFail"
+                    "callPlaceBetOnceInsufficientContractFail",
+                    "callDummyProc1And2And3CATFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
