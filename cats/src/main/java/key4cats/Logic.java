@@ -100,6 +100,13 @@ record AbsTr(List<Identifier> methods) implements Trace{
     }
 }
 
+record Wildcard() implements KeYGen{
+    @Override
+    public String toKeY() {
+        return "$?";
+    }
+}
+
 class CAT implements KeYGen{
 
     Trace preTr;Trace inTr;Trace postTr;

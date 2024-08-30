@@ -149,7 +149,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             return new Event("pop", getProcName(ctx.mId), ctx.ctxId.accept(this));
         if(ctx.RETEV() != null)
             return new Event("ret", ctx.ctxId.accept(this));
-        System.err.print("returning null event " + ctx.getText());
+        System.err.println("returning null event " + ctx.getText());
         return null;
     }
 
@@ -220,5 +220,15 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     }
     private Identifier getProgVarName(CATsParser.IdContext ctx){
         return new Identifier(className + "." + ctx.getText());
+    }
+
+    @Override
+    public KeYGen visitContextId(CATsParser.ContextIdContext ctx) {
+        if(ctx.natural() != null)
+            return ctx.natural().accept(this);
+        if(ctx.WILDCARD() != null)
+            return new Wildcard();
+        System.err.printf("Context id must be either natural or wildcard, but it is:%s%n", ctx.getText());
+        return null;
     }
 }

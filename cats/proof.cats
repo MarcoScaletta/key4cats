@@ -1,4 +1,4 @@
-callPlaceBetOnceInsufficientContractFail
+callPlaceBetDecidedBet
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -98,7 +98,8 @@ callPlaceBetOnceInsufficientContractFail
         ~~
     >>
 
-[trivialMultipleObsCallee] {placeBetAbsTrOther;} trivialMultipleObsCallee :
+
+[trivialMultipleObsCallee] {placeBetAbsTrOther;} callPlaceBetOnce :
     << ~~ ** x::y . `true` | ~~ ** x::y1 . `true` | ~~ >>
 
 
@@ -121,6 +122,25 @@ callPlaceBetOnceInsufficientContractFail
 
 
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[placeBetDecidedBet] placeBet:
+    <<
+        ~~ ** pop(decideBet, ?_ ) ** wallet::w1 . `true`|
+        ~~ ** wallet::w .`true`|
+        ~~
+    >>
+
+
+[decideBet] decideBet:
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[callPlaceBetDecidedBet] {decideBet;placeBetDecidedBet;} callDecideBetAndPlaceBet:
     <<
         ~~ ** x::y . `true` |
         ~~ ** x::y1 . `true` | ~~ >>

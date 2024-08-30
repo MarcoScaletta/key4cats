@@ -2,7 +2,7 @@ lexer grammar CATsLexer;
 
 WS:  [ \t\n\r\u00a0]+ -> channel(HIDDEN); //U+00A0 = non breakable whitespace
 DIGIT: [0-9];
-ALPHA: [a-zA-Z_];
+ALPHA: [a-zA-Z];
 TEST: 'test';
 
 TRUE: 'true';
@@ -29,6 +29,7 @@ LBRACE: '{';
 RBRACE: '}';
 COMMA: ',';
 SEMI: ';';
+WILDCARD: '_';
 
 CAT_START: '<<';
 CAT_END: '>>';

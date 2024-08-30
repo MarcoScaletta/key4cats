@@ -36,9 +36,10 @@ trace :
     |   tr1=trace op=traceOp tr2=trace
     |   event;
 event :
-        (STARTEV | POPEV) LPAREN mId=id COMMA ctxId=natural RPAREN |
-        RETEV LPAREN ctxId=natural RPAREN ;
+        (STARTEV | POPEV) LPAREN mId=id COMMA ctxId=contextId RPAREN |
+        RETEV LPAREN ctxId=contextId RPAREN ;
 absTr : ABSTR(LBRACE id (COMMA id)* RBRACE)?ABSTR;
+contextId : natural | WILDCARD;
 traceOp : CHOP | SEMI;
 obs: observed=id OBS_AS observing=id;
 stateFml : STATEFML pred=predicate STATEFML;
