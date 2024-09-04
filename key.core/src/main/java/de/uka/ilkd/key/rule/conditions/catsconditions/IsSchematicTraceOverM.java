@@ -37,7 +37,7 @@ public class IsSchematicTraceOverM extends VariableConditionAdapter {
         return forbProcs.contains(methodNameInst) != this.negated;
     }
 
-    private Set<Term> getForbiddenProcsRec(Term schemTrTerm){
+    public static Set<Term> getForbiddenProcsRec(Term schemTrTerm){
         Set<Term> separatedTrace = new HashSet<>();
             if (schemTrTerm.op() instanceof SchematicTraceJunctor) {
                 separatedTrace.add(schemTrTerm.sub(1));
@@ -46,5 +46,4 @@ public class IsSchematicTraceOverM extends VariableConditionAdapter {
                 separatedTrace.add(schemTrTerm);
         return separatedTrace;
     }
-
 }

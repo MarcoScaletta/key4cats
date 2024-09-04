@@ -55,6 +55,13 @@ class Traces{
         return;
     }
 
+    public static void callPlaceBetOnceSetVarsToOne(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        Traces.placeBet(true);
+        return;
+    }
+
 
     public static void callDecideBetAndPlaceBet(boolean sync){
         Traces.decideBet(true);
@@ -85,9 +92,29 @@ class Traces{
         return;
     }
 
+    public static void callPlaceDecidePlaceBetAssume(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        Traces.placeBet(true);
+        wallet = 1;
+        amountToBet = 1;
+        Traces.dummyPlaceBet(true);
+        wallet = 1;
+        amountToBet = 1;
+        Traces.placeBet(true);
+        return;
+    }
+
+    public static void dummyPlaceBet(boolean sync){return;}
+
     public static void dummyProc1(boolean sync){return;}
     public static void dummyProc2(boolean sync){return;}
     public static void dummyProc3(boolean sync){return;}
+
+    public static void callDummyProc1(boolean sync){
+        Traces.dummyProc1(true);
+        return;
+    }
 
     public static void callDummyProc1And2And3(boolean sync){
         Traces.dummyProc1(true);

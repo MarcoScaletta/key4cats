@@ -46,7 +46,8 @@ public class CATsTests {
                     "placeBetInnerSimple",
                     "trivialMultipleObsCallee",
                     "callPlaceBetOnceSufficientContract",
-                    "callPlaceBetDecidedBet"
+                    "callPlaceBetDecidedBet",
+                    "simpleSchemTraceInclusion"
             })
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
@@ -54,6 +55,7 @@ public class CATsTests {
         printResults(contract,proof.countNodes());
         assert(proof.closed());
     }
+
 
     @ParameterizedTest
     @DisplayName("Proof should fail")
@@ -66,7 +68,8 @@ public class CATsTests {
                     "removeOneWithCondFail",
                     "callBetTwiceFail",
                     "callPlaceBetOnceInsufficientContractFail",
-                    "callDummyProc1And2And3CATFail"
+                    "callDummyProc1And2And3CATFail",
+                    "simpleSchemTraceInclusionFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

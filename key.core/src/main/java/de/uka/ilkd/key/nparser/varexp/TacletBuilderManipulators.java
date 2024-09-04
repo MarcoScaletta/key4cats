@@ -359,6 +359,9 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("isTraceEvent",
                     IsTraceEvent.class, SV);
 
+    public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE_INCLUDED =
+            new ConstructorBasedBuilder("isSchematicTraceIncluded",
+                    SchematicTraceInclusion.class, SV,SV);
 
 
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
@@ -446,7 +449,7 @@ public class TacletBuilderManipulators {
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
                 INVESTIGATE_TERM,
             CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
-                IS_UPDATE_EVENT,IS_TRACE_EVENT);
+                IS_UPDATE_EVENT,IS_TRACE_EVENT,IS_SCHEMATIC_TRACE_INCLUDED);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

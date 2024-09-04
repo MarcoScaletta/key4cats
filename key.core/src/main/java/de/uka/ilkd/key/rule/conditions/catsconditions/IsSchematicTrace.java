@@ -24,7 +24,7 @@ public class IsSchematicTrace implements VariableCondition {
         SVInstantiations svInst = matchCond.getInstantiations();
 
         Term formulaTerm = (Term) svInst.getInstantiation(formulaSV);
-        if(formulaTerm.op() instanceof SchematicTrace)
+        if(formulaTerm.op() == SchematicTrace.SCHEM_TRACE)
             return matchCond;
         return null;
     }

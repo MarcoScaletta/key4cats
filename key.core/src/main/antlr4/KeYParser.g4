@@ -666,6 +666,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | INTER_OBS
   | IS_SCHEMATIC_TRACE
   | IS_SCHEMATIC_TRACE_OVER_M
+  | IS_SCHEMATIC_TRACE_INCLUDED
   | IS_UPDATE_EVENT
   | IS_TRACE_EVENT
   | DIFFERENTFIELDS

@@ -126,6 +126,7 @@ CONTAINS_OBSERVATIONS : '\\containsObservations';
 UPDATE_STARTS_WITH: '\\updateStartsWith';
 IS_SCHEMATIC_TRACE: '\\isSchematicTrace';
 IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
+IS_SCHEMATIC_TRACE_INCLUDED: '\\isSchematicTraceIncluded';
 IS_UPDATE_EVENT: '\\isUpdateEvent';
 IS_TRACE_EVENT: '\\isTraceEvent';
 CHOP_FOR_CALL: '\\chopForCall';
