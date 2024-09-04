@@ -1,8 +1,6 @@
 package key4cats;
 
-import java.lang.reflect.Array;
 import java.util.*;
-;
 interface Predicate extends KeYGen{}
 
 record TruePred() implements Predicate{
@@ -82,6 +80,8 @@ class TraceOp extends Operator implements Trace{
     static final Map<String, String> m = new HashMap<>() {{
         put(";", "$.");
         put(".", "$.");
+        put("&", "&");
+        put("|", "|");
         put("**", "**");
     }};
     public TraceOp(Trace elem1, Trace elem2, String op) {
@@ -137,7 +137,7 @@ class CAT implements KeYGen{
                 getObsVars((Trace) obsTr.elem2);
                 break;
             default: break;
-        };
+        }
     }
 
     @Override

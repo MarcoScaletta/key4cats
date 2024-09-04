@@ -3,33 +3,25 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 
 import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CATsTests {
 
     String fileName= "results_"
             + new SimpleDateFormat("ddMMyy_HHmm").format(new Date())
-            + ".csv";;
+            + ".csv";
 
     @ParameterizedTest
     @DisplayName("Proof should succeed")
@@ -47,7 +39,9 @@ public class CATsTests {
                     "trivialMultipleObsCallee",
                     "callPlaceBetOnceSufficientContract",
                     "callPlaceBetDecidedBet",
-                    "simpleSchemTraceInclusion"
+                    "simpleSchemTraceInclusion",
+                    "callDummyProc1AssumeNoDummyProc1Before",
+                    "callDummyProc2And1SafeLocalContextOr"
             })
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
@@ -69,7 +63,8 @@ public class CATsTests {
                     "callBetTwiceFail",
                     "callPlaceBetOnceInsufficientContractFail",
                     "callDummyProc1And2And3CATFail",
-                    "simpleSchemTraceInclusionFail"
+                    "simpleSchemTraceInclusionFail",
+                    "callDummyProc1WithAssumptionsButAssumeNothingFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
@@ -84,7 +79,7 @@ public class CATsTests {
             out.printf("%s,%s%n", contractName, countNodes);
             out.close();
         }catch(IOException exception){
-            System.err.println(exception);
+            System.err.println(exception.getMessage());
         }
     }
 

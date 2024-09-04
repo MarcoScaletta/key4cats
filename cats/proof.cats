@@ -1,4 +1,4 @@
-callPlaceBetDecidedBet
+callDummyProc2And1SafeLocalContextOr
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -81,7 +81,7 @@ callPlaceBetDecidedBet
 [placeBet] placeBet : //working
     <<
         ~~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
-        start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
+        start(placeBet,_) ** ~{placeBet}~ **  pop(placeBet,_)  ** wallet::w .`w = oldW - b`|
         ~~
     >>
 
@@ -129,11 +129,17 @@ callPlaceBetDecidedBet
 
 [placeBetDecidedBet] placeBet:
     <<
-        ~~ ** pop(decideBet, ?_ ) ** wallet::w1 . `true`|
+        ~~ ** pop(decideBet, _ ) ** wallet::w1 . `true`|
         ~~ ** wallet::w .`true`|
         ~~
     >>
 
+[placeBetDecidedBetAndNoCalls] placeBet:
+    <<
+        ~~ ** pop(decideBet, _ ) ** ~{placeBet,decideBet}~ ** wallet::w1 . `true`|
+        ~~ ** wallet::w .`true`|
+        ~~
+    >>
 
 [decideBet] decideBet:
     <<
@@ -144,3 +150,105 @@ callPlaceBetDecidedBet
     <<
         ~~ ** x::y . `true` |
         ~~ ** x::y1 . `true` | ~~ >>
+
+[callPlaceBetDecidedBetAndNoCalls] {decideBet;placeBetDecidedBetAndNoCalls;} callDecideBetAndPlaceBet:
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[dummyProc1CAT]  dummyProc1:
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[dummyProc2CAT]  dummyProc2:
+    <<
+        ~~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[forbidDummyProc1And2PreTraceCAT] dummyProc3:
+
+    <<
+        ~{dummyProc1,dummyProc2,decideBet}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[callDummyProc1And2And3CATFail] {dummyProc1CAT;dummyProc2CAT;forbidDummyProc1And2PreTraceCAT;} callDummyProc1And2And3:
+    <<
+        ~{dummyProc1,dummyProc2}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[placeBetFullPreFullInner] placeBet:
+    <<
+        (~{placeBet}~ | ~~ ** pop(decideBet, _ )) ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
+        ~~
+    >>
+
+[dummyProc1NoDummyProc1Before] dummyProc1:
+    <<
+        ~{dummyProc1}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[dummyProc1NoDummyProc1And3Before] dummyProc1:
+    <<
+        ~{dummyProc1,dummyProc3}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[simpleSchemTraceInclusion] {dummyProc1NoDummyProc1Before;} callDummyProc1:
+    <<
+        ~{dummyProc1,dummyProc2}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+
+[simpleSchemTraceInclusionFail] {dummyProc1NoDummyProc1And3Before;} callDummyProc1:
+    <<
+        ~{dummyProc1,dummyProc2}~ ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[noDummyProc1BeforeOrMustCallDummyProc2Before] dummyProc1:
+    <<
+        (~{dummyProc1}~ | (~~ ** pop(dummyProc2,_))) ** x::y . `true` |
+        ~~ ** x::y1 . `true` | ~~ >>
+
+[callDummyProc1AssumeNoDummyProc1Before] {noDummyProc1BeforeOrMustCallDummyProc2Before} callDummyProc1:
+        <<
+            ~{dummyProc1}~ ** x::y . `true` |
+            ~~ ** x::y1 . `true` | ~~ >>
+
+[callDummyProc1WithAssumptionsButAssumeNothingFail] {dummyProc2CAT;noDummyProc1BeforeOrMustCallDummyProc2Before;} callDummyProc1:
+        <<
+            ~~ ** x::y . `true` |
+            ~~ ** x::y1 . `true` | ~~ >>
+
+[callDummyProc2And1SafeLocalContextOr] {dummyProc2CAT;noDummyProc1BeforeOrMustCallDummyProc2Before;} callDummyProc2And1:
+        <<
+            ~~ ** x::y . `true` |
+            ~~ ** x::y1 . `true` | ~~ >>
+
+
+
+
+
+
+//
+////not working
+//
+////not working
+//[callPlaceDecidePlaceBet] {placeBetFullPreFullInner;decideBet;} callPlaceDecidePlaceBet:
+//    <<
+//        ~{placeBet,decideBet}~ ** x::y . `true` |
+//        ~~ ** x::y1 . `true` | ~~ >>
+//
+//[dummyPlaceBet] dummyPlaceBet:
+//    <<
+//        ~~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+//        start(dummyPlaceBet,0) ** ~~ ** wallet::w .`w = oldW - b`|
+//        ~~
+//    >>
+//
+//[callPlaceDecidePlaceBetAssume] {dummyPlaceBet;placeBet;decideBet;} callPlaceDecidePlaceBetAssume:
+//    <<
+//        ~{placeBet,decideBet}~ ** x::y . `true` |
+//        ~~ ** x::y1 . `true` | ~~ >>

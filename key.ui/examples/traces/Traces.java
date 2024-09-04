@@ -116,6 +116,12 @@ class Traces{
         return;
     }
 
+    public static void callDummyProc2And1(boolean sync){
+        Traces.dummyProc2(true);
+        Traces.dummyProc1(true);
+        return;
+    }
+
     public static void callDummyProc1And2And3(boolean sync){
         Traces.dummyProc1(true);
         Traces.dummyProc2(true);
