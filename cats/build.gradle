@@ -10,6 +10,8 @@ configurations { antlr4 }
 dependencies {
 
     implementation project(":key.core")
+
+    implementation project(":key.ui")
     implementation project(":key.core.rifl")
 
     implementation project(":key.core.proof_references")
@@ -36,7 +38,8 @@ tasks.register('copyRules', Copy) {
     from "../key.ui/examples/traces/"
     into "src/test/resources/"
     include("tracerules.key")
-    include("Traces.java")
+    include("test/TestsCATs.java")
 }
+
 
 tasks.processTestResources.dependsOn(copyRules)

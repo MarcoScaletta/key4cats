@@ -3,7 +3,6 @@ lexer grammar CATsLexer;
 WS:  [ \t\n\r\u00a0]+ -> channel(HIDDEN); //U+00A0 = non breakable whitespace
 DIGIT: [0-9];
 ALPHA: [a-zA-Z];
-TEST: 'test';
 
 TRUE: 'true';
 FALSE: 'false';
@@ -41,6 +40,14 @@ COL : ':';
 DOT : '.';
 BRACKL: '[';
 BRACKR: ']';
+ID : '\\id';
+JAVA_EXT : '.java';
+
+TEST: '\\test';
+SINGLE: '\\single';
+ALL: '\\all';
+ASSUME: '\\assume';
+
 SL_COMMENT
 :
 	'//'

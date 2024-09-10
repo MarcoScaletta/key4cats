@@ -1,42 +1,46 @@
 package key4cats;
 
+import de.uka.ilkd.key.util.Pair;
 import key4cats.parsers.CATs.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
 
     private final String include = "traceRules.key";
-    private final String className = "Traces";
+    private final String className;
     private final String javaSource = ".";
-    private final Proof proof;
-    private final String pathProblem;
-    private final Identifier contractToProve;
     private final Map<Identifier, Contract> contractsMap;
+    private final Set<Identifier> contractToBeGenerated;
 
     public ProofCATsBuilder(String catsFileName) {
         CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileName));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
         CATsParser.ProblemContext problemContext = parser.problem();
-        try{
-            this.contractToProve = (Identifier) problemContext.id().accept(this);
 
-            this.contractsMap = createContractMap(problemContext);
-            this.pathProblem = contractToProve.id();
+        try{
+            CATsParser.ModContext modeCtx = problemContext.mod();
+            className = problemContext.className.getText();
+
+            this.contractsMap = createContractMap(problemContext.contractWithId());
+            if(modeCtx.SINGLE() != null)
+                contractToBeGenerated = Set.of((Identifier) problemContext.mod().id().accept(this));
+            else {
+                contractToBeGenerated = this.contractsMap.keySet();
+            }
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(String.format("Exception while parsing: %s", e.getMessage()) );
         }
-        this.proof = new Proof(String.format("\"%s\"", include), javaSource, assembleProblem());
     }
 
-    private Map<Identifier,Contract> createContractMap(CATsParser.ProblemContext problemContext){
+
+    private Map<Identifier,Contract> createContractMap(List<CATsParser.ContractWithIdContext> contractWithIdContext){
         Map<Identifier,Contract> map = new HashMap<>();
-        problemContext.contractWithId().forEach(
+        contractWithIdContext.forEach(
                 ctx->{
                     Identifier id = (Identifier) ctx.id().accept(this);
                     if(map.containsKey(id))
@@ -47,11 +51,11 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
         return map;
     }
 
-    private Problem assembleProblem(){
-        Contract toProve =this.contractsMap.get(contractToProve);
+    public Proof assembleProof(Identifier contractID){
+        Contract toProve =this.contractsMap.get(contractID);
         if(toProve == null)
             throw new RuntimeException(String.format("Cannot prove undefined contract \"%s\"",
-                    contractToProve.toKeY()));
+                    contractID.toKeY()));
         CATof target = toProve.target();
         List<AssumeCAT> assumeCATs = toProve.contractIds().stream().map(
 
@@ -62,7 +66,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                     return    new AssumeCAT(this.contractsMap.get(x).target());
                 }
         ).toList();
-        return new Problem( assumeCATs,target);
+        return new Proof(String.format("\"%s\"", include), javaSource, new Problem( assumeCATs,target));
     }
 
     private Contract getContractFromCtx(CATsParser.ContractWithIdContext ctx){
@@ -73,12 +77,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     }
 
-    public String getKeYProof() {
-        return proof.toKeY();
-    }
-
-    public String getPathProblem(){
-        return pathProblem;
+    public Set<Identifier> getContractIds(){
+        return contractToBeGenerated;
     }
 
     @Override
@@ -131,6 +131,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     @Override
     public KeYGen visitObs(CATsParser.ObsContext ctx) {
+        if(ctx.observing.getText().equals("thisCallId"))
+            throw new RuntimeException("Observing variables cannot be called \"callId\".");
         Identifier observing = (Identifier) ctx.observing.accept(this);
         return new Obs(getProgVarName(ctx.observed), observing);
     }
@@ -228,7 +230,9 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             return ctx.natural().accept(this);
         if(ctx.WILDCARD() != null)
             return new Wildcard();
-        System.err.printf("Context id must be either natural or wildcard, but it is:%s%n", ctx.getText());
+        if(ctx.ID() != null)
+            return new CallId();
+        System.err.printf("Context id dmust be either natural or wildcard, but it is:%s%n", ctx.getText());
         return null;
     }
 }

@@ -2,14 +2,15 @@ grammar CATs;
 import CATSLexer;
 
 
-problem: (COL TEST | id) (contractWithId)+;
+problem: (mod) SEMI (className=id JAVA_EXT)
+    SEMI (contractWithId)+;
 
-contractWithId : BRACKL id BRACKR contract;
+contractWithId : BRACKL (TEST OBS_AS)? id BRACKR contract;
 contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;
-
+mod: (SINGLE COL contractId=id) | ALL | TEST ;
 id: (ALPHA+ DIGIT*)+;
+javaFileName: (ALPHA+ DIGIT*)+ JAVA_EXT;
 natural: DIGIT+;
-
 exprElem : var=id | val=natural;
 exprOp : op=(PLUS | MIN | TIMES | DIV) ;
 expr: term=exprElem | expr1=expr op=exprOp expr2=expr;
@@ -40,7 +41,7 @@ event :
         (STARTEV | POPEV) LPAREN mId=id COMMA ctxId=contextId RPAREN |
         RETEV LPAREN ctxId=contextId RPAREN ;
 absTr : ABSTR(LBRACE id (COMMA id)* RBRACE)?ABSTR;
-contextId : natural | WILDCARD;
+contextId : natural | WILDCARD | ID;
 traceOp : CHOP | SEMI | AND | OR;
 obs: observed=id OBS_AS observing=id;
 stateFml : STATEFML pred=predicate STATEFML;

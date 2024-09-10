@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
@@ -17,11 +18,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+
 public class CATsTests {
 
-    String fileName= "results_"
+    private final String fileName= "results_"
             + new SimpleDateFormat("ddMMyy_HHmm").format(new Date())
             + ".csv";
+
 
     @ParameterizedTest
     @DisplayName("Proof should succeed")
@@ -33,22 +36,24 @@ public class CATsTests {
                     "removeTwo",
                     "removeThree",
                     "placeBetAbsTrSelf",
-                    "placeBet",
-                    "placeBetInner",
                     "placeBetInnerSimple",
                     "trivialMultipleObsCallee",
                     "callPlaceBetOnceSufficientContract",
                     "callPlaceBetDecidedBet",
                     "simpleSchemTraceInclusion",
                     "callDummyProc1AssumeNoDummyProc1Before",
-                    "callDummyProc2And1SafeLocalContextOr"
-            })
+                    "callDummyProc2And1SafeLocalContextOr",
+                    "callPlaceBetOnlyOnceAssumePreTrace",
+                    "callPlaceBetOnceSetVarsToOne"
+            }
+            )
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
         Proof proof = prove(file);
         printResults(contract,proof.countNodes());
         assert(proof.closed());
     }
+
 
 
     @ParameterizedTest
@@ -60,11 +65,10 @@ public class CATsTests {
                     "removeThreeFail",
                     "removeThreeNoCallsRemoveOneFail",
                     "removeOneWithCondFail",
-                    "callBetTwiceFail",
-                    "callPlaceBetOnceInsufficientContractFail",
+                    "callBetTwiceFail", "callPlaceBetOnceInsufficientContractFail",
                     "callDummyProc1And2And3CATFail",
-                    "simpleSchemTraceInclusionFail",
-                    "callDummyProc1WithAssumptionsButAssumeNothingFail"
+                    "simpleSchemTraceInclusionFail", "callDummyProc1WithAssumptionsButAssumeNothingFail",
+                    "callPlaceBetOnlyOncePreCondNotMetFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

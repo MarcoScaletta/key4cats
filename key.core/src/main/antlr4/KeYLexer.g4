@@ -256,7 +256,9 @@ ASYNC: '\\async';
 OBS: '\\obs';
 
 // CATs
-TRACE_CONTRACT : '\\traceContract';
+//TRACE_CONTRACT : '\\traceContract';
+
+CALL_ID : '\\callId';
 
 // Taclet annotations (see TacletAnnotations.java for more details)
 LEMMA : '\\lemma';

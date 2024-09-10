@@ -295,7 +295,11 @@ public class ExpressionBuilder extends DefaultBuilder {
     }
     @Override
     public Term visitWildcard(KeYParser.WildcardContext ctx){
-        return capsulateTf(ctx, () -> getTermFactory().createTerm(WildCard.getWildCard()));
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(SpecialCallIds.wildcard));
+    }
+    @Override
+    public Term visitCallId(KeYParser.CallIdContext ctx){
+        return capsulateTf(ctx, () -> getTermFactory().createTerm(SpecialCallIds.callId));
     }
 
     @Override

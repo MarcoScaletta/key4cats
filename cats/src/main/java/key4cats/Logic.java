@@ -107,6 +107,13 @@ record Wildcard() implements KeYGen{
     }
 }
 
+record CallId() implements KeYGen{
+    @Override
+    public String toKeY() {
+        return "thisCallId";
+    }
+}
+
 class CAT implements KeYGen{
 
     Trace preTr;Trace inTr;Trace postTr;
@@ -146,6 +153,6 @@ class CAT implements KeYGen{
         for(Identifier var : observingVars.reversed()){
             CATtoKeY = String.format("bind{ int %s;}(%s)", var.toKeY(),CATtoKeY);
         }
-        return CATtoKeY;
+        return String.format("callId{int thisCallId;}(%s)", CATtoKeY);
     }
 }

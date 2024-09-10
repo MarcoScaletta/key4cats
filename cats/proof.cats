@@ -1,4 +1,5 @@
-callDummyProc2And1SafeLocalContextOr
+removeTwo;
+Traces.java;
 [removeTwo] removeTwo :
     <<
         ~~ ** x::y . `true`|
@@ -81,7 +82,7 @@ callDummyProc2And1SafeLocalContextOr
 [placeBet] placeBet : //working
     <<
         ~~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
-        start(placeBet,_) ** ~{placeBet}~ **  pop(placeBet,_)  ** wallet::w .`w = oldW - b`|
+        start(placeBet,0) ** ~{placeBet}~ **  pop(placeBet,0)  ** wallet::w .`w = oldW - b`|
         ~~
     >>
 
@@ -212,7 +213,7 @@ callDummyProc2And1SafeLocalContextOr
         (~{dummyProc1}~ | (~~ ** pop(dummyProc2,_))) ** x::y . `true` |
         ~~ ** x::y1 . `true` | ~~ >>
 
-[callDummyProc1AssumeNoDummyProc1Before] {noDummyProc1BeforeOrMustCallDummyProc2Before} callDummyProc1:
+[callDummyProc1AssumeNoDummyProc1Before] {noDummyProc1BeforeOrMustCallDummyProc2Before;} callDummyProc1:
         <<
             ~{dummyProc1}~ ** x::y . `true` |
             ~~ ** x::y1 . `true` | ~~ >>
@@ -227,9 +228,11 @@ callDummyProc2And1SafeLocalContextOr
             ~~ ** x::y . `true` |
             ~~ ** x::y1 . `true` | ~~ >>
 
-
-
-
+[idKeyWordTest] dummyProc1 :
+    <<
+        ~~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`
+        | start(dummyProc1,\id) ** ~{dummyProc1}~ **  pop(dummyProc1,\id)  ** wallet::w .`true`
+        | ~~ >>
 
 
 //
