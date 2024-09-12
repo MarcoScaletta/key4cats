@@ -22,7 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class CATsTests {
 
     private final String fileName= "results_"
-            + new SimpleDateFormat("ddMMyy_HHmm").format(new Date())
+            + new SimpleDateFormat("yyMMdd_HHmm").format(new Date())
             + ".csv";
 
 
@@ -44,13 +44,17 @@ public class CATsTests {
                     "callDummyProc1AssumeNoDummyProc1Before",
                     "callDummyProc2And1SafeLocalContextOr",
                     "callPlaceBetOnlyOnceAssumePreTrace",
-                    "callPlaceBetOnceSetVarsToOne"
+                    "callPlaceBetOnceSetVarsToOne",
+                    "casinoCaseStudySimple"
             }
             )
     public void succeedingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
         Proof proof = prove(file);
-        printResults(contract,proof.countNodes());
+        if(proof.closed())
+            printResults(contract,proof.countNodes());
+        else
+            printResults(contract,-1);
         assert(proof.closed());
     }
 
@@ -68,12 +72,16 @@ public class CATsTests {
                     "callBetTwiceFail", "callPlaceBetOnceInsufficientContractFail",
                     "callDummyProc1And2And3CATFail",
                     "simpleSchemTraceInclusionFail", "callDummyProc1WithAssumptionsButAssumeNothingFail",
-                    "callPlaceBetOnlyOncePreCondNotMetFail"
+                    "callPlaceBetOnlyOncePreCondNotMetFail",
+                    "casinoCaseStudySimpleFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
         Proof proof = prove(file);
-        printResults(contract,proof.countNodes());
+        if(!proof.closed())
+            printResults(contract,proof.countNodes());
+        else
+            printResults(contract,-1);
         assert(!proof.closed());
     }
 

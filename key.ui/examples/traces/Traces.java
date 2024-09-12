@@ -128,4 +128,12 @@ class Traces{
         Traces.dummyProc3(true);
         return;
     }
+
+    public static void casinoCaseStudySingleBet(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        Developing.placeBet(true);
+        Developing.decideBet(true);
+        return;
+    }
 }

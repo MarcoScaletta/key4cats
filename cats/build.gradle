@@ -38,7 +38,7 @@ tasks.register('copyRules', Copy) {
     from "../key.ui/examples/traces/"
     into "src/test/resources/"
     include("tracerules.key")
-    include("test/TestsCATs.java")
+    include("TestsCATs.java")
 }
 
 

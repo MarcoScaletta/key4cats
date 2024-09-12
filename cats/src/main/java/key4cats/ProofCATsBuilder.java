@@ -7,15 +7,17 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.util.*;
 
+
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
+    public enum Mode {ALL, SINGLE};
 
     private final String include = "traceRules.key";
     private final String className;
     private final String javaSource = ".";
     private final Map<Identifier, Contract> contractsMap;
     private final Set<Identifier> contractToBeGenerated;
-
+    private final Mode mode;
     public ProofCATsBuilder(String catsFileName) {
         CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileName));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
@@ -26,15 +28,22 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             className = problemContext.className.getText();
 
             this.contractsMap = createContractMap(problemContext.contractWithId());
-            if(modeCtx.SINGLE() != null)
+            if(modeCtx.SINGLE() != null) {
+                mode = Mode.SINGLE;
                 contractToBeGenerated = Set.of((Identifier) problemContext.mod().id().accept(this));
+            }
             else {
+                mode = Mode.ALL;
                 contractToBeGenerated = this.contractsMap.keySet();
             }
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(String.format("Exception while parsing: %s", e.getMessage()) );
         }
+    }
+
+    public Mode getMode(){
+        return mode;
     }
 
 

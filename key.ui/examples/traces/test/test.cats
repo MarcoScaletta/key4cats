@@ -1,4 +1,4 @@
-\single:callPlaceBetOnceSetVarsToOne;
+\all;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<
@@ -41,13 +41,14 @@ TestsCATs.java;
     >>
 [placeBetAbsTrSelf] placeBet : //working
     <<
-        ~~ ** x::y .`true`| ~{placeBet}~ ** x::y1 .`true`|
+        ~~ ** x::y .`true`|
+        start(placeBet,\id) ** ~{placeBet}~ ** pop(placeBet,\id) ** x::y1 .`true`|
         ~~
     >>
 [placeBetInnerSimple] placeBet : //working
     <<
         ~~ ** x::y .`true`|
-        start(placeBet,0) ** ~{removeOne}~ **  pop(placeBet,0)  ** x::y1 .`true`|
+        start(placeBet,\id) ** ~{removeOne}~ **  pop(placeBet,\id)  ** x::y1 .`true`|
         ~~
     >>
 [removeOne] removeOne :
@@ -197,4 +198,38 @@ TestsCATs.java;
     <<
         ~~ ** x::y2 . x::y .`true`| ~{removeOne}~ ** x::y1 .`true`|
         ~~
+    >>
+
+
+[placeBetNeverAfter] placeBet : //working
+    <<
+        (~{placeBet}~ | (~~ ** pop(decideBet, _ ))) ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,\id) ** ~{placeBet}~ **  pop(placeBet,\id)  ** wallet::w .`w = oldW - b`|
+        ~{placeBet}~
+    >>
+[decideBetNoCallsToPlaceBet]  decideBet:
+    <<
+        ~~ ** amountToBet::b . `true` |
+        start(decideBet,\id) ** ~{placeBet}~ ** pop(decideBet,\id) ** amountToBet::b1 . `true` |
+        ~~
+    >>
+[decideBetNoCallsToDecideBet]  decideBet:
+    <<
+        ~~ ** amountToBet::b . `true` |
+        start(decideBet,\id) ** ~{decideBet}~ ** pop(decideBet,\id) ** amountToBet::b1 . `true` |
+        ~~
+    >>
+
+[casinoCaseStudySimple] {decideBetNoCallsToPlaceBet;placeBetNeverAfter;} casinoCaseStudySingleBetAndDecision:
+    <<
+        ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
+        ~~ ** amountToBet::b1 . `true` |
+        ~{placeBet,decideBet}~
+    >>
+
+[casinoCaseStudySimpleFail] {decideBetNoCallsToDecideBet;placeBetNeverAfter;} casinoCaseStudySingleBetAndDecision:
+    <<
+        ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
+        ~~ ** amountToBet::b1 . `true` |
+        ~{placeBet,decideBet}~
     >>
