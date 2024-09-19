@@ -29,19 +29,23 @@ public class TraceManager  {
     public List<Pair<Term,Junctor>> getTracePairs(){return this.tracePair;}
 
     private void separateTrace(Term trace){
-        this.tracePair = separateTraceRec(trace);
+        this.tracePair = separateTraceRec(trace, List.of(Junctor.CONC,Junctor.CHOP));
     }
 
-    private LinkedList<Pair<Term,Junctor>> separateTraceRec(Term trace){
+    private void separateTrace(Term trace, List<Junctor> junctors){
+        this.tracePair = separateTraceRec(trace, junctors);
+    }
+
+    private LinkedList<Pair<Term,Junctor>> separateTraceRec(Term trace, List<Junctor> junctors){
 
         LinkedList<Pair<Term,Junctor>> separatedTrace =  new LinkedList<>();
 
-        if(trace.op() instanceof Junctor j && (j == Junctor.CHOP || j == Junctor.CONC)) {
-            separatedTrace = separateTraceRec(trace.sub(0));
+        if(trace.op() instanceof Junctor j && junctors.contains(j)) {
+            separatedTrace = separateTraceRec(trace.sub(0), junctors);
             Pair<Term,Junctor> lastL = separatedTrace.getLast();
             separatedTrace.removeLast();
             separatedTrace.addLast(new Pair<>(lastL.first, j));
-            separatedTrace.addAll(separateTraceRec(trace.sub(1)));
+            separatedTrace.addAll(separateTraceRec(trace.sub(1),junctors));
         }
         else {
             separatedTrace.add(new Pair<>(trace, null));
