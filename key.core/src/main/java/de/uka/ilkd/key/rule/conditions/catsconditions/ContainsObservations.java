@@ -26,7 +26,7 @@ public class ContainsObservations extends VariableConditionAdapter {
         return containsObservations(formula) != negated;
     }
 
-    public boolean containsObservations(Term formula){
+    public static boolean containsObservations(Term formula){
         if(formula == null)
             return false;
         if(formula.op() == Junctor.CHOP || formula.op() == Junctor.CONC)

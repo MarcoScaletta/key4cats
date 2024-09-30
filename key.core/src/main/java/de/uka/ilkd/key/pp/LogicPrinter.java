@@ -147,6 +147,11 @@ public class LogicPrinter {
             NotationInfo.DEFAULT_UNICODE_ENABLED);
     }
 
+    public static String quickPrintTermNoSpecialChars(Term t, Services services) {
+        return quickPrintTerm(t, services, NotationInfo.DEFAULT_PRETTY_SYNTAX,
+                NotationInfo.DEFAULT_UNICODE_ENABLED).replaceAll("\n","").replaceAll(" ","");
+    }
+
     /**
      * Converts a term to a string.
      *

@@ -54,7 +54,7 @@ public class CATsTests {
         if(proof.closed())
             printResults(contract,proof.countNodes());
         else
-            printResults(contract,-1);
+            printResults(contract,-1000);
         assert(proof.closed());
     }
 
@@ -81,7 +81,6 @@ public class CATsTests {
         if(!proof.closed())
             printResults(contract,proof.countNodes());
         else
-            printResults(contract,-1);
         assert(!proof.closed());
     }
 

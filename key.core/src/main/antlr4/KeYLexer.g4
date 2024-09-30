@@ -128,6 +128,7 @@ IS_SCHEMATIC_TRACE: '\\isSchematicTrace';
 IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
 IS_SCHEMATIC_TRACE_INCLUDED: '\\isSchematicTraceIncluded';
 IS_UPDATE_EVENT: '\\isUpdateEvent';
+NO_VARS_IN_STATES: '\\noVarsInStates';
 IS_TRACE_EVENT: '\\isTraceEvent';
 CHOP_FOR_CALL: '\\chopForCall';
 INTER_OBS: '\\interObs';
