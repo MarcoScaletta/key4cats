@@ -317,6 +317,11 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("investigateTerm",
                     InvestigateTerm.class, SV);
 
+    public static final AbstractConditionBuilder FIRST_OF =
+            new ConstructorBasedBuilder("firstOf",
+                    FirstOf.class, SV,SV);
+
+
 
 
 
@@ -328,10 +333,6 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder CONTAINS_OBSERVATIONS =
             new ConstructorBasedBuilder("containsObservations",
                     ContainsObservations.class, SV);
-
-    public static final AbstractConditionBuilder UPDATE_STARTS_WITH =
-            new ConstructorBasedBuilder("updateStartsWith",
-                    UpdateStartsWith.class, SV, SV,SV,SV,SV,SV,SV);
 
 
     public static final AbstractConditionBuilder CHOP_FOR_CALL =
@@ -347,8 +348,8 @@ public class TacletBuilderManipulators {
                     IsSchematicTrace.class, SV);
 
     public static final AbstractConditionBuilder IS_EVENT =
-            new ConstructorBasedBuilder("isTraceEvent",
-                    IsTraceEvent.class, SV);
+            new ConstructorBasedBuilder("isEvent",
+                    IsEvent.class, SV);
 
     public static final AbstractConditionBuilder NO_VARS_IN_STATES =
             new ConstructorBasedBuilder("noVarsInStates",
@@ -359,13 +360,9 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("isSchematicTraceOverM",
                     IsSchematicTraceOverM.class, SV,SV);
 
-    public static final AbstractConditionBuilder IS_UPDATE_EVENT =
-            new ConstructorBasedBuilder("isUpdateEvent",
-                    IsUpdateEvent.class, SV);
-
-    public static final AbstractConditionBuilder IS_TRACE_EVENT =
-            new ConstructorBasedBuilder("isTraceEvent",
-                    IsTraceEvent.class, SV);
+    public static final AbstractConditionBuilder IS_RUN_EVENT =
+            new ConstructorBasedBuilder("isRunEv",
+                    IsRunEvent.class, SV);
 
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE_INCLUDED =
             new ConstructorBasedBuilder("isSchematicTraceIncluded",
@@ -456,8 +453,9 @@ public class TacletBuilderManipulators {
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
                 INVESTIGATE_TERM,
-            CONTAINS_OBSERVATIONS,UPDATE_STARTS_WITH,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
-                IS_UPDATE_EVENT,IS_TRACE_EVENT,IS_SCHEMATIC_TRACE_INCLUDED,
+                FIRST_OF,
+            CONTAINS_OBSERVATIONS,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
+                IS_RUN_EVENT,IS_SCHEMATIC_TRACE_INCLUDED,
                 IS_EVENT, NO_VARS_IN_STATES);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);

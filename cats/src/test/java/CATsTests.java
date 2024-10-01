@@ -45,7 +45,8 @@ public class CATsTests {
                     "callDummyProc2And1SafeLocalContextOr",
                     "callPlaceBetOnlyOnceAssumePreTrace",
                     "callPlaceBetOnceSetVarsToOne",
-                    "casinoCaseStudySimple"
+                    "casinoCaseStudySimple",
+                    "casinoCaseStudySimpleCompletePlaceBet"
             }
             )
     public void succeedingProofs(String contract) throws Exception{
@@ -73,7 +74,8 @@ public class CATsTests {
                     "callDummyProc1And2And3CATFail",
                     "simpleSchemTraceInclusionFail", "callDummyProc1WithAssumptionsButAssumeNothingFail",
                     "callPlaceBetOnlyOncePreCondNotMetFail",
-                    "casinoCaseStudySimpleFail"
+                    "casinoCaseStudySimpleFail",
+                    "casinoCaseStudySimpleCompletePlaceBetFail"
             })
     public void failingProofs(String contract) throws Exception{
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

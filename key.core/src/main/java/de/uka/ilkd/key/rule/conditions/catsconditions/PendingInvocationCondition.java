@@ -30,12 +30,12 @@ public class PendingInvocationCondition implements VariableCondition {
     private static Map<Term, Pair<Term, Boolean>> getScheduleHelper(Term update, Map<Term, Pair<Term, Boolean>> map, Services services){
         if(update.op() == UpdateJunctor.SEQUENTIAL_UPDATE)
             map = getScheduleHelper(update.sub(1), getScheduleHelper(update.sub(0), map, services ), services);
-        else if (update.op() == UpdateEvent.getInvocEv(services)) {
+        else if (update.op() == UpdateEvent.INVOC_EV) {
             Term callId = update.sub(1);
             if (map.containsKey(callId))
                 throw new RuntimeException("There is more than one asynchronous invocation with same id \"" + update + "\".");
             map.put(callId, new Pair<>(update, true));
-        } else if (update.op() == UpdateEvent.getRunEv(services)) {
+        } else if (update.op() == UpdateEvent.RUN_EV) {
             Term runEvMethod = update.sub(0);
             Term runEvCallId = update.sub(1);
             Term runEvflag = update.sub(2);

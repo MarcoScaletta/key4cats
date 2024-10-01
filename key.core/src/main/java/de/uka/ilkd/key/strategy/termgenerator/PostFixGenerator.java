@@ -2,18 +2,14 @@ package de.uka.ilkd.key.strategy.termgenerator;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.*;
-import de.uka.ilkd.key.logic.op.Junctor;
-import de.uka.ilkd.key.logic.op.Modality;
-import de.uka.ilkd.key.logic.op.SchematicTrace;
-import de.uka.ilkd.key.logic.op.UpdateApplication;
+import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.rule.RuleApp;
 import de.uka.ilkd.key.rule.TacletApp;
-import de.uka.ilkd.key.rule.conditions.catsconditions.ChopForCall;
 import de.uka.ilkd.key.rule.conditions.catsconditions.ContainsObservations;
+import de.uka.ilkd.key.rule.conditions.catsconditions.IsSchematicTraceOverM;
 import de.uka.ilkd.key.strategy.feature.MutableState;
 import de.uka.ilkd.key.util.Pair;
-import de.uka.ilkd.key.util.Triple;
 
 import java.util.*;
 
@@ -32,29 +28,100 @@ public class PostFixGenerator implements TermGenerator {
         TraceManager traceManager = new TraceManager(traceTerm, services);
 
         Sequent seq = goal.sequent();
-        List<Pair<UpdateManager,TraceManager>> judgmentsAnte =
-                seq.antecedent().asList().stream().filter(
-                        x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
+        List<Pair<UpdateManager,TraceManager>> judgmentsAnte = getMatchingJudgmentsFromAnte(seq,updateManager,traceManager,services);
+        Optional<Pair<UpdateManager,TraceManager>> optionalJugdmentWithLongestUpdate =
+                judgmentsAnte.stream().max(Comparator.comparingInt(o -> o.first.getSize()));
+        if(optionalJugdmentWithLongestUpdate.isEmpty()) {
+            //there is no matching prefix in the antencedent
+            //we can check here if: {runEv(m,i);U} : startEv(m,_) ** phi
+            return postFixLocally(traceManager,updateManager,services);
+
+        }
+        return getIteratorFromStrictPrefixes(
+                traceManager,
+                updateManager,
+                optionalJugdmentWithLongestUpdate.get(),
+                services);
+    }
+
+    private List<Pair<UpdateManager,TraceManager>> getMatchingJudgmentsFromAnte(
+            Sequent seq,
+            UpdateManager updateManager,
+            TraceManager traceManager,
+            Services services
+            ){
+        return seq.antecedent().asList().stream().filter(
+                                x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
                         .map(x -> new Pair<>(
-                                new UpdateManager(x.formula().sub(0).sub(0),services),
-                                new TraceManager(x.formula().sub(1).sub(0),services)
+                                        new UpdateManager(x.formula().sub(0).sub(0),services),
+                                        new TraceManager(x.formula().sub(1).sub(0),services)
                                 )
                         ).filter(
                                 judgment -> updateManager.hasStrictPrefix(judgment.first)
                                         && traceManager.hasStrictPrefix(judgment.second)
                         ).toList();
+    }
 
-        Optional<Pair<UpdateManager,TraceManager>> optionalJugdmentWithLongestUpdate =
-                judgmentsAnte.stream().max(
-                        Comparator.comparingInt(o -> o.first.getSize())
-                );
+    private Iterator<Term> elimSchemTrPrefixMatchedWithRunEvPrefix(
+            TraceManager traceManager,
+            UpdateManager updateManager,
+            Services services){
 
-        if(optionalJugdmentWithLongestUpdate.isEmpty())
-            return Collections.emptyIterator();
+            Term runEv = updateManager.getUpdateList().getFirst();
+            Term schemTr = traceManager.getTracePairs().getFirst().first;
+            if(IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)))
+                return getListOfJudgments(
+                        UpdateManager.getUpdateFromList(updateManager.getUpdateList(),services),
+                        List.of(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1,traceManager.getTracePairs().size()),services)),
+                        services).iterator();
 
-        UpdateManager updatePrefix = optionalJugdmentWithLongestUpdate.get().first;
-        TraceManager tracePrefix = optionalJugdmentWithLongestUpdate.get().second;
+        return Collections.emptyIterator();
+    }
 
+    private Iterator<Term> postFixLocally(
+            TraceManager traceManager,
+            UpdateManager updateManager,
+            Services services
+    ){
+        //todo:check if the sizes of trace manager can be lower
+        if(updateManager.getSize() > 1
+            && traceManager.getSize() > 1
+            && updateManager.getUpdateList().getFirst().op() == UpdateEvent.RUN_EV
+        ){
+            if(traceManager.getTracePairs().getFirst().first.op() instanceof SchematicTrace)
+                return elimSchemTrPrefixMatchedWithRunEvPrefix(traceManager, updateManager, services);
+            else if(traceManager.getTracePairs().getFirst().first.op() == TraceEvent.START_TR_EV
+                && traceManager.getTracePairs().get(1).first.op() instanceof SchematicTrace) {
+                //elimSchemTrPrefixMatchedWithRunEvPrefix
+                Term runEv = updateManager.getUpdateList().getFirst();
+                Term startTrEv = traceManager.getTracePairs().getFirst().first;
+                Term schemTr = traceManager.getTracePairs().get(1).first;
+                if (runEv.sub(0) == startTrEv.sub(0)  //checking if same method name
+                        && !IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)) //schemTr not forbidding the run method
+                        && (startTrEv.sub(1).op() == SpecialCallIds.wildcard  // startTrEv has wildcard ID
+                        || runEv.sub(1) == startTrEv.sub(1)) // same callId for runEV and startTrEv
+                ) {
+                    List<Term> tracePostfixes = new ArrayList<>();
+                    tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1, traceManager.getTracePairs().size()), services));
+                    if (traceManager.getSize() > 2)
+                        tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(2, traceManager.getTracePairs().size()), services));
+                    Term updatePostfix = UpdateManager.getUpdateFromList(updateManager.getUpdateList().subList(1, updateManager.getUpdateList().size()), services);
+                    return getListOfJudgments(updatePostfix, tracePostfixes, services).iterator();
+                }
+            }
+        }
+        return Collections.emptyIterator();
+    }
+
+    private Iterator<Term> getIteratorFromStrictPrefixes(
+            TraceManager traceManager,
+            UpdateManager updateManager,
+            Pair<UpdateManager,TraceManager> judgment,
+            Services services
+            ){
+
+        TraceManager tracePrefix = judgment.second;
+        UpdateManager updatePrefix = judgment.first;
         Pair<Term,Junctor> lastPrefix = traceManager.getTracePairs().get(tracePrefix.getSize());
 
 
@@ -72,24 +139,23 @@ public class PostFixGenerator implements TermGenerator {
         if(ContainsObservations.containsObservations(tracePostFix))
             return Collections.emptyIterator();
 
-        List<Term> jugdmentPostFixes = new ArrayList<>();
-
-
-        jugdmentPostFixes.add(
-                services.getTermFactory().createTerm(UpdateApplication.UPDATE_APPLICATION,
-                        updatePostfix,
-                        services.getTermFactory().createTerm(Modality.DIA, tracePostFix)));
+        List<Term> possibleTraces = new ArrayList<>();
+        possibleTraces.add(tracePostFix);
         //If the rule is applied to
         // u1 : phi1 ~~ |- u1;u2 : phi1 ~~ ** phi2
         // there are 2 possible postfixes
         //      -> u2 : phi2
         //      -> u2 : ~~ ** phi2
         if(isPostfixExtandable)
-                jugdmentPostFixes.add(
-                        services.getTermFactory().createTerm(UpdateApplication.UPDATE_APPLICATION,
-                                updatePostfix,
-                                services.getTermFactory().createTerm(Modality.DIA, TraceManager.unchop(lastPrefix.first,tracePostFix,services))));
-        return jugdmentPostFixes.iterator();
+            possibleTraces.add(TraceManager.unchop(lastPrefix.first,tracePostFix,services));
+        return getListOfJudgments(updatePostfix, possibleTraces, services).iterator();
+    }
+
+    private List<Term> getListOfJudgments(Term update, List<Term> traces, Services services){
+        return traces.stream().map(
+                trace -> services.getTermFactory().createTerm(UpdateApplication.UPDATE_APPLICATION,
+                        update,
+                        services.getTermFactory().createTerm(Modality.DIA, trace))).toList();
     }
 
 

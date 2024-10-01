@@ -31,10 +31,14 @@ public class IsSchematicTraceOverM extends VariableConditionAdapter {
     public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations svInst, Services services) {
         Term methodNameInst = (Term) svInst.getInstantiation(methodNameSV);
         Term schemTrTerm = (Term) svInst.getInstantiation(formulaSV);
+        return this.negated != isSchematicTraceOverM(schemTrTerm,methodNameInst);
+    }
+
+    public static boolean isSchematicTraceOverM(Term schemTrTerm, Term methodNameInst){
         if(! (schemTrTerm.op() instanceof SchematicTrace) || schemTrTerm.arity() == 0)
-            return this.negated;
+            return false;
         Set<Term> forbProcs = getForbiddenProcsRec(schemTrTerm.sub(0));
-        return forbProcs.contains(methodNameInst) != this.negated;
+        return forbProcs.contains(methodNameInst);
     }
 
     public static Set<Term> getForbiddenProcsRec(Term schemTrTerm){

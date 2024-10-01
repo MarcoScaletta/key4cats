@@ -1,4 +1,4 @@
-\single:casinoCaseStudySimple;
+\single:casinoCaseStudySimpleCompletePlaceBetFail;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<
@@ -233,5 +233,33 @@ TestsCATs.java;
     <<
         ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
         start(casinoCaseStudySingleBetAndDecision,\id) ** ~~ ** pop(casinoCaseStudySingleBetAndDecision, \id) ** amountToBet::b1 . `true` |
+        ~{placeBet,decideBet}~
+    >>
+
+[placeBetComplete] placeBet :
+    <<
+        (~{placeBet}~ | (~~ ** pop(decideBet, _ ))) ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,\id) ** ~{placeBet}~ **  pop(placeBet,\id)  ** wallet::w .`w = oldW - b`|
+        ~{placeBet,decideBet}~ ** start(decideBet, _ ) ** ~~
+    >>
+
+[decideBetNoCallsToPlaceBetNorDecideBet]  decideBet:
+    <<
+        ~~ ** amountToBet::b . `true` |
+        start(decideBet,\id) ** ~{placeBet,decideBet}~ ** pop(decideBet,\id) ** amountToBet::b1 . `true` |
+        ~~
+    >>
+
+[casinoCaseStudySimpleCompletePlaceBet] {decideBetNoCallsToPlaceBetNorDecideBet;placeBetComplete;} casinoCaseStudySingleBetAndDecision:
+    <<
+        ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
+        start(casinoCaseStudySingleBetAndDecision,\id) ** ~~ ** pop(casinoCaseStudySingleBetAndDecision,\id) ** amountToBet::b1 . `true` |
+        ~{placeBet,decideBet}~
+    >>
+
+[casinoCaseStudySimpleCompletePlaceBetFail] {decideBetNoCallsToPlaceBetNorDecideBet;placeBetComplete;} callPlaceBetOnceSetVarsToOne:
+    <<
+        ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
+        start(callPlaceBetOnceSetVarsToOne,\id) ** ~~ ** pop(callPlaceBetOnceSetVarsToOne,\id) ** amountToBet::b1 . `true` |
         ~{placeBet,decideBet}~
     >>
