@@ -5,7 +5,6 @@ import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.VariableConditionAdapter;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
-import de.uka.ilkd.key.util.Pair;
 
 import java.util.*;
 
@@ -35,7 +34,7 @@ public class IsSchematicTraceOverM extends VariableConditionAdapter {
     }
 
     public static boolean isSchematicTraceOverM(Term schemTrTerm, Term methodNameInst){
-        if(! (schemTrTerm.op() instanceof SchematicTrace) || schemTrTerm.arity() == 0)
+        if((!(schemTrTerm.op() instanceof SchematicTrace)) || schemTrTerm.arity() == 0)
             return false;
         Set<Term> forbProcs = getForbiddenProcsRec(schemTrTerm.sub(0));
         return forbProcs.contains(methodNameInst);

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 package de.uka.ilkd.key.strategy;
 
-import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import de.uka.ilkd.key.java.Services;
@@ -15,12 +14,10 @@ import de.uka.ilkd.key.ldt.LocSetLDT;
 import de.uka.ilkd.key.ldt.SeqLDT;
 import de.uka.ilkd.key.logic.*;
 import de.uka.ilkd.key.logic.op.*;
-import de.uka.ilkd.key.nparser.builder.ExpressionBuilder;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.rulefilter.SetRuleFilter;
 import de.uka.ilkd.key.rule.RuleApp;
-import de.uka.ilkd.key.rule.TacletApp;
 import de.uka.ilkd.key.rule.UseDependencyContractRule;
 import de.uka.ilkd.key.strategy.feature.*;
 import de.uka.ilkd.key.strategy.feature.findprefix.FindPrefixRestrictionFeature;
@@ -50,7 +47,6 @@ import de.uka.ilkd.key.strategy.termfeature.SimplifiedSelectTermFeature;
 import de.uka.ilkd.key.strategy.termfeature.TermFeature;
 import de.uka.ilkd.key.strategy.termgenerator.*;
 import de.uka.ilkd.key.util.MiscTools;
-import de.uka.ilkd.key.util.Pair;
 
 /**
  * Strategy tailored to be used as long as a java program can be found in the sequent.
@@ -470,6 +466,11 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                 not(isInstantiated("tracePostfix")),
                 longConst(-200))); // smarter costs!!
 
+        bindRuleSet(d, "elimPostfix", add(
+                not(isInstantiated("updatePrefix")),
+                not(isInstantiated("tracePrefix")),
+                longConst(-100))); // smarter costs!!
+
         setupArithPrimaryCategories(d);
         setupPolySimp(d, numbers);
         setupInEqSimp(d, numbers);
@@ -677,17 +678,17 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                 ifZero(DirectlyBelowSymbolFeature.create(Equality.EQV), longConst(100)))));
     }
 
-    private List<Term> getPossibleSublistsExtractingSchemTr(List<Pair<Term,Junctor>> choppedTrace, Services services){
-        LinkedList<Term> possibleSublists = new LinkedList<>();
-        possibleSublists.add(new TraceManager(choppedTrace, services).getTermFromList());
-        if(choppedTrace.size() > 1){
-            List<Pair<Term,Junctor>> sublist = List.copyOf(choppedTrace.subList(1,choppedTrace.size()));
-            if(sublist.stream().anyMatch(x -> x.first.op() instanceof SchematicTrace)){
-                possibleSublists.add(new TraceManager(sublist,services).getTermFromList());
-            }
-        }
-        return possibleSublists;
-    }
+//    private List<Term> getPossibleSublistsExtractingSchemTr(List<Pair<Term,Junctor>> choppedTrace, Services services){
+//        LinkedList<Term> possibleSublists = new LinkedList<>();
+//        possibleSublists.add(new TraceManager(choppedTrace, services).getTermFromList());
+//        if(choppedTrace.size() > 1){
+//            List<Pair<Term,Junctor>> sublist = List.copyOf(choppedTrace.subList(1,choppedTrace.size()));
+//            if(sublist.stream().anyMatch(x -> x.first.op() instanceof SchematicTrace)){
+//                possibleSublists.add(new TraceManager(sublist,services).getTermFromList());
+//            }
+//        }
+//        return possibleSublists;
+//    }
 
     private void setupElimPreTaclet(RuleSetDispatchFeature d){
             TermBuffer prefixRes = new TermBuffer();
@@ -702,14 +703,29 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                     add(
                             instantiate("updatePostfix", sub(prefixRes, 0)),
                             instantiate("tracePostfix", sub(sub(prefixRes, 1), 0))
-                        , longConst(-10000)
+                        , longConst(-1000)
 //                        ,
 //                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
 //                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1)))
 //                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
                     ));
-
         bindRuleSet(d, "elimPrefix", instantiateElimPrefix);
+    }
+
+    private void setupElimPostTaclet(RuleSetDispatchFeature d){
+        TermBuffer prefixRes = new TermBuffer();
+        TermGenerator preFixGenerator = new PreFixGenerator();
+        Feature initiateElimPostfix = forEach(prefixRes, preFixGenerator,
+                add(
+                        instantiate("updatePrefix", sub(prefixRes, 0)),
+                        instantiate("tracePrefix", sub(sub(prefixRes, 1), 0))
+                        , longConst(-400)
+//                        ,
+//                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
+//                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1)))
+//                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
+                ));
+        bindRuleSet(d, "elimPostfix", initiateElimPostfix);
     }
 
     private void setupCallTaclets(RuleSetDispatchFeature d){
@@ -1994,6 +2010,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "apply_equations", EqNonDuplicateAppFeature.INSTANCE);
         bindRuleSet(d,"traceCall", add(EqNonDuplicateAppFeature.INSTANCE,NonDuplicateAppModPositionFeature.INSTANCE));
         bindRuleSet(d,"elimPrefix", add(EqNonDuplicateAppFeature.INSTANCE,NonDuplicateAppModPositionFeature.INSTANCE) );
+        bindRuleSet(d,"elimPostfix", add(EqNonDuplicateAppFeature.INSTANCE,NonDuplicateAppModPositionFeature.INSTANCE) );
         return d;
     }
 
@@ -2060,7 +2077,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         setClassAxiomInstantiation(d);
         setupCallTaclets(d);
         setupElimPreTaclet(d);
-//        setupExtractSchemTr(d);
+        setupElimPostTaclet(d);
 
         disableInstantiate();
         return d;

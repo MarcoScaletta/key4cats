@@ -3,13 +3,11 @@ package de.uka.ilkd.key.logic;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.util.Pair;
-import recoder.Service;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TraceManager implements SeqManager<Pair<Term,Junctor>> {
+public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
 
     private LinkedList<Pair<Term,Junctor>> tracePair;
 
@@ -109,6 +107,7 @@ public class TraceManager implements SeqManager<Pair<Term,Junctor>> {
         tracePair.addLast(new Pair<>(elem.first,null));
     }
 
+
 //    public static List<Pair<Term, Junctor>> addLast(List<Pair<Term, Junctor>> list,Term el, Junctor junctor){
 //        List<Pair<Term,Junctor>> l =  new ArrayList<>(list.subList(0,list.size()-1));
 //        l.addLast(new Pair<>(list.getLast().first,junctor));
@@ -151,12 +150,12 @@ public class TraceManager implements SeqManager<Pair<Term,Junctor>> {
                 ;
     }
 
-    public static Term unchop(List<Term> traces, Services services){
-
-        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
-                (subUnchopped, trace) ->
-                        services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
-    }
+//    public static Term unchop(List<Term> traces, Services services){
+//
+//        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
+//                (subUnchopped, trace) ->
+//                        services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
+//    }
 
     public static Term unchop(Term trace1, Term trace2, Services services){
         return services.getTermFactory().createTerm(Junctor.CHOP, trace1, trace2);

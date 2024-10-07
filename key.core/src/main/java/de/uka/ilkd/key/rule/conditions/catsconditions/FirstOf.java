@@ -6,7 +6,6 @@ import de.uka.ilkd.key.logic.TraceManager;
 import de.uka.ilkd.key.logic.UpdateManager;
 import de.uka.ilkd.key.logic.op.SVSubstitute;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.SchematicTrace;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;

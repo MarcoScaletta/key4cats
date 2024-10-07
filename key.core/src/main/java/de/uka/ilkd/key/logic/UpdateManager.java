@@ -1,15 +1,12 @@
 package de.uka.ilkd.key.logic;
 
 import de.uka.ilkd.key.java.Services;
-import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.logic.op.UpdateJunctor;
-import de.uka.ilkd.key.util.Pair;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-public class UpdateManager implements SeqManager<Term> {
+public class UpdateManager extends SeqManager<Term> {
 
     private final List<Term> updateList;
 

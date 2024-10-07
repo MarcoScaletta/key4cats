@@ -1,4 +1,4 @@
-\single:casinoCaseStudySimpleCompletePlaceBetFail;
+\single:callDummyProc2And1SafeLocalContextOr;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<
@@ -181,7 +181,6 @@ TestsCATs.java;
         ~~ ** x::y . `true` |
         start(dummyProc2,\id) ** ~~ **  pop(dummyProc2,\id) ** x::y1 . `true` | ~~ >>
 [forbidDummyProc1And2PreTraceCAT] dummyProc3:
-
     <<
         ~{dummyProc1,dummyProc2,decideBet}~ ** x::y . `true` |
         start(dummyProc3,\id) ** ~~ **  pop(dummyProc3,\id)  ** x::y1 . `true` | ~~ >>

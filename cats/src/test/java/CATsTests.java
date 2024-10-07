@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
@@ -72,7 +71,8 @@ public class CATsTests {
                     "removeOneWithCondFail",
                     "callBetTwiceFail", "callPlaceBetOnceInsufficientContractFail",
                     "callDummyProc1And2And3CATFail",
-                    "simpleSchemTraceInclusionFail", "callDummyProc1WithAssumptionsButAssumeNothingFail",
+                    "simpleSchemTraceInclusionFail",
+                    "callDummyProc1WithAssumptionsButAssumeNothingFail",
                     "callPlaceBetOnlyOncePreCondNotMetFail",
                     "casinoCaseStudySimpleFail",
                     "casinoCaseStudySimpleCompletePlaceBetFail"
@@ -83,6 +83,8 @@ public class CATsTests {
         if(!proof.closed())
             printResults(contract,proof.countNodes());
         else
+            printResults(contract,-1000);
+        System.out.println(proof.countNodes());
         assert(!proof.closed());
     }
 
