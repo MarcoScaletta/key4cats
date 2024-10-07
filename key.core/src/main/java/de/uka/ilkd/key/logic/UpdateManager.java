@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UpdateManager extends SeqManager<Term> {
+public class UpdateManager implements SeqManager<Term> {
 
-    private List<Term> updateList;
+    private final List<Term> updateList;
 
     private final Services services;
 
@@ -83,6 +83,11 @@ public class UpdateManager extends SeqManager<Term> {
         }
         return update;
     }
+//
+//    @Override
+//    public void addLast(Term elem) {
+//
+//    }
 
     public boolean hasStrictPrefix(UpdateManager possiblePrefix){
         if(possiblePrefix.updateList.size() >= this.updateList.size())

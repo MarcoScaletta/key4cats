@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
+public class TraceManager implements SeqManager<Pair<Term,Junctor>> {
 
     private LinkedList<Pair<Term,Junctor>> tracePair;
 
@@ -102,12 +102,19 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return trace;
     }
 
-    public static List<Pair<Term, Junctor>> addLast(List<Pair<Term, Junctor>> list,Term el, Junctor junctor){
-        List<Pair<Term,Junctor>> l =  new ArrayList<>(list.subList(0,list.size()-1));
-        l.addLast(new Pair<>(list.getLast().first,junctor));
-        l.addLast(new Pair<>(el,null));
-        return l;
+//    @Override
+    public void addLast(Pair<Term, Junctor> elem) {
+        Term currentLast = this.getLast().first;
+        tracePair.set(tracePair.size()-1, new Pair<>(currentLast,elem.second));
+        tracePair.addLast(new Pair<>(elem.first,null));
     }
+
+//    public static List<Pair<Term, Junctor>> addLast(List<Pair<Term, Junctor>> list,Term el, Junctor junctor){
+//        List<Pair<Term,Junctor>> l =  new ArrayList<>(list.subList(0,list.size()-1));
+//        l.addLast(new Pair<>(list.getLast().first,junctor));
+//        l.addLast(new Pair<>(el,null));
+//        return l;
+//    }
 
 
     // returns i >=0 : if possiblePrefixTM is prefix of this where
