@@ -38,7 +38,7 @@ public class FirstOf implements VariableCondition {
         if(termSV.sort() == Sort.FORMULA)
             firstElem = (new TraceManager(term,services)).getTracePairs().getFirst().first;
         if(termSV.sort() == Sort.UPDATE)
-            firstElem = (new UpdateManager(term,services)).getUpdateList().getFirst();
+            firstElem = (new UpdateManager(term,services)).getFirst();
 
         if(firstElem == null)
             return null;

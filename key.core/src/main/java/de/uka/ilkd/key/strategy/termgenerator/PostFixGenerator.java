@@ -67,11 +67,11 @@ public class PostFixGenerator implements TermGenerator {
             UpdateManager updateManager,
             Services services){
 
-            Term runEv = updateManager.getUpdateList().getFirst();
+            Term runEv = updateManager.getFirst();
             Term schemTr = traceManager.getTracePairs().getFirst().first;
             if(IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)))
                 return getListOfJudgments(
-                        UpdateManager.getUpdateFromList(updateManager.getUpdateList(),services),
+                        updateManager.getTermFromSubList(),
                         List.of(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1,traceManager.getTracePairs().size()),services)),
                         services).iterator();
 
@@ -86,14 +86,14 @@ public class PostFixGenerator implements TermGenerator {
         //todo:check if the sizes of trace manager can be lower
         if(updateManager.getSize() > 1
             && traceManager.getSize() > 1
-            && updateManager.getUpdateList().getFirst().op() == UpdateEvent.RUN_EV
+            && updateManager.getFirst().op() == UpdateEvent.RUN_EV
         ){
             if(traceManager.getTracePairs().getFirst().first.op() instanceof SchematicTrace)
                 return elimSchemTrPrefixMatchedWithRunEvPrefix(traceManager, updateManager, services);
             else if(traceManager.getTracePairs().getFirst().first.op() == TraceEvent.START_TR_EV
                 && traceManager.getTracePairs().get(1).first.op() instanceof SchematicTrace) {
                 //elimSchemTrPrefixMatchedWithRunEvPrefix
-                Term runEv = updateManager.getUpdateList().getFirst();
+                Term runEv = updateManager.getFirst();
                 Term startTrEv = traceManager.getTracePairs().getFirst().first;
                 Term schemTr = traceManager.getTracePairs().get(1).first;
                 if (runEv.sub(0) == startTrEv.sub(0)  //checking if same method name
@@ -105,7 +105,7 @@ public class PostFixGenerator implements TermGenerator {
                     tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1, traceManager.getTracePairs().size()), services));
                     if (traceManager.getSize() > 2)
                         tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(2, traceManager.getTracePairs().size()), services));
-                    Term updatePostfix = UpdateManager.getUpdateFromList(updateManager.getUpdateList().subList(1, updateManager.getUpdateList().size()), services);
+                    Term updatePostfix = updateManager.getTermFromSubList(1, updateManager.getSize());
                     return getListOfJudgments(updatePostfix, tracePostfixes, services).iterator();
                 }
             }
@@ -129,9 +129,7 @@ public class PostFixGenerator implements TermGenerator {
         //      u1 : phi1 ~~ |- u1;u2 : phi1 ~~ ** phi2
         boolean isPostfixExtandable = lastPrefix.second == Junctor.CHOP && lastPrefix.first.op() instanceof SchematicTrace;
 
-        Term updatePostfix = UpdateManager.getUpdateFromList(
-                updateManager.getUpdateList().subList(updatePrefix.getSize(), updateManager.getSize()),
-                services);
+        Term updatePostfix = updateManager.getTermFromSubList(updatePrefix.getSize(), updateManager.getSize());
         Term tracePostFix = TraceManager.getTraceFromList(
                 traceManager.getTracePairs().subList(tracePrefix.getSize(), traceManager.getSize()),
                 services);
