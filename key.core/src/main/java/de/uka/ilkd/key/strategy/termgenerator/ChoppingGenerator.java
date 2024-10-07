@@ -53,12 +53,13 @@ public class ChoppingGenerator implements TermGenerator {
         Term firstOfInnerTrace = fullFormulaTM.getTracePairs().getFirst().first;
         Term alternativePreFml = null;
         if(firstOfInnerTrace.op() instanceof SchematicTrace){
-            alternativePreFml = TraceManager.getTraceFromList(TraceManager.addLast(longestPreFmlTM.getTracePairs(), firstOfInnerTrace, Junctor.CHOP),services);
+            alternativePreFml =
+                    (new TraceManager(TraceManager.addLast(longestPreFmlTM.getTracePairs(), firstOfInnerTrace, Junctor.CHOP),services)).getTermFromList();
         }
 
 
         // The longest formula in the antecedent is prefix of fullformula
-        Term traceTrail =  TraceManager.getTraceFromList(fullFormulaTM.getTracePairs().subList(lastIndexCommonPrefix+1, fullFormulaTM.getSize()),services);
+        Term traceTrail =  fullFormulaTM.getTermFromSubList(lastIndexCommonPrefix+1, fullFormulaTM.getSize());
 
         List<Pair<Term,Term>> choppingTrail = ChopForCall.choppingTrail(traceTrail, fullFormulaTM.getTracePairs().get(lastIndexCommonPrefix).first, services);
 
@@ -68,7 +69,7 @@ public class ChoppingGenerator implements TermGenerator {
         else {
             LinkedHashSet<Triple<Term,Term,Term>> triples = new LinkedHashSet<>();
                 for(Pair<Term,Term> choppedTrail : choppingTrail){
-                    triples.add(new Triple<>(TraceManager.getTraceFromList(longestPreFmlTM.getTracePairs(), services), choppedTrail.first, choppedTrail.second));
+                    triples.add(new Triple<>(longestPreFmlTM.getTermFromList(), choppedTrail.first, choppedTrail.second));
                     if(alternativePreFml != null)
                         triples.add(new Triple<>(alternativePreFml, choppedTrail.first, choppedTrail.second));
                 }

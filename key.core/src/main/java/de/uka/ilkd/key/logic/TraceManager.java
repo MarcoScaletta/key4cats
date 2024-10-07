@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TraceManager  {
+public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
 
     private LinkedList<Pair<Term,Junctor>> tracePair;
 
@@ -19,6 +19,12 @@ public class TraceManager  {
     public TraceManager(Term trace, Services services){
        this(trace,List.of(Junctor.CONC,Junctor.CHOP),services);
     }
+
+    public TraceManager(List<Pair<Term,Junctor>> tracePair, Services services){
+        this.tracePair = new LinkedList<>(tracePair);
+        this.services = services;
+    }
+
 
     public TraceManager(Term trace,List<Junctor> junctors, Services services){
         this.services = services;
@@ -53,22 +59,45 @@ public class TraceManager  {
         return separatedTrace;
     }
 
-    public Pair<Term, Junctor> lastElem() {
+    @Override
+    public Pair<Term, Junctor> getFirst() {
+        if(tracePair.isEmpty())
+            return null;
+        return tracePair.getFirst();
+    }
+
+    @Override
+    public Pair<Term, Junctor> getLast() {
         if(tracePair.isEmpty())
             return null;
         return tracePair.getLast();
     }
 
+    @Override
+    public Pair<Term, Junctor> get(int i) {
+        return tracePair.get(i);
+    }
 
     public int getSize(){
         return tracePair.size();
     }
 
-    public static Term getTraceFromList(List<Pair<Term,Junctor>> traceAsList, Services services){
+    @Override
+    public List<Pair<Term, Junctor>> getList() {
+        return tracePair;
+    }
 
-        Term trace = traceAsList.getFirst().first;
-        for (int i = 1; i < traceAsList.size(); i++) {
-            trace = services.getTermFactory().createTerm(traceAsList.get(i-1).second, trace, traceAsList.get(i).first);
+    @Override
+    public Term getTermFromList() {
+        return getTermFromSubList(0, tracePair.size());
+    }
+
+    @Override
+    public Term getTermFromSubList(int begin, int end) {
+        List<Pair<Term,Junctor>> sublist = tracePair.subList(begin,end);
+        Term trace = sublist.getFirst().first;
+        for (int i = 1; i < sublist.size(); i++) {
+            trace = services.getTermFactory().createTerm(sublist.get(i-1).second, trace, sublist.get(i).first);
         }
         return trace;
     }

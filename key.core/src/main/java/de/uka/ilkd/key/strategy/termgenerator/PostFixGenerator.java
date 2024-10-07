@@ -71,8 +71,8 @@ public class PostFixGenerator implements TermGenerator {
             Term schemTr = traceManager.getTracePairs().getFirst().first;
             if(IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)))
                 return getListOfJudgments(
-                        updateManager.getTermFromSubList(),
-                        List.of(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1,traceManager.getTracePairs().size()),services)),
+                        updateManager.getTermFromList(),
+                        List.of(traceManager.getTermFromSubList(1,traceManager.getTracePairs().size())),
                         services).iterator();
 
         return Collections.emptyIterator();
@@ -102,9 +102,9 @@ public class PostFixGenerator implements TermGenerator {
                         || runEv.sub(1) == startTrEv.sub(1)) // same callId for runEV and startTrEv
                 ) {
                     List<Term> tracePostfixes = new ArrayList<>();
-                    tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(1, traceManager.getTracePairs().size()), services));
+                    tracePostfixes.add(traceManager.getTermFromSubList(1, traceManager.getTracePairs().size()));
                     if (traceManager.getSize() > 2)
-                        tracePostfixes.add(TraceManager.getTraceFromList(traceManager.getTracePairs().subList(2, traceManager.getTracePairs().size()), services));
+                        tracePostfixes.add(traceManager.getTermFromSubList(2, traceManager.getTracePairs().size()));
                     Term updatePostfix = updateManager.getTermFromSubList(1, updateManager.getSize());
                     return getListOfJudgments(updatePostfix, tracePostfixes, services).iterator();
                 }
@@ -130,9 +130,7 @@ public class PostFixGenerator implements TermGenerator {
         boolean isPostfixExtandable = lastPrefix.second == Junctor.CHOP && lastPrefix.first.op() instanceof SchematicTrace;
 
         Term updatePostfix = updateManager.getTermFromSubList(updatePrefix.getSize(), updateManager.getSize());
-        Term tracePostFix = TraceManager.getTraceFromList(
-                traceManager.getTracePairs().subList(tracePrefix.getSize(), traceManager.getSize()),
-                services);
+        Term tracePostFix = traceManager.getTermFromSubList(tracePrefix.getSize(), traceManager.getSize());
 
         if(ContainsObservations.containsObservations(tracePostFix))
             return Collections.emptyIterator();

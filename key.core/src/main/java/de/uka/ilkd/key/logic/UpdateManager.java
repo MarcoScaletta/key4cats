@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UpdateManager implements SeqManager<Term>{
+public class UpdateManager extends SeqManager<Term> {
 
     private List<Term> updateList;
 
@@ -62,16 +62,7 @@ public class UpdateManager implements SeqManager<Term>{
     }
 
     @Override
-    public Term getTermFromSubList(List<Term> updateAsList) {
-        Term update = updateAsList.getFirst();
-        for (int i = 1; i < updateAsList.size(); i++) {
-            update = getSequentialUpdate(update, updateAsList.get(i), services);
-        }
-        return update;
-    }
-
-    @Override
-    public Term getTermFromSubList() {
+    public Term getTermFromList() {
         Term update = this.updateList.getFirst();
         for (int i = 1; i < this.updateList.size(); i++) {
             update = getSequentialUpdate(update, this.updateList.get(i), services);

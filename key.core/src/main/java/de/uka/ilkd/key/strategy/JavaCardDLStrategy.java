@@ -679,11 +679,11 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
 
     private List<Term> getPossibleSublistsExtractingSchemTr(List<Pair<Term,Junctor>> choppedTrace, Services services){
         LinkedList<Term> possibleSublists = new LinkedList<>();
-        possibleSublists.add(TraceManager.getTraceFromList(choppedTrace,services));
+        possibleSublists.add(new TraceManager(choppedTrace, services).getTermFromList());
         if(choppedTrace.size() > 1){
             List<Pair<Term,Junctor>> sublist = List.copyOf(choppedTrace.subList(1,choppedTrace.size()));
             if(sublist.stream().anyMatch(x -> x.first.op() instanceof SchematicTrace)){
-                possibleSublists.add(TraceManager.getTraceFromList(sublist,services));
+                possibleSublists.add(new TraceManager(sublist,services).getTermFromList());
             }
         }
         return possibleSublists;
