@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-2.0-only */
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -20,9 +21,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 public class CATsTests {
 
-    private final String fileName= "results_"
-            + new SimpleDateFormat("yyMMdd_HHmm").format(new Date())
-            + ".csv";
+    private final String fileName;
+
+    public CATsTests() throws IOException {
+        String resultInfo = "results_info";
+        fileName = Files.readString(new File(resultInfo).toPath());
+    }
+
 
 
     @ParameterizedTest
@@ -55,6 +60,7 @@ public class CATsTests {
             printResults(contract,proof.countNodes());
         else
             printResults(contract,-1000);
+        System.out.println(proof.countNodes());
         assert(proof.closed());
     }
 

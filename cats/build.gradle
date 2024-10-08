@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat
 
 plugins {
     id 'ca.coglinc.javacc' version '2.4.0'
@@ -40,6 +41,12 @@ tasks.register('copyRules', Copy) {
     include("tracerules.key")
     include("TestsCATs.java")
 }
+tasks.register('saveResults'){
+    String name = """results/results_${new SimpleDateFormat("yyMMdd_HHmm").format(new Date())}.csv"""
+    new File(projectDir, "$name").text = ""
+    new File(projectDir, "results_info").text = "$name"
+}
 
 
+tasks.copyRules.dependsOn(saveResults)
 tasks.processTestResources.dependsOn(copyRules)
