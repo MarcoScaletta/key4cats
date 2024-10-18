@@ -43,7 +43,6 @@ tasks.register('copyRules', Copy) {
 }
 tasks.register('saveResults'){
     String name = """results/results_${new SimpleDateFormat("yyMMdd_HHmm").format(new Date())}.csv"""
-    new File(projectDir, "$name").text = ""
     new File(projectDir, "results_info").text = "$name"
 }
 

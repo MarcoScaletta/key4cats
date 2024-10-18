@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author Marco Scaletta
  */
@@ -65,6 +67,12 @@ public class ChopForCall implements VariableCondition {
                 (subUnchopped, trace) ->
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
     }
+
+//    public static Term unchop(List<Term> traces, Services services) {
+//        if(traces.size()>1)
+//            return TraceManager.unchopTraceManagers(traces.stream().map(x -> new TraceManager(x,services)).toList(),services);
+//        return traces.getFirst();
+//    }
 
     private static boolean containsSchemTr(Term trace){
         if(trace.op() instanceof SchematicTrace)

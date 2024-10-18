@@ -347,6 +347,18 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("isSchematicTrace",
                     IsSchematicTrace.class, SV);
 
+    public static final AbstractConditionBuilder IS_ATOMIC_TRACE_ELEM =
+            new ConstructorBasedBuilder("isAtomicTraceElem",
+                    IsAtomicTraceElem.class, SV);
+
+    public static final AbstractConditionBuilder PREFIX_POSTFIX_CONDITION =
+            new ConstructorBasedBuilder("prefixPostfixCondition",
+                    PrefixPostfixCondition.class, SV,SV,SV);
+
+    public static final AbstractConditionBuilder PREFIX_POSTFIX_CONDITION_WITH_LAST_ELEM_PREFIX =
+            new ConstructorBasedBuilder("prefixPostfixCondition",
+                    PrefixPostfixCondition.class, SV,SV,SV,SV);
+
     public static final AbstractConditionBuilder IS_EVENT =
             new ConstructorBasedBuilder("isEvent",
                     IsEvent.class, SV);
@@ -454,7 +466,9 @@ public class TacletBuilderManipulators {
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
                 INVESTIGATE_TERM,
                 FIRST_OF,
-            CONTAINS_OBSERVATIONS,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
+                CONTAINS_OBSERVATIONS,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,
+                IS_ATOMIC_TRACE_ELEM,IS_SCHEMATIC_TRACE_OVER_M,
+                PREFIX_POSTFIX_CONDITION,PREFIX_POSTFIX_CONDITION_WITH_LAST_ELEM_PREFIX,
                 IS_RUN_EVENT,IS_SCHEMATIC_TRACE_INCLUDED,
                 IS_EVENT, NO_VARS_IN_STATES);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,

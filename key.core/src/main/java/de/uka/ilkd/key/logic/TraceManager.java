@@ -100,7 +100,7 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return trace;
     }
 
-//    @Override
+    //    @Override
     public void addLast(Pair<Term, Junctor> elem) {
         Term currentLast = this.getLast().first;
         tracePair.set(tracePair.size()-1, new Pair<>(currentLast,elem.second));
@@ -150,6 +150,19 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
                 ;
     }
 
+    @Override
+    public boolean hasStrictPrefix(SeqManager<Pair<Term,Junctor>> possiblePrefix){
+        int prefixSize = possiblePrefix.getSize();
+        int traceSize  = this.getSize();
+
+        if(prefixSize >= traceSize)
+            return false;
+        return
+                this.tracePair.subList(0,prefixSize-1).equals(
+                        possiblePrefix.getList().subList(0,prefixSize-1))
+                        && this.tracePair.get(prefixSize-1).first.equals(possiblePrefix.getList().getLast().first)
+                ;
+    }
 //    public static Term unchop(List<Term> traces, Services services){
 //
 //        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
@@ -161,8 +174,4 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return services.getTermFactory().createTerm(Junctor.CHOP, trace1, trace2);
     }
 
-    @Override
-    public String toString(){
-        return this.tracePair.toString();
-    }
 }

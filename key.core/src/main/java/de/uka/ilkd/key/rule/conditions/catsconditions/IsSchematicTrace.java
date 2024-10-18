@@ -5,27 +5,29 @@ import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
+import de.uka.ilkd.key.rule.VariableConditionAdapter;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 /**
  * @author Marco Scaletta
  */
-public class IsSchematicTrace implements VariableCondition {
+public class IsSchematicTrace extends VariableConditionAdapter {
 
 
     private final SchemaVariable formulaSV;
+    private final boolean negated;
 
 
-    public IsSchematicTrace(SchemaVariable formula) {
+    public IsSchematicTrace(SchemaVariable formula, boolean negated) {
         this.formulaSV = formula;
+        this.negated = negated;
     }
 
     @Override
-    public MatchConditions check(SchemaVariable var, SVSubstitute instCandidate, MatchConditions matchCond, Services services) {
-        SVInstantiations svInst = matchCond.getInstantiations();
-
-        Term formulaTerm = (Term) svInst.getInstantiation(formulaSV);
-        if(formulaTerm.op() instanceof SchematicTrace)
-            return matchCond;
-        return null;
+    public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations instMap, Services services) {
+        Term formulaTerm = (Term) instMap.getInstantiation(formulaSV);
+        if(formulaTerm == null)
+            return true;
+        return negated != formulaTerm.op() instanceof SchematicTrace;
     }
+
 }

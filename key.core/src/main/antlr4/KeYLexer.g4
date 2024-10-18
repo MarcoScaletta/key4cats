@@ -124,6 +124,8 @@ INVESTIGATE_TERM : '\\investigateTerm';
 POSTSTATE_CONDITION: '\\postStateCondition';
 CONTAINS_OBSERVATIONS : '\\containsObservations';
 IS_SCHEMATIC_TRACE: '\\isSchematicTrace';
+IS_ATOMIC_TRACE_ELEM: '\\isAtomicTraceElem';
+PREFIX_POSTFIX_CONDITION: '\\prefixPostfixCondition';
 IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
 IS_SCHEMATIC_TRACE_INCLUDED: '\\isSchematicTraceIncluded';
 IS_UPDATE_EVENT: '\\isUpdateEvent';

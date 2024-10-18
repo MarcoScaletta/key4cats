@@ -667,6 +667,8 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | FIRST_OF
   | IS_RUN_EVENT
   | IS_SCHEMATIC_TRACE
+  | IS_ATOMIC_TRACE_ELEM
+  | PREFIX_POSTFIX_CONDITION
   | IS_EVENT
   | IS_SCHEMATIC_TRACE_OVER_M
   | IS_SCHEMATIC_TRACE_INCLUDED
