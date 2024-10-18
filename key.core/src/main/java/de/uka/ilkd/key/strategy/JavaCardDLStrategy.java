@@ -472,6 +472,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                 longConst(-100))); // smarter costs!!
 
         setupArithPrimaryCategories(d);
+        setupObserveTaclet(d);
         setupPolySimp(d, numbers);
         setupInEqSimp(d, numbers);
 
@@ -701,15 +702,20 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
             //      - tracePostfix
             Feature instantiateElimPrefix = forEach(prefixRes, postFixGenerator,
                     add(
+                            checkSameTrace(instOf("trace"),instOf("tracePrefix"),  sub(sub(prefixRes, 1), 0)),
                             instantiate("updatePostfix", sub(prefixRes, 0)),
-                            instantiate("tracePostfix", sub(sub(prefixRes, 1), 0))
-                        , longConst(-1000)
-//                        ,
-//                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
+                            instantiate("tracePostfix", sub(sub(prefixRes, 1), 0)),
+                            longConst(-1000)
 //                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1)))
 //                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
                     ));
         bindRuleSet(d, "elimPrefix", instantiateElimPrefix);
+    }
+
+
+    private void setupObserveTaclet(RuleSetDispatchFeature d){
+        Feature observe = add(afterSymbolicExecution(), longConst(-4500));
+        bindRuleSet(d, "observingInAnte", observe);
     }
 
     private void setupElimPostTaclet(RuleSetDispatchFeature d){
@@ -736,12 +742,12 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                 add(
                         instantiate("preFormula", sub(chopping, 0)),
                         instantiate("innerFormula", sub(chopping, 1)),
-                        instantiate("postFormula", sub(chopping, 2)),
-//                        , longConst(-2000)
-//                        ,
-                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
-                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),
-                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
+                        instantiate("postFormula", sub(chopping, 2))
+                        , longConst(-1000)
+////                        ,
+//                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
+//                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),
+//                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
                 ));
 
         bindRuleSet(d, "traceCall", instantiateTraceCall); //use smarter costs for each instantiation of formulas
@@ -2077,6 +2083,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         setClassAxiomInstantiation(d);
         setupCallTaclets(d);
         setupElimPreTaclet(d);
+        setupObserveTaclet(d);
         setupElimPostTaclet(d);
 
         disableInstantiate();

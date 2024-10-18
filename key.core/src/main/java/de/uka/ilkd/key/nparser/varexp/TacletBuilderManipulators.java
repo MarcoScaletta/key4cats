@@ -22,8 +22,7 @@ import de.uka.ilkd.key.rule.tacletbuilder.TacletBuilder;
 
 import org.jspecify.annotations.NonNull;
 
-import static de.uka.ilkd.key.nparser.varexp.ArgumentType.SORT;
-import static de.uka.ilkd.key.nparser.varexp.ArgumentType.TYPE_RESOLVER;
+import static de.uka.ilkd.key.nparser.varexp.ArgumentType.*;
 import static de.uka.ilkd.key.rule.conditions.TypeComparisonCondition.Mode.*;
 
 /**
@@ -37,6 +36,8 @@ public class TacletBuilderManipulators {
     // region Factories
     // Short cut for argument types
     private static final ArgumentType TR = TYPE_RESOLVER;
+    private static final ArgumentType MNR = METHOD_NAME_RESOLVER;
+    private static final ArgumentType TRACE = TRACE_RESOLVER;
     private static final ArgumentType KJT = ArgumentType.JAVA_TYPE;
     private static final ArgumentType PV = ArgumentType.VARIABLE;
     private static final ArgumentType USV = ArgumentType.VARIABLE;
@@ -47,6 +48,7 @@ public class TacletBuilderManipulators {
     private static final ArgumentType TLSV = ArgumentType.VARIABLE;
     private static final ArgumentType S = ArgumentType.STRING;
     private static final ArgumentType T = ArgumentType.TERM;
+    private static final ArgumentType I = ArgumentType.INTEGER;
 
 
     /**
@@ -311,7 +313,8 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder IS_OBSERVATION =
             new ConstructorBasedBuilder("isObservation",
-                    IsObservation.class, SV);
+                    IsObservation.class, TRACE);
+
 
     public static final AbstractConditionBuilder INVESTIGATE_TERM =
             new ConstructorBasedBuilder("investigateTerm",
@@ -321,10 +324,9 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("firstOf",
                     FirstOf.class, SV,SV);
 
-
-
-
-
+    public static final AbstractConditionBuilder SAME_TRACE =
+            new ConstructorBasedBuilder("sameTrace",
+                    SameTraceCondition.class, T,T);
 
     public static final AbstractConditionBuilder POSTSTATE_CONDITION =
             new ConstructorBasedBuilder("postStateCondition",
@@ -333,7 +335,6 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder CONTAINS_OBSERVATIONS =
             new ConstructorBasedBuilder("containsObservations",
                     ContainsObservations.class, SV);
-
 
     public static final AbstractConditionBuilder CHOP_FOR_CALL =
             new ConstructorBasedBuilder("chopForCall",
@@ -345,20 +346,36 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE =
             new ConstructorBasedBuilder("isSchematicTrace",
-                    IsSchematicTrace.class, SV);
+                    IsSchematicTrace.class, TRACE);
+
+    public static final AbstractConditionBuilder IS_ATOMIC_TRACE_ELEM =
+            new ConstructorBasedBuilder("isAtomicTraceElem",
+                    IsAtomicTraceElem.class, TRACE);
+
+    public static final AbstractConditionBuilder PREFIX_POSTFIX_CONDITION =
+            new ConstructorBasedBuilder("prefixPostfixCondition",
+                    PrefixPostfixCondition.class, T,T,T);
 
     public static final AbstractConditionBuilder IS_EVENT =
             new ConstructorBasedBuilder("isEvent",
-                    IsEvent.class, SV);
+                    IsEvent.class, TRACE);
+
+    public static final AbstractConditionBuilder IS_EVENT_WITH_METHOD =
+            new ConstructorBasedBuilder("isEventWithMethod",
+                    IsEventWithMethod.class, SV);
 
     public static final AbstractConditionBuilder NO_VARS_IN_STATES =
             new ConstructorBasedBuilder("noVarsInStates",
-                    NoVarsInStatesCondition.class, SV);
+                    NoVarsInStatesCondition.class, TRACE);
 
 
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE_OVER_M =
             new ConstructorBasedBuilder("isSchematicTraceOverM",
-                    IsSchematicTraceOverM.class, SV,SV);
+                    IsSchematicTraceOverM.class, TRACE,MNR);
+
+    public static final AbstractConditionBuilder HAS_POSTFIX =
+            new ConstructorBasedBuilder("hasPostfix",
+                    HasPostfix.class, TRACE);
 
     public static final AbstractConditionBuilder IS_RUN_EVENT =
             new ConstructorBasedBuilder("isRunEv",
@@ -453,10 +470,13 @@ public class TacletBuilderManipulators {
             IS_OBSERVER, CONSTANT, HAS_SORT, LABEL, NEW_LABEL, HAS_ELEM_SORT, IS_IN_STRICTFP, METHOD_NAME_CONSTANT,
             PENDING_INVOCATION_CONDITION, FINISH_CONDITION,OBSERVATION_CONDITION,IS_OBSERVATION, POSTSTATE_CONDITION,
                 INVESTIGATE_TERM,
-                FIRST_OF,
-            CONTAINS_OBSERVATIONS,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,IS_SCHEMATIC_TRACE_OVER_M,
+                FIRST_OF,SAME_TRACE,
+                CONTAINS_OBSERVATIONS,CHOP_FOR_CALL,INTER_OBS,IS_SCHEMATIC_TRACE,
+                IS_ATOMIC_TRACE_ELEM,IS_SCHEMATIC_TRACE_OVER_M,
+                PREFIX_POSTFIX_CONDITION,
                 IS_RUN_EVENT,IS_SCHEMATIC_TRACE_INCLUDED,
-                IS_EVENT, NO_VARS_IN_STATES);
+                IS_EVENT, NO_VARS_IN_STATES, HAS_POSTFIX,
+                IS_EVENT_WITH_METHOD);
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
         loadWithServiceLoader();

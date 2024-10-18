@@ -1,4 +1,4 @@
-\single:callDummyProc2And1SafeLocalContextOr;
+\single:callPlaceBetOnceSufficientContract;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<
@@ -261,4 +261,11 @@ TestsCATs.java;
         ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
         start(callPlaceBetOnceSetVarsToOne,\id) ** ~~ ** pop(callPlaceBetOnceSetVarsToOne,\id) ** amountToBet::b1 . `true` |
         ~{placeBet,decideBet}~
+    >>
+
+[noObservationsTrivialPrecondition]  placeBet:
+    <<
+        ~~ ** `true` |
+        start(placeBet,\id) ** ~{placeBet,decideBet}~ ** pop(placeBet,\id) ** `true` |
+        ~~
     >>

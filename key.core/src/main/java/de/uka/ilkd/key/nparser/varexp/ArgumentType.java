@@ -8,6 +8,9 @@ import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.op.ParsableVariable;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.rule.conditions.TypeResolver;
+import de.uka.ilkd.key.rule.conditions.catsconditions.MethodNameResolver;
+import de.uka.ilkd.key.rule.conditions.catsconditions.TermResolver;
+import de.uka.ilkd.key.rule.conditions.catsconditions.TraceResolver;
 
 /**
  * Argument types for {@link TacletBuilderCommand}s.
@@ -18,7 +21,8 @@ import de.uka.ilkd.key.rule.conditions.TypeResolver;
  */
 public enum ArgumentType {
     TYPE_RESOLVER(TypeResolver.class), SORT(Sort.class), TERM(Term.class),
-    JAVA_TYPE(KeYJavaType.class), VARIABLE(ParsableVariable.class), STRING(String.class);
+    JAVA_TYPE(KeYJavaType.class), VARIABLE(ParsableVariable.class), STRING(String.class), TRACE_RESOLVER(TraceResolver.class), INTEGER(Integer.class),
+    METHOD_NAME_RESOLVER(MethodNameResolver.class);
 
     public final Class<?> clazz;
 

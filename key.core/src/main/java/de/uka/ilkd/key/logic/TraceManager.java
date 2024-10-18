@@ -2,6 +2,9 @@ package de.uka.ilkd.key.logic;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.op.Junctor;
+import de.uka.ilkd.key.logic.op.SchemaVariable;
+import de.uka.ilkd.key.rule.conditions.catsconditions.IsAtomicTraceElem;
+import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
 
 import java.util.LinkedList;
@@ -14,6 +17,20 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
     private final Services services;
 
 
+    public TraceManager(Term trace, SVInstantiations instMap, Services services){
+        this(trace,List.of(Junctor.CONC,Junctor.CHOP),instMap,services);
+    }
+
+    public TraceManager(Term trace,List<Junctor> junctors, SVInstantiations instMap, Services services){
+        this.services = services;
+        setupTrace(trace, instMap, junctors);
+    }
+
+    public TraceManager(Term trace,List<Junctor> junctors, Services services){
+        this.services = services;
+        setupTrace(trace, SVInstantiations.EMPTY_SVINSTANTIATIONS, junctors);
+    }
+
     public TraceManager(Term trace, Services services){
        this(trace,List.of(Junctor.CONC,Junctor.CHOP),services);
     }
@@ -24,37 +41,40 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
     }
 
 
-    public TraceManager(Term trace,List<Junctor> junctors, Services services){
-        this.services = services;
-        setupTrace(trace, junctors);
+    private void setupTrace(Term trace, SVInstantiations instMap, List<Junctor> junctors){
+        tracePair = new LinkedList<>();
+        separateTrace(trace,instMap,junctors);
     }
 
-    private void setupTrace(Term trace, List<Junctor> junctors){
-        tracePair = new LinkedList<>();
-        separateTrace(trace,junctors);
-    }
 
     public List<Pair<Term,Junctor>> getTracePairs(){return this.tracePair;}
 
-    private void separateTrace(Term trace, List<Junctor> junctors){
-        this.tracePair = separateTraceRec(trace, junctors);
+    private void separateTrace(Term trace, SVInstantiations instMap, List<Junctor> junctors){
+        this.tracePair = separateTraceRec(trace, instMap, junctors);
     }
 
-    private LinkedList<Pair<Term,Junctor>> separateTraceRec(Term trace, List<Junctor> junctors){
+    private LinkedList<Pair<Term,Junctor>> separateTraceRec(Term trace, SVInstantiations instMap, List<Junctor> junctors){
 
         LinkedList<Pair<Term,Junctor>> separatedTrace =  new LinkedList<>();
 
         if(trace.op() instanceof Junctor j && junctors.contains(j)) {
-            separatedTrace = separateTraceRec(trace.sub(0), junctors);
+            separatedTrace = separateTraceRec(trace.sub(0), instMap, junctors);
             Pair<Term,Junctor> lastL = separatedTrace.getLast();
             separatedTrace.removeLast();
             separatedTrace.addLast(new Pair<>(lastL.first, j));
-            separatedTrace.addAll(separateTraceRec(trace.sub(1),junctors));
+            separatedTrace.addAll(separateTraceRec(trace.sub(1),instMap,junctors));
         }
         else {
-            separatedTrace.add(new Pair<>(trace, null));
+            if(trace.op() instanceof SchemaVariable traceSV && instMap.isInstantiated(traceSV))
+                separatedTrace.addAll(new TraceManager((Term) instMap.getInstantiation(traceSV),services).getList());
+            else
+                separatedTrace.add(new Pair<>(trace, null));
         }
         return separatedTrace;
+    }
+
+    public SeqManager<Pair<Term,Junctor>> getSeqManagerFromTerm(Term term, Services services){
+        return new TraceManager(term,services);
     }
 
     @Override
@@ -72,8 +92,8 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
     }
 
     @Override
-    public Pair<Term, Junctor> get(int i) {
-        return tracePair.get(i);
+    public Term toTerm(Pair<Term,Junctor> elem) {
+        return elem.first;
     }
 
     public int getSize(){
@@ -100,28 +120,26 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return trace;
     }
 
-//    @Override
     public void addLast(Pair<Term, Junctor> elem) {
         Term currentLast = this.getLast().first;
         tracePair.set(tracePair.size()-1, new Pair<>(currentLast,elem.second));
         tracePair.addLast(new Pair<>(elem.first,null));
     }
 
-
-//    public static List<Pair<Term, Junctor>> addLast(List<Pair<Term, Junctor>> list,Term el, Junctor junctor){
-//        List<Pair<Term,Junctor>> l =  new ArrayList<>(list.subList(0,list.size()-1));
-//        l.addLast(new Pair<>(list.getLast().first,junctor));
-//        l.addLast(new Pair<>(el,null));
-//        return l;
-//    }
-
+    @Override
+    public boolean hasPrefix(SeqManager<Pair<Term, Junctor>> possiblePrefix) {
+        int prefixSize = possiblePrefix.getSize();
+        return this.getSize() >= prefixSize &&
+                this.tracePair.subList(0,prefixSize-1).equals(possiblePrefix.getList().subList(0,prefixSize-1))
+                && this.tracePair.get(prefixSize-1).first.equals(possiblePrefix.getLast().first);
+    }
 
     // returns i >=0 : if possiblePrefixTM is prefix of this where
     //          i is the last index (inclusive) of the common prefix
+    //todo: fix this based on the new implementation of hasPrefix and hasStrictPrefix
     public int hasCommonPrefixOrIsEquals(TraceManager possiblePrefixTM){
         int prefixEndIndex = -1;
         if(this.getSize() >= possiblePrefixTM.getSize()){
-
 
             for (int i = 0; i < possiblePrefixTM.getSize(); i++) {
                 Pair<Term,Junctor> pairPre = possiblePrefixTM.tracePair.get(i);
@@ -134,35 +152,43 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         }
         return prefixEndIndex;
     }
-//
-//    public boolean hasStrictPrefix(TraceManager possiblePrefixTM){
-//        int index = hasCommonPrefixOrIsEquals(possiblePrefixTM);
-//        return index == (possiblePrefixTM.tracePair.size()-1);
-//    }
 
-    public boolean hasStrictPrefix(TraceManager possiblePrefix){
-        if(possiblePrefix.tracePair.size() >= this.tracePair.size())
-            return false;
-        return
-                this.tracePair.subList(0,possiblePrefix.tracePair.size()-1).equals(
-                        possiblePrefix.tracePair.subList(0,possiblePrefix.tracePair.size()-1))
-                && this.tracePair.get(possiblePrefix.tracePair.size()-1).first.equals(possiblePrefix.tracePair.getLast().first)
-                ;
+    public TraceManager conc(TraceManager trace){
+        return createNewAddAll(trace, Junctor.CONC);
     }
 
-//    public static Term unchop(List<Term> traces, Services services){
-//
-//        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
-//                (subUnchopped, trace) ->
-//                        services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
-//    }
+    public TraceManager chop(TraceManager trace){
+        return createNewAddAll(trace, Junctor.CHOP);
+    }
+
+    public TraceManager createNewAddAll(TraceManager trace, Junctor j){
+        var last = tracePair.getLast();
+        var list = new LinkedList<>(tracePair);
+        list.set(list.size()-1, new Pair<>(last.first, j));
+        list.addAll(trace.getList());
+        return new TraceManager(list, services);
+    }
 
     public static Term unchop(Term trace1, Term trace2, Services services){
-        return services.getTermFactory().createTerm(Junctor.CHOP, trace1, trace2);
+        return services.getTermBuilder().chop(trace1,trace2);
+    }
+    public static Term conc(Term trace1, Term trace2, Services services){
+        return services.getTermBuilder().conc(trace1,trace2);
+    }
+//todo:optimize
+//    public static Term unchop(TraceManager trace1, TraceManager trace2, Services services){
+//        TraceManager newTr = new TraceManager(trace1.getTracePairs(),services);
+//        newTr.
+//        return services.getTermBuilder().chop(trace1,trace2);
+//    }
+
+
+    public static boolean isTrace(Term term){
+        return
+                term.op() instanceof SchemaVariable ||
+                IsAtomicTraceElem.isAtomicTraceElem(term) ||
+                term.op() == Junctor.CHOP ||
+                term.op() == Junctor.CONC;
     }
 
-    @Override
-    public String toString(){
-        return this.tracePair.toString();
-    }
 }

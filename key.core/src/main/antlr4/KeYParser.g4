@@ -666,9 +666,14 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | INTER_OBS
   | FIRST_OF
   | IS_RUN_EVENT
+  | SAME_TRACE
   | IS_SCHEMATIC_TRACE
+  | IS_ATOMIC_TRACE_ELEM
+  | PREFIX_POSTFIX_CONDITION
+  | IS_EVENT_WITH_METHOD
   | IS_EVENT
   | IS_SCHEMATIC_TRACE_OVER_M
+  | HAS_POSTFIX
   | IS_SCHEMATIC_TRACE_INCLUDED
   | IS_UPDATE_EVENT
   | DIFFERENTFIELDS
@@ -728,7 +733,14 @@ varexp_argument
   | CONTAINERTYPE LPAREN y=varId RPAREN
   | DEPENDINGON LPAREN y=varId RPAREN
   | term
+  | trace_resolver
+  | method_name_resolver
 ;
+
+method_name_resolver: METHOD_NAME_OF LPAREN (y=varId | trace_resolver) RPAREN;
+
+trace_resolver:
+    (POSTFIX_TRACE | FIRST_OF | LAST_OF | ID | OBSERVED_VAR | OBSERVING_VAR ) LPAREN y=varId RPAREN;
 
 goalspecs:
       CLOSEGOAL

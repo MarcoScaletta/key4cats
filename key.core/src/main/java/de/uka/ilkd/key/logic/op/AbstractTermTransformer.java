@@ -12,6 +12,7 @@ import de.uka.ilkd.key.logic.Name;
 import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.sort.Sort;
 import de.uka.ilkd.key.logic.sort.SortImpl;
+import de.uka.ilkd.key.rule.conditions.catsconditions.TraceResolver;
 import de.uka.ilkd.key.rule.metaconstruct.*;
 import de.uka.ilkd.key.rule.metaconstruct.arith.*;
 
@@ -70,6 +71,14 @@ public abstract class AbstractTermTransformer extends AbstractSortedOperator
 
     public static final AbstractTermTransformer CONSTANT_VALUE = new ConstantValue();
 
+    public static final AbstractTermTransformer FIRST_OF_TRACE = new TraceResolver.FirstOfTrace();
+    public static final AbstractTermTransformer LAST_OF_TRACE = new TraceResolver.LastOfTrace();
+
+    public static final AbstractTermTransformer TRACE_IDENTITY = new TraceResolver.TraceIdentity();
+
+    public static final AbstractTermTransformer POSTFIX_TRACE = new TraceResolver.PostfixTrace();
+
+    //PrefixTrace
     public static final AbstractTermTransformer ENUM_CONSTANT_VALUE = new EnumConstantValue();
 
     public static final AbstractTermTransformer DIVIDE_MONOMIALS = new DivideMonomials();
