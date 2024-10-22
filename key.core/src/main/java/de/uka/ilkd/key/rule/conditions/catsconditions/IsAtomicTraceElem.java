@@ -13,17 +13,18 @@ import de.uka.ilkd.key.rule.inst.SVInstantiations;
 public class IsAtomicTraceElem implements VariableCondition {
 
 
-    private final SchemaVariable formulaSV;
+    private final TraceResolver extractor;
 
 
-    public IsAtomicTraceElem(SchemaVariable formula) {
-        this.formulaSV = formula;
+    public IsAtomicTraceElem(TraceResolver extractor) {
+
+        this.extractor = extractor;
     }
 
     @Override
     public MatchConditions check(SchemaVariable var, SVSubstitute instCandidate, MatchConditions matchCond, Services services) {
         SVInstantiations svInst = matchCond.getInstantiations();
-        Term formulaTerm = (Term) svInst.getInstantiation(formulaSV);
+        Term formulaTerm = extractor.resolve(svInst,services);
 
         if(formulaTerm == null || formulaTerm.op() instanceof TraceEvent || formulaTerm.op() instanceof SchematicTrace || formulaTerm.op() == Junctor.STATEFML)
             return matchCond;

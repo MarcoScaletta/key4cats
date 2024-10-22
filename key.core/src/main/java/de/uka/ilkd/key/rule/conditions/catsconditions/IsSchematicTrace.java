@@ -13,20 +13,20 @@ import de.uka.ilkd.key.rule.inst.SVInstantiations;
 public class IsSchematicTrace extends VariableConditionAdapter {
 
 
-    private final SchemaVariable formulaSV;
+    private final TraceResolver traceResolver;
     private final boolean negated;
 
 
-    public IsSchematicTrace(SchemaVariable formula, boolean negated) {
-        this.formulaSV = formula;
+    public IsSchematicTrace(TraceResolver traceResolver, boolean negated) {
+        this.traceResolver = traceResolver;
         this.negated = negated;
     }
 
     @Override
     public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations instMap, Services services) {
-        Term formulaTerm = (Term) instMap.getInstantiation(formulaSV);
-        if(formulaTerm == null)
+        if(!traceResolver.isVarInstantiated(instMap,services))
             return true;
+        Term formulaTerm = traceResolver.resolve(instMap,services);
         return negated != formulaTerm.op() instanceof SchematicTrace;
     }
 

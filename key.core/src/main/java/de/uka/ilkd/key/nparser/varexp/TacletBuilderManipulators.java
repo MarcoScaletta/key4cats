@@ -22,8 +22,7 @@ import de.uka.ilkd.key.rule.tacletbuilder.TacletBuilder;
 
 import org.jspecify.annotations.NonNull;
 
-import static de.uka.ilkd.key.nparser.varexp.ArgumentType.SORT;
-import static de.uka.ilkd.key.nparser.varexp.ArgumentType.TYPE_RESOLVER;
+import static de.uka.ilkd.key.nparser.varexp.ArgumentType.*;
 import static de.uka.ilkd.key.rule.conditions.TypeComparisonCondition.Mode.*;
 
 /**
@@ -37,6 +36,7 @@ public class TacletBuilderManipulators {
     // region Factories
     // Short cut for argument types
     private static final ArgumentType TR = TYPE_RESOLVER;
+    private static final ArgumentType TRACE = TRACE_RESOLVER;
     private static final ArgumentType KJT = ArgumentType.JAVA_TYPE;
     private static final ArgumentType PV = ArgumentType.VARIABLE;
     private static final ArgumentType USV = ArgumentType.VARIABLE;
@@ -345,11 +345,11 @@ public class TacletBuilderManipulators {
 
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE =
             new ConstructorBasedBuilder("isSchematicTrace",
-                    IsSchematicTrace.class, SV);
+                    IsSchematicTrace.class, TRACE);
 
     public static final AbstractConditionBuilder IS_ATOMIC_TRACE_ELEM =
             new ConstructorBasedBuilder("isAtomicTraceElem",
-                    IsAtomicTraceElem.class, SV);
+                    IsAtomicTraceElem.class, TRACE);
 
     public static final AbstractConditionBuilder PREFIX_POSTFIX_CONDITION =
             new ConstructorBasedBuilder("prefixPostfixCondition",

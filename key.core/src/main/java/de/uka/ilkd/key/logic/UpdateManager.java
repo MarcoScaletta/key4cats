@@ -35,6 +35,11 @@ public class UpdateManager extends SeqManager<Term> {
     }
 
     @Override
+    public Term toTerm(Term el) {
+        return el;
+    }
+
+    @Override
     public Term getFirst() {
         return updateList.getFirst();
     }
@@ -43,6 +48,7 @@ public class UpdateManager extends SeqManager<Term> {
     public Term getLast() {
         return updateList.getLast();
     }
+
 
     @Override
     public Term get(int i) {
@@ -85,6 +91,8 @@ public class UpdateManager extends SeqManager<Term> {
 //    public void addLast(Term elem) {
 //
 //    }
+
+
 
     public boolean hasStrictPrefix(UpdateManager possiblePrefix){
         if(possiblePrefix.updateList.size() >= this.updateList.size())

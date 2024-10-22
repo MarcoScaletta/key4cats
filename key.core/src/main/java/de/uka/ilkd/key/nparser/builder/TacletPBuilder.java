@@ -25,6 +25,7 @@ import de.uka.ilkd.key.nparser.varexp.TacletBuilderManipulators;
 import de.uka.ilkd.key.parser.SchemaVariableModifierSet;
 import de.uka.ilkd.key.rule.*;
 import de.uka.ilkd.key.rule.conditions.TypeResolver;
+import de.uka.ilkd.key.rule.conditions.catsconditions.TraceResolver;
 import de.uka.ilkd.key.rule.tacletbuilder.*;
 import de.uka.ilkd.key.util.Pair;
 import de.uka.ilkd.key.util.parsing.BuildingException;
@@ -308,11 +309,13 @@ public class TacletPBuilder extends ExpressionBuilder {
 
         return switch (expectedType) {
         case TYPE_RESOLVER -> buildTypeResolver(ctx);
+        case TRACE_RESOLVER -> buildTraceResolver(ctx);
         case SORT -> visitSortId(ctx.term().getText(), ctx.term());
         case JAVA_TYPE -> getOrCreateJavaType(ctx.term().getText(), ctx);
         case VARIABLE -> varId(ctx, ctx.getText());
         case STRING -> ctx.getText();
         case TERM -> accept(ctx.term());
+
         };
     }
 
@@ -376,6 +379,19 @@ public class TacletPBuilder extends ExpressionBuilder {
                 return TypeResolver.createNonGenericSortResolver(s);
             }
         }
+        return null;
+    }
+    public Object buildTraceResolver(KeYParser.Varexp_argumentContext ctx) {
+        SchemaVariable y = accept(ctx.varId());
+        if(ctx.FIRST_OF() != null)
+            return TraceResolver.getFirstSeqExtractor(y);
+        if(ctx.LAST_OF() != null)
+            return TraceResolver.getLastSeqExtractor(y);
+        Term t = accept(ctx.term());
+        if(t != null)
+            return TraceResolver.getIdentity((SchemaVariable) t.op());
+        else
+            semanticError(ctx, "Could not find schemaVar in %s", ctx);
         return null;
     }
 

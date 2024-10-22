@@ -57,6 +57,10 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return separatedTrace;
     }
 
+    public SeqManager<Pair<Term,Junctor>> getSeqManagerFromTerm(Term term, Services services){
+        return new TraceManager(term,services);
+    }
+
     @Override
     public Pair<Term, Junctor> getFirst() {
         if(tracePair.isEmpty())
@@ -69,6 +73,11 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         if(tracePair.isEmpty())
             return null;
         return tracePair.getLast();
+    }
+
+    @Override
+    public Term toTerm(Pair<Term,Junctor> elem) {
+        return elem.first;
     }
 
     @Override
@@ -100,28 +109,26 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return trace;
     }
 
-    //    @Override
     public void addLast(Pair<Term, Junctor> elem) {
         Term currentLast = this.getLast().first;
         tracePair.set(tracePair.size()-1, new Pair<>(currentLast,elem.second));
         tracePair.addLast(new Pair<>(elem.first,null));
     }
 
-
-//    public static List<Pair<Term, Junctor>> addLast(List<Pair<Term, Junctor>> list,Term el, Junctor junctor){
-//        List<Pair<Term,Junctor>> l =  new ArrayList<>(list.subList(0,list.size()-1));
-//        l.addLast(new Pair<>(list.getLast().first,junctor));
-//        l.addLast(new Pair<>(el,null));
-//        return l;
-//    }
-
+    @Override
+    public boolean hasPrefix(SeqManager<Pair<Term, Junctor>> possiblePrefix) {
+        int prefixSize = possiblePrefix.getSize();
+        return this.getSize() >= prefixSize &&
+                this.tracePair.subList(0,prefixSize-1).equals(possiblePrefix.getList().subList(0,prefixSize-1))
+                && this.tracePair.get(prefixSize-1).first.equals(possiblePrefix.getLast().first);
+    }
 
     // returns i >=0 : if possiblePrefixTM is prefix of this where
     //          i is the last index (inclusive) of the common prefix
+    //todo: fix this based on the new implementation of hasPrefix and hasStrictPrefix
     public int hasCommonPrefixOrIsEquals(TraceManager possiblePrefixTM){
         int prefixEndIndex = -1;
         if(this.getSize() >= possiblePrefixTM.getSize()){
-
 
             for (int i = 0; i < possiblePrefixTM.getSize(); i++) {
                 Pair<Term,Junctor> pairPre = possiblePrefixTM.tracePair.get(i);
@@ -134,41 +141,6 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         }
         return prefixEndIndex;
     }
-//
-//    public boolean hasStrictPrefix(TraceManager possiblePrefixTM){
-//        int index = hasCommonPrefixOrIsEquals(possiblePrefixTM);
-//        return index == (possiblePrefixTM.tracePair.size()-1);
-//    }
-
-    public boolean hasStrictPrefix(TraceManager possiblePrefix){
-        if(possiblePrefix.tracePair.size() >= this.tracePair.size())
-            return false;
-        return
-                this.tracePair.subList(0,possiblePrefix.tracePair.size()-1).equals(
-                        possiblePrefix.tracePair.subList(0,possiblePrefix.tracePair.size()-1))
-                && this.tracePair.get(possiblePrefix.tracePair.size()-1).first.equals(possiblePrefix.tracePair.getLast().first)
-                ;
-    }
-
-    @Override
-    public boolean hasStrictPrefix(SeqManager<Pair<Term,Junctor>> possiblePrefix){
-        int prefixSize = possiblePrefix.getSize();
-        int traceSize  = this.getSize();
-
-        if(prefixSize >= traceSize)
-            return false;
-        return
-                this.tracePair.subList(0,prefixSize-1).equals(
-                        possiblePrefix.getList().subList(0,prefixSize-1))
-                        && this.tracePair.get(prefixSize-1).first.equals(possiblePrefix.getList().getLast().first)
-                ;
-    }
-//    public static Term unchop(List<Term> traces, Services services){
-//
-//        return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
-//                (subUnchopped, trace) ->
-//                        services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
-//    }
 
     public static Term unchop(Term trace1, Term trace2, Services services){
         return services.getTermFactory().createTerm(Junctor.CHOP, trace1, trace2);

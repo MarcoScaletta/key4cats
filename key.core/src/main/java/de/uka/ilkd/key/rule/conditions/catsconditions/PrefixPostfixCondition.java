@@ -49,12 +49,7 @@ public class PrefixPostfixCondition implements VariableCondition {
         }else{
             boolean check = true;
             if(term.sort() == Sort.FORMULA) {
-                TraceManager fullPrefix = new TraceManager(prefixTerm, services);
-                if(lastElemPrefixSV != null) {
-                    Term lastElemPrefix = (Term) svInst.getInstantiation(lastElemPrefixSV);
-                    fullPrefix.addLast(new Pair<>(lastElemPrefix, Junctor.CHOP));
-                }
-                check = prefixPostfixCondition(new TraceManager(term, services), fullPrefix, new TraceManager(postfixTerm, services));
+                check = prefixPostfixCondition(new TraceManager(term, services), new TraceManager(prefixTerm, services), new TraceManager(postfixTerm, services));
             }
             else if(term.sort() == Sort.UPDATE)
                 check = prefixPostfixCondition(new UpdateManager(term, services),new UpdateManager(prefixTerm, services),new UpdateManager(postfixTerm, services));

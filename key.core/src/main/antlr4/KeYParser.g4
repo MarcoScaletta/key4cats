@@ -729,6 +729,7 @@ varexp_argument
     TYPEOF LPAREN y=varId RPAREN
   | CONTAINERTYPE LPAREN y=varId RPAREN
   | DEPENDINGON LPAREN y=varId RPAREN
+  | (FIRST_OF | LAST_OF ) LPAREN y=varId RPAREN
   | term
 ;
 
