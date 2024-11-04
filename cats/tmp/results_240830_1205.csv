@@ -1,0 +1,14 @@
+callBetTwiceFail,283
+callPlaceBetOnceInsufficientContractFail,418
+removeOne,62
+removeOneWithCond,123
+removeOneLT,76
+removeTwo,62
+removeThree,1608
+placeBetAbsTrSelf,51
+placeBet,87
+placeBetInner,63
+placeBetInnerSimple,68
+trivialMultipleObsCallee,79
+callPlaceBetOnceSufficientContract,171
+callPlaceBetDecidedBet,128
