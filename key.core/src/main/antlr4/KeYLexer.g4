@@ -144,7 +144,6 @@ LAST_OF: '\\lastOf';
 POSTFIX_TRACE:'\\postfixTrace';
 OBSERVING_VAR: '\\observingVar';
 OBSERVED_VAR: '\\observedVar';
-IS_RUN_EVENT: '\\isRunEv';
 SIMPLIFY_IF_THEN_ELSE_UPDATE : '\\simplifyIfThenElseUpdate';
 ENUM_CONST : '\\enumConstant';
 FREELABELIN : '\\freeLabelIn';

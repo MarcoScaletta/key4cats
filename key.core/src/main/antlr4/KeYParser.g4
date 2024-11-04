@@ -665,7 +665,6 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | CHOP_FOR_CALL
   | INTER_OBS
   | FIRST_OF
-  | IS_RUN_EVENT
   | SAME_TRACE
   | IS_SCHEMATIC_TRACE
   | IS_ATOMIC_TRACE_ELEM
