@@ -1,0 +1,354 @@
+\profile "Java Profile";
+
+\settings // Proof-Settings-Config-File
+{ 
+    "Choice" : { 
+        "JavaCard" : "JavaCard:off",
+        "Strings" : "Strings:on",
+        "assertions" : "assertions:safe",
+        "bigint" : "bigint:on",
+        "floatRules" : "floatRules:strictfpOnly",
+        "initialisation" : "initialisation:disableStaticInitialisation",
+        "intRules" : "intRules:arithmeticSemanticsIgnoringOF",
+        "integerSimplificationRules" : "integerSimplificationRules:full",
+        "javaLoopTreatment" : "javaLoopTreatment:efficient",
+        "mergeGenerateIsWeakeningGoal" : "mergeGenerateIsWeakeningGoal:off",
+        "methodExpansion" : "methodExpansion:modularOnly",
+        "modelFields" : "modelFields:treatAsAxiom",
+        "moreSeqRules" : "moreSeqRules:off",
+        "permissions" : "permissions:off",
+        "programRules" : "programRules:CAT",
+        "reach" : "reach:on",
+        "runtimeExceptions" : "runtimeExceptions:ban",
+        "sequences" : "sequences:on",
+        "wdChecks" : "wdChecks:off",
+        "wdOperator" : "wdOperator:L"
+     },
+    "Labels" : { 
+        "UseOriginLabels" : true
+     },
+    "NewSMT" : { 
+        
+     },
+    "SMTSettings" : { 
+        "SelectedTaclets" : [ 
+            
+         ],
+        "UseBuiltUniqueness" : false,
+        "explicitTypeHierarchy" : false,
+        "instantiateHierarchyAssumptions" : true,
+        "integersMaximum" : 2147483645,
+        "integersMinimum" : -2147483645,
+        "invariantForall" : false,
+        "maxGenericSorts" : 2,
+        "useConstantsForBigOrSmallIntegers" : true,
+        "useUninterpretedMultiplication" : true
+     },
+    "Strategy" : { 
+        "ActiveStrategy" : "JavaCardDLStrategy",
+        "MaximumNumberOfAutomaticApplications" : 10000,
+        "Timeout" : -1,
+        "options" : { 
+            "AUTO_INDUCTION_OPTIONS_KEY" : "AUTO_INDUCTION_OFF",
+            "BLOCK_OPTIONS_KEY" : "BLOCK_CONTRACT_INTERNAL",
+            "CLASS_AXIOM_OPTIONS_KEY" : "CLASS_AXIOM_FREE",
+            "DEP_OPTIONS_KEY" : "DEP_ON",
+            "INF_FLOW_CHECK_PROPERTY" : "INF_FLOW_CHECK_FALSE",
+            "LOOP_OPTIONS_KEY" : "LOOP_SCOPE_INV_TACLET",
+            "METHOD_OPTIONS_KEY" : "METHOD_CONTRACT",
+            "MPS_OPTIONS_KEY" : "MPS_MERGE",
+            "NON_LIN_ARITH_OPTIONS_KEY" : "NON_LIN_ARITH_NONE",
+            "OSS_OPTIONS_KEY" : "OSS_ON",
+            "QUANTIFIERS_OPTIONS_KEY" : "QUANTIFIERS_NON_SPLITTING_WITH_PROGS",
+            "QUERYAXIOM_OPTIONS_KEY" : "QUERYAXIOM_ON",
+            "QUERY_NEW_OPTIONS_KEY" : "QUERY_OFF",
+            "SPLITTING_OPTIONS_KEY" : "SPLITTING_DELAYED",
+            "STOPMODE_OPTIONS_KEY" : "STOPMODE_DEFAULT",
+            "SYMBOLIC_EXECUTION_ALIAS_CHECK_OPTIONS_KEY" : "SYMBOLIC_EXECUTION_ALIAS_CHECK_NEVER",
+            "SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OPTIONS_KEY" : "SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OFF",
+            "USER_TACLETS_OPTIONS_KEY1" : "USER_TACLETS_OFF",
+            "USER_TACLETS_OPTIONS_KEY2" : "USER_TACLETS_OFF",
+            "USER_TACLETS_OPTIONS_KEY3" : "USER_TACLETS_OFF",
+            "VBT_PHASE" : "VBT_SYM_EX"
+         }
+     }
+ } 
+
+\include "traceRules.key";
+\javaSource ".";
+\problem {
+CATof(Developing::casinoCaseStudySimple,
+      callId{int thisCallId;}(bind{int b;}(bind{int b1;}(CAT((  ~(( Developing::placeBet
+                                                                  , Developing::decideBet))~
+                                                             ** (\obs_Developing::amountToBet(b)
+                                                             $. `true`)),
+                                                             (  ~~
+                                                             ** (\obs_Developing::amountToBet(b1)
+                                                             $. `true`)),
+                                                             ~(( Developing::placeBet
+                                                               , Developing::decideBet))~)))))
+}
+
+\proof {
+(keyLog "0" (keyUser "scal9000" ) (keyVersion "bf0846fa3e8982d88a1649c19bd24837f4e30666"))
+
+(autoModeTime "235")
+
+(branch "dummy ID"
+(rule "polySimp_elimSub" (formula "2") (term "1,0,1,1,1,0,0,0,0,1"))
+(rule "polySimp_addComm0" (formula "2") (term "1,0,1,1,1,0,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "3") (term "0,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "1") (term "1,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "3") (term "1,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "2") (term "0,0,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "1") (term "0,0,0,0,1"))
+(rule "preAssociativityTraces2" (formula "2") (term "1,0,0,0,0,1"))
+(rule "bindCallId" (formula "3") (inst "callIdSk=thisCallId_0"))
+(rule "preAssociativityTraces3" (formula "3") (term "0,0,0,0,0,1"))
+(rule "bindCallIdForAssumptions" (formula "2"))
+(rule "bindContractSuccedent" (formula "4") (inst "observingSk=b_0"))
+(rule "bindCallIdForAssumptions" (formula "3"))
+(rule "bindContractSuccedent" (formula "4") (inst "observingSk=b1_0"))
+(rule "inEqSimp_gtToGeq" (formula "3") (term "0,0,1,0,0,0,0,0,1"))
+(rule "times_zero_1" (formula "3") (term "1,0,0,0,0,1,0,0,0,0,0,1"))
+(rule "add_zero_right" (formula "3") (term "0,0,0,0,1,0,0,0,0,0,1"))
+(rule "inEqSimp_commuteLeq" (formula "3") (term "1,0,1,0,0,0,0,0,1"))
+(rule "inEqSimp_sepPosMonomial1" (formula "3") (term "0,0,1,0,0,0,0,0,1"))
+(rule "mul_literals" (formula "3") (term "1,0,0,1,0,0,0,0,0,1"))
+(rule "contract" (formula "4"))
+(rule "startObservingForContract" (formula "4") (inst "anonId=anonId_0"))
+(rule "lastObservationInPreTraceForContract" (formula "4") (term "0"))
+(rule "applyContract" (formula "5"))
+(rule "true_left" (formula "2"))
+(rule "preAssociativityTraces2" (formula "7") (term "0,1"))
+(rule "preAssociativityTraces1" (formula "7") (term "0,0,1"))
+(rule "variableDeclarationAssign" (formula "7") (term "1"))
+(rule "variableDeclaration" (formula "7") (term "1") (newnames "sync"))
+(rule "assign" (formula "7") (term "1"))
+ (builtin "One Step Simplification" (formula "7"))
+(rule "methodBodyExpand" (formula "7"))
+(rule "assign" (formula "7") (term "1"))
+ (builtin "One Step Simplification" (formula "7"))
+(rule "assign" (formula "7") (term "1"))
+ (builtin "One Step Simplification" (formula "7"))
+(rule "pre_Call" (formula "7") (ifseqformula "6"))
+(rule "startObservingForCall" (formula "7"))
+(rule "bindContractSuccedent" (formula "7") (term "0") (inst "observingSk=thisCallId_1"))
+(rule "bindContractSuccedent" (formula "7") (term "0") (inst "observingSk=b_1"))
+(rule "bindContractSuccedent" (formula "7") (term "0") (inst "observingSk=oldW_0"))
+(rule "bindContractSuccedent" (formula "7") (term "0") (inst "observingSk=w_0"))
+(rule "observeForContractApplicationInPreTrace" (formula "7"))
+ (builtin "One Step Simplification" (formula "1"))
+(rule "eqSymm" (formula "1"))
+(rule "applyEq" (formula "8") (term "0,1,0,1,0,1,0") (ifseqformula "1"))
+(rule "inEqSimp_commuteGeq" (formula "8") (term "1,0,1,0,1,0"))
+(rule "applyEqRigid" (formula "8") (term "1,1,0,1,1,1,0") (ifseqformula "1"))
+(rule "polySimp_addComm0" (formula "8") (term "1,0,1,1,1,0"))
+(rule "commute_and" (formula "8") (term "0,1,0,1,0"))
+(rule "inEqSimp_and_antiSymm0" (formula "8") (term "0,1,0,1,0"))
+(rule "lastObservationInPreTraceForContractApplication" (formula "8"))
+ (builtin "One Step Simplification" (formula "1"))
+(rule "eqSymm" (formula "1"))
+(rule "replace_known_left" (formula "9") (term "0,1,0,1,0") (ifseqformula "1"))
+(rule "applyEq" (formula "9") (term "0,1,1,0,1,1,1,0") (ifseqformula "1"))
+(rule "mul_literals" (formula "9") (term "1,1,0,1,1,1,0"))
+(rule "add_literals" (formula "9") (term "1,0,1,1,1,0"))
+(rule "newCallWithAdd" (formula "9") (inst "anonId=anonId_1") (inst "callId=callId_0") (inst "postFormula=(~~ ** (\\obs_Developing::amountToBet(b1_0) $. `true`))") (inst "innerFormula=~~") (inst "preFormula=(  ~((Developing::placeBet , Developing::decideBet))~
+** `true`)"))
+(branch "Pre-trace"
+   (rule "make_obsL" (formula "9"))
+   (rule "and" (formula "9"))
+   (branch "Case 1"
+      (rule "make_obsL" (formula "9"))
+      (rule "applyLocalRules" (formula "9"))
+      (rule "chopTrueR_taclet00_2" (formula "10") (term "0,0,0,0,1,1"))
+      (rule "chopTrueR_taclet00_2" (formula "4") (term "0,1"))
+      (rule "chopTrueR_taclet00_2" (formula "9") (term "0,1"))
+      (rule "make_obsL" (formula "9"))
+      (rule "or" (formula "9"))
+      (rule "make_obsL" (formula "9"))
+      (rule "make_obsL" (formula "10"))
+      (rule "applyLocalRules" (formula "9"))
+      (rule "applyLocalRules" (formula "10"))
+      (rule "elimAssignEvSchemTrLeadingUpdate" (formula "9"))
+      (rule "make_obsL" (formula "9"))
+      (rule "elimAssignEvSchemTrLeadingUpdate" (formula "9"))
+      (rule "elimStartEvSchemTr" (formula "9"))
+      (rule "closeForSchematicTraceIncluded" (formula "9") (ifseqformula "4"))
+   )
+   (branch "Case 2"
+      (rule "make_obsL" (formula "9"))
+      (rule "applyLocalRules" (formula "9"))
+      (rule "chopTrueR_taclet10_2" (formula "10") (term "0,0,0,0,1,1"))
+      (rule "chopTrueR_taclet10_2" (formula "4") (term "0,1"))
+      (rule "chopTrueR_taclet10_2" (formula "9") (term "0,1"))
+      (rule "make_obsL" (formula "9"))
+      (rule "elimAssignEvSchemTrLeadingUpdate" (formula "9"))
+      (rule "make_obsL" (formula "9"))
+      (rule "applyLocalRules" (formula "9"))
+      (rule "elimAssignEvSchemTrLeadingUpdate" (formula "9"))
+      (rule "elimStartEvSchemTr" (formula "9"))
+      (rule "close" (formula "9") (ifseqformula "4"))
+   )
+)
+(branch "Inner behavior implication"
+   (rule "trivialSchemTr" (formula "10"))
+)
+(branch "Continue"
+   (rule "preAssociativityTraces2" (formula "10") (term "0,0,1"))
+   (rule "distAndOverChopForNonTrivialSchemTr" (formula "10") (term "1,0,1"))
+   (rule "preAssociativityTraces2" (formula "1") (term "0,1"))
+   (rule "preAssociativityTraces1" (formula "10") (term "0,0,0,1"))
+   (rule "trivialAndR" (formula "10") (term "0,1,0,1"))
+   (rule "preAssociativityTraces1" (formula "1") (term "0,0,1"))
+   (rule "preAssociativityTraces1" (formula "10") (term "0,0,0,0,1"))
+   (rule "preAssociativityTraces1" (formula "1") (term "0,0,0,1"))
+   (rule "preAssociativityTraces1" (formula "10") (term "0,0,0,0,0,1"))
+   (rule "preAssociativityTraces1" (formula "1") (term "0,0,0,0,1"))
+   (rule "preAssociativityTraces1" (formula "10") (term "0,1"))
+   (rule "pre_Call" (formula "10") (ifseqformula "8"))
+   (rule "startObservingForCall" (formula "10"))
+   (rule "bindContractSuccedent" (formula "10") (term "0") (inst "observingSk=thisCallId_2"))
+   (rule "bindContractSuccedent" (formula "10") (term "0") (inst "observingSk=b_2"))
+   (rule "bindContractSuccedent" (formula "10") (term "0") (inst "observingSk=b1_1"))
+   (rule "lastObservationInPreTraceForContractApplication" (formula "10"))
+   (rule "newCallWithAdd" (formula "11") (inst "anonId=anonId_2") (inst "callId=callId_1") (inst "postFormula=(  ~(Developing::placeBet)~
+** (( ~(Developing::placeBet)~
+    & ((\\obs_Developing::amountToBet(b1_0) $. `true`)))))") (inst "innerFormula=~(Developing::placeBet)~") (inst "preFormula=(  ((((( (  (( ~(Developing::placeBet)~
+             | (  ~~
+               ** \\popTrEv(Developing::decideBet, $?))))
+         ** `true`)
+       & ((  ~(( Developing::placeBet
+               , Developing::decideBet))~
+          ** `true`))))
+** \\startTrEv(Developing::placeBet, thisCallId_1))
+** ~(Developing::placeBet)~)
+** \\popTrEv(Developing::placeBet, thisCallId_1))
+** (\\obs_Developing::wallet(w_0)
+$. `(w_0 = Z(0(#)))`))"))
+   (branch "Pre-trace"
+      (rule "make_obsL" (formula "11"))
+      (rule "obsLChop_taclet02_0" (formula "2"))
+      (rule "replace_known_left" (formula "15") (term "0,1,1,1,0") (ifseqformula "2"))
+      (rule "and" (formula "13"))
+      (branch "Case 1"
+         (rule "make_obsL" (formula "13"))
+         (rule "applyLocalRules" (formula "13"))
+         (rule "chopTrueR_taclet002_2" (formula "15") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet002_2" (formula "4") (term "0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet002_2" (formula "16") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet002_2" (formula "4") (term "1,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet002_2" (formula "14") (term "1,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet002_2" (formula "15") (term "0,1,0"))
+         (rule "chopTrueR_taclet002_2" (formula "14") (term "0,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet002_2" (formula "8") (term "0,1"))
+         (rule "chopTrueR_taclet002_2" (formula "13") (term "0,1"))
+         (rule "trivialSchemTr" (formula "13"))
+      )
+      (branch "Case 2"
+         (rule "preAssociativityTraces2" (formula "13") (term "0,1"))
+         (rule "applyLocalRules" (formula "13"))
+         (rule "obsRChop" (formula "13"))
+         (rule "close" (formula "13") (ifseqformula "4"))
+      )
+   )
+   (branch "Inner behavior implication"
+      (rule "closeForSchematicTraceIncluded" (formula "12") (ifseqformula "1"))
+   )
+   (branch "Continue"
+      (rule "preAssociativityTraces2" (formula "1") (term "0,1"))
+      (rule "trivialAndL" (formula "12") (term "1,0,1"))
+      (rule "preAssociativityTraces2" (formula "12") (term "0,0,1"))
+      (rule "preAssociativityTraces2" (formula "1") (term "1,0,0,0,1"))
+      (rule "preAssociativityTraces1" (formula "12") (term "0,1"))
+      (rule "preAssociativityTraces1" (formula "1") (term "0,0,1"))
+      (rule "preAssociativityTraces1" (formula "12") (term "0,0,0,0,1"))
+      (rule "preAssociativityTraces1" (formula "1") (term "0,0,0,1"))
+      (rule "preAssociativityTraces1" (formula "12") (term "0,0,0,0,0,1"))
+      (rule "preAssociativityTraces1" (formula "1") (term "0,0,0,0,1"))
+      (rule "preAssociativityTraces1" (formula "12") (term "0,0,0,0,0,0,1"))
+      (rule "preAssociativityTraces2" (formula "12") (term "1,0,0,0,0,0,0,0,0,1"))
+      (rule "return" (formula "12") (term "1"))
+       (builtin "One Step Simplification" (formula "12"))
+      (rule "finish" (formula "12"))
+      (rule "applyLocalRules" (formula "12"))
+      (rule "andChopR" (formula "12"))
+      (branch "Case 1"
+         (rule "chopTrueR_taclet22_0" (formula "3") (term "0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "7") (term "0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "0,0,0,0,0,0,1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "16") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "15") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "15") (term "0,1,0"))
+         (rule "chopTrueR_taclet22_0" (formula "14") (term "1,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "14") (term "0,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "1,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "0,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "0,1,0"))
+         (rule "chopTrueR_taclet22_0" (formula "3") (term "1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "1,0,0,0,0,0,1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "0,0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "0,0,0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1"))
+         (rule "trivialAndL" (formula "1") (term "0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "trivialAndL" (formula "12") (term "0,0,0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "elimPre" (formula "12") (ifseqformula "1"))
+         (rule "make_obsL" (formula "12"))
+         (rule "obsLChop_taclet022_8" (formula "1"))
+         (rule "obsLChop_taclet022_8" (formula "5"))
+         (rule "true_left" (formula "4"))
+         (rule "replace_known_left" (formula "18") (term "0,1,1,1,0") (ifseqformula "2"))
+         (rule "reduceChopOfSchemTr" (formula "15") (term "0,1"))
+         (rule "make_obsL" (formula "15"))
+         (rule "elimPopEvSchemTr" (formula "15"))
+         (rule "make_obsL" (formula "15"))
+         (rule "closeForSingleRetEvSchemTr" (formula "15"))
+      )
+      (branch "Case 2"
+         (rule "chopTrueR_taclet22_0" (formula "3") (term "0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "7") (term "0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "0,0,0,0,0,0,1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "16") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "15") (term "0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "15") (term "0,1,0"))
+         (rule "chopTrueR_taclet22_0" (formula "14") (term "1,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "14") (term "0,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "1,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "0,0,0,0,0,0,0,0,0,1,1"))
+         (rule "chopTrueR_taclet22_0" (formula "13") (term "0,1,0"))
+         (rule "chopTrueR_taclet22_0" (formula "3") (term "1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "1,0,0,0,0,0,1,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "1") (term "0,0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "0,0,0,0,0,0,0,0,0,1"))
+         (rule "chopTrueR_taclet22_0" (formula "12") (term "0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1"))
+         (rule "trivialAndL" (formula "1") (term "0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "preAssociativityTraces2" (formula "12") (term "0,1"))
+         (rule "applyLocalRules" (formula "12"))
+         (rule "obsRChop" (formula "12"))
+          (builtin "One Step Simplification" (formula "1"))
+         (rule "trivialAndL" (formula "13") (term "0,0,0,0,0,0,0,0,1"))
+         (rule "applyLocalRules" (formula "13"))
+         (rule "elimPre" (formula "13") (ifseqformula "2"))
+         (rule "make_obsL" (formula "13"))
+         (rule "obsLChop_taclet122_10" (formula "4"))
+         (rule "obsLChop_taclet122_10" (formula "4"))
+         (rule "true_left" (formula "2"))
+         (rule "replace_known_left" (formula "19") (term "0,1,1,1,0") (ifseqformula "3"))
+         (rule "chopTrueR_taclet122_4" (formula "16") (term "0,1"))
+         (rule "make_obsL" (formula "16"))
+         (rule "applyLocalRules" (formula "16"))
+         (rule "elimPopEvSchemTr" (formula "16"))
+         (rule "make_obsL" (formula "16"))
+         (rule "closeForSingleRetEvSchemTr" (formula "16"))
+      )
+   )
+)
+)
+}
