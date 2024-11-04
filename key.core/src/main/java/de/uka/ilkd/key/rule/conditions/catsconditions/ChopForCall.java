@@ -2,7 +2,6 @@ package de.uka.ilkd.key.rule.conditions.catsconditions;
 
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.Term;
-import de.uka.ilkd.key.logic.TraceManager;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Marco Scaletta
@@ -127,7 +125,7 @@ public class ChopForCall implements VariableCondition {
             if(innerTraceList.getLast().op() instanceof SchematicTrace && !containsSchemTr(postTraceList))
                 postTraceList.addFirst(innerTraceList.getLast());
             // (_, in, ~~ ** post) --> (_, in ** ~~, ~~ ** post)
-            if(postTraceList.getFirst().op() instanceof SchematicTrace && !containsSchemTr(innerTraceList))
+            if(postTraceList.getFirst().op() instanceof SchematicTrace)
                 innerTraceList.addLast(postTraceList.getFirst());
 
             if(containsSchemTr(innerTraceList) && containsSchemTr(postTraceList))

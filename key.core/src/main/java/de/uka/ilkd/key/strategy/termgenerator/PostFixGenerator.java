@@ -3,7 +3,6 @@ package de.uka.ilkd.key.strategy.termgenerator;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.*;
 import de.uka.ilkd.key.logic.op.*;
-import de.uka.ilkd.key.pp.LogicPrinter;
 import de.uka.ilkd.key.proof.Goal;
 import de.uka.ilkd.key.rule.RuleApp;
 import de.uka.ilkd.key.rule.TacletApp;
@@ -11,10 +10,8 @@ import de.uka.ilkd.key.rule.conditions.catsconditions.ContainsObservations;
 import de.uka.ilkd.key.rule.conditions.catsconditions.IsSchematicTraceOverM;
 import de.uka.ilkd.key.strategy.feature.MutableState;
 import de.uka.ilkd.key.util.Pair;
-import org.key_project.util.collection.ImmutableList;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class PostFixGenerator implements TermGenerator {
 
@@ -27,7 +24,7 @@ public class PostFixGenerator implements TermGenerator {
         Term updatePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("updatePrefix"));
         Term tracePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("tracePrefix"));
 
-        if(tracePrefixTerm == null)
+        if(tracePrefixTerm == null || updatePrefixTerm == null)
             return Collections.emptyIterator();
 
         Services services = goal.proof().getServices();

@@ -30,4 +30,10 @@ public class IsAtomicTraceElem implements VariableCondition {
             return matchCond;
         return null;
     }
+
+    public static boolean isAtomicTraceElem(Term trace){
+        return trace.op() instanceof TraceEvent
+                || trace.op() instanceof SchematicTrace
+                || trace.op() == Junctor.STATEFML;
+    }
 }

@@ -14,22 +14,24 @@ import java.util.*;
 public class IsSchematicTraceOverM extends VariableConditionAdapter {
 
 
-    private final SchemaVariable formulaSV;
-    private final SchemaVariable methodNameSV;
+    private final TraceResolver formulaResolver;
+    private final MethodNameResolver methodNameResolver;
 
     private final boolean negated;
 
 
-    public IsSchematicTraceOverM(SchemaVariable formula, SchemaVariable methodName, boolean negated) {
-        this.formulaSV = formula;
-        this.methodNameSV = methodName;
+    public IsSchematicTraceOverM(TraceResolver formulaResolver, MethodNameResolver methodNameResolver, boolean negated) {
+        this.formulaResolver = formulaResolver;
+        this.methodNameResolver = methodNameResolver;
         this.negated = negated;
     }
 
     @Override
     public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations svInst, Services services) {
-        Term methodNameInst = (Term) svInst.getInstantiation(methodNameSV);
-        Term schemTrTerm = (Term) svInst.getInstantiation(formulaSV);
+        if(!formulaResolver.isVarInstantiated(svInst) || !methodNameResolver.isVarInstantiated(svInst,services))
+            return true;
+        Term methodNameInst = methodNameResolver.resolve(svInst,services);
+        Term schemTrTerm = formulaResolver.resolve(svInst,services);
         return this.negated != isSchematicTraceOverM(schemTrTerm,methodNameInst);
     }
 

@@ -6,7 +6,6 @@ import de.uka.ilkd.key.logic.TraceManager;
 import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.logic.op.SVSubstitute;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.SchematicTrace;
 import de.uka.ilkd.key.rule.MatchConditions;
 import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
@@ -19,19 +18,20 @@ import java.util.List;
 public class NoVarsInStatesCondition implements VariableCondition {
 
 
-    private final SchemaVariable formulaSV;
+    private final TraceResolver traceResolver;
 
 
-    public NoVarsInStatesCondition(SchemaVariable formula) {
-        this.formulaSV = formula;
+    public NoVarsInStatesCondition(TraceResolver traceResolver) {
+        this.traceResolver = traceResolver;
     }
 
     @Override
     public MatchConditions check(SchemaVariable var, SVSubstitute instCandidate, MatchConditions matchCond, Services services) {
         SVInstantiations svInst = matchCond.getInstantiations();
-
-        Term formulaTerm = (Term) svInst.getInstantiation(formulaSV);
-        if(areAllStatesTrue(formulaTerm,services))
+        if(!traceResolver.isVarInstantiated(svInst))
+            return matchCond;
+        Term formulaTerm = traceResolver.resolve(svInst, services);
+        if(formulaTerm != null && areAllStatesTrue(formulaTerm,services))
             return matchCond;
         return null;
     }

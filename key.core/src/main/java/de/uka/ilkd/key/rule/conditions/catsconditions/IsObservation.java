@@ -13,19 +13,18 @@ import de.uka.ilkd.key.rule.inst.SVInstantiations;
 public class IsObservation extends VariableConditionAdapter {
 
 
-    private final SchemaVariable observation;
+    private final TraceResolver tr;
     private final boolean negated;
 
-
-    public IsObservation(SchemaVariable observation, boolean negated) {
-        this.observation = observation;
+    public IsObservation(TraceResolver tr, boolean negated) {
+        this.tr = tr;
         this.negated = negated;
     }
 
     @Override
     public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations svInst, Services services) {
-        Term observationTerm = (Term) svInst.getInstantiation(observation);
-        boolean isObservation = observationTerm != null && observationTerm.op() instanceof Observation obs;
+        Term observationTerm = tr.resolve(svInst,services);
+        boolean isObservation = observationTerm != null && observationTerm.op() instanceof Observation;
         return isObservation != this.negated;
     }
 

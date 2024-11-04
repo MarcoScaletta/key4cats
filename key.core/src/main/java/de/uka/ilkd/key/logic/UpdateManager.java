@@ -49,12 +49,6 @@ public class UpdateManager extends SeqManager<Term> {
         return updateList.getLast();
     }
 
-
-    @Override
-    public Term get(int i) {
-        return updateList.get(i);
-    }
-
     public int getSize(){
         return updateList.size();
     }

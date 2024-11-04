@@ -1,9 +1,6 @@
 package de.uka.ilkd.key.logic;
 
-import de.uka.ilkd.key.java.Services;
-import de.uka.ilkd.key.logic.op.Junctor;
-import de.uka.ilkd.key.logic.sort.Sort;
-import de.uka.ilkd.key.util.Pair;
+import de.uka.ilkd.key.logic.op.SchemaVariable;
 
 import java.util.List;
 
@@ -19,7 +16,10 @@ public abstract class SeqManager<T> {
     public Term getLastTerm(){
         return toTerm(getLast());
     }
-    public abstract T get(int i);
+    public T get(int i){
+        return getList().get(i);
+    }
+
     public abstract int getSize();
     public abstract List<T> getList();
     public abstract Term getTermFromList();
@@ -61,7 +61,16 @@ public abstract class SeqManager<T> {
         return this.getList().subList(0,possiblePrefix.getSize()).equals(possiblePrefix.getList());
     }
 
-//
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SeqManager<?> && ((SeqManager<?>) obj).getList().equals(this.getList());
+    }
+
+    public boolean isFullyInstantiated(){
+        return this.getList().stream().noneMatch(x -> toTerm(x).op() instanceof SchemaVariable);
+    }
+    //
 //    void addLast(T elem);
 
 }

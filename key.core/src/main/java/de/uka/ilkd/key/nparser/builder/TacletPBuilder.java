@@ -25,11 +25,13 @@ import de.uka.ilkd.key.nparser.varexp.TacletBuilderManipulators;
 import de.uka.ilkd.key.parser.SchemaVariableModifierSet;
 import de.uka.ilkd.key.rule.*;
 import de.uka.ilkd.key.rule.conditions.TypeResolver;
+import de.uka.ilkd.key.rule.conditions.catsconditions.MethodNameResolver;
 import de.uka.ilkd.key.rule.conditions.catsconditions.TraceResolver;
 import de.uka.ilkd.key.rule.tacletbuilder.*;
 import de.uka.ilkd.key.util.Pair;
 import de.uka.ilkd.key.util.parsing.BuildingException;
 
+import org.antlr.v4.runtime.RuleContext;
 import org.key_project.util.collection.DefaultImmutableSet;
 import org.key_project.util.collection.ImmutableList;
 import org.key_project.util.collection.ImmutableSLList;
@@ -275,7 +277,7 @@ public class TacletPBuilder extends ExpressionBuilder {
         if (!applied) {
             LOGGER.warn("Found name-matching conditions with following type signature:");
             suitableManipulators.forEach(it -> LOGGER.warn(Arrays.toString(it.getArgumentTypes())));
-            LOGGER.warn("But you gave {} arguments.\n", arguments.size());
+            LOGGER.warn("But you gave {} arguments {} \n", arguments.size(), arguments.stream().map(RuleContext::getText).toList());
             semanticError(ctx, "Could not apply the given variable condition: %s", ctx.getText());
         }
         return null;
@@ -308,15 +310,41 @@ public class TacletPBuilder extends ExpressionBuilder {
         }
 
         return switch (expectedType) {
-        case TYPE_RESOLVER -> buildTypeResolver(ctx);
-        case TRACE_RESOLVER -> buildTraceResolver(ctx);
+        case TYPE_RESOLVER, TRACE_RESOLVER, METHOD_NAME_RESOLVER -> buildTypeResolver(ctx);
         case SORT -> visitSortId(ctx.term().getText(), ctx.term());
         case JAVA_TYPE -> getOrCreateJavaType(ctx.term().getText(), ctx);
         case VARIABLE -> varId(ctx, ctx.getText());
         case STRING -> ctx.getText();
+        case INTEGER -> Integer.getInteger(ctx.getText());
         case TERM -> accept(ctx.term());
 
         };
+    }
+
+    private boolean isSortId(String text){
+        String primitiveName = text;
+        Type t = null;
+        if (primitiveName.equals(PrimitiveType.JAVA_BYTE.getName())) {
+            t = PrimitiveType.JAVA_BYTE;
+            primitiveName = PrimitiveType.JAVA_INT.getName();
+        } else if (primitiveName.equals(PrimitiveType.JAVA_CHAR.getName())) {
+            t = PrimitiveType.JAVA_CHAR;
+            primitiveName = PrimitiveType.JAVA_INT.getName();
+        } else if (primitiveName.equals(PrimitiveType.JAVA_SHORT.getName())) {
+            t = PrimitiveType.JAVA_SHORT;
+            primitiveName = PrimitiveType.JAVA_INT.getName();
+        } else if (primitiveName.equals(PrimitiveType.JAVA_INT.getName())) {
+            t = PrimitiveType.JAVA_INT;
+            primitiveName = PrimitiveType.JAVA_INT.getName();
+        } else if (primitiveName.equals(PrimitiveType.JAVA_LONG.getName())) {
+            t = PrimitiveType.JAVA_LONG;
+            primitiveName = PrimitiveType.JAVA_INT.getName();
+        } else if (primitiveName.equals(PrimitiveType.JAVA_BIGINT.getName())) {
+            t = PrimitiveType.JAVA_BIGINT;
+            primitiveName = PrimitiveType.JAVA_BIGINT.getName();
+        }
+        Sort s = lookupSort(primitiveName);
+        return s != null;
     }
 
     private Sort visitSortId(String text, ParserRuleContext ctx) {
@@ -364,6 +392,11 @@ public class TacletPBuilder extends ExpressionBuilder {
 
     public Object buildTypeResolver(KeYParser.Varexp_argumentContext ctx) {
         SchemaVariable y = accept(ctx.varId());
+
+        if(ctx.trace_resolver() != null)
+            return buildTraceResolver(ctx.trace_resolver());
+        if(ctx.method_name_resolver() != null)
+            return buildMethodNameResolver(ctx.method_name_resolver());
         if (ctx.TYPEOF() != null) {
             return TypeResolver.createElementTypeResolver(y);
         }
@@ -371,29 +404,57 @@ public class TacletPBuilder extends ExpressionBuilder {
             return TypeResolver.createContainerTypeResolver(y);
         }
 
-        Sort s = visitSortId(ctx.term().getText(), ctx.term());
-        if (s != null) {
-            if (s instanceof GenericSort) {
-                return TypeResolver.createGenericSortResolver((GenericSort) s);
-            } else {
-                return TypeResolver.createNonGenericSortResolver(s);
+        if(isSortId(ctx.term().getText())){
+            Sort s = visitSortId(ctx.term().getText(), ctx.term());
+            if (s != null) {
+                if (s instanceof GenericSort) {
+                    return TypeResolver.createGenericSortResolver((GenericSort) s);
+                } else {
+                    return TypeResolver.createNonGenericSortResolver(s);
+                }
             }
         }
+        if(ctx.term() != null && accept(ctx.term()) instanceof Term t && t.op() instanceof SchemaVariable sv) {
+            if (t.sort().name().equals(new Name("MethodName")))
+                return MethodNameResolver.getIdentity(TraceResolver.getIdentity(sv));
+            if (t.sort() == Sort.FORMULA)
+                return TraceResolver.getIdentity(sv);
+        }
         return null;
+
     }
-    public Object buildTraceResolver(KeYParser.Varexp_argumentContext ctx) {
+    public Object buildTraceResolver(KeYParser.Trace_resolverContext ctx) {
         SchemaVariable y = accept(ctx.varId());
         if(ctx.FIRST_OF() != null)
             return TraceResolver.getFirstSeqExtractor(y);
         if(ctx.LAST_OF() != null)
             return TraceResolver.getLastSeqExtractor(y);
-        Term t = accept(ctx.term());
-        if(t != null)
-            return TraceResolver.getIdentity((SchemaVariable) t.op());
-        else
-            semanticError(ctx, "Could not find schemaVar in %s", ctx);
+        if(ctx.ID() != null)
+            return TraceResolver.getIdentity(y);
+        if(ctx.OBSERVING_VAR() != null)
+            return TraceResolver.getObservingVarResolver(y);
+        if(ctx.OBSERVED_VAR() != null)
+            return TraceResolver.getObservingVarResolver(y);
+        if(ctx.OBSERVED_VAR() != null)
+            return TraceResolver.getObservingVarResolver(y);
+        if(ctx.POSTFIX_TRACE()    != null)
+            return TraceResolver.getPrefixTrace(y);
+        semanticError(ctx, "Could not find schemaVar in %s", ctx);
         return null;
     }
+
+    public Object buildMethodNameResolver(KeYParser.Method_name_resolverContext ctx){
+        SchemaVariable y = accept(ctx.varId());
+        if(ctx.METHOD_NAME_OF() != null) {
+            if(ctx.trace_resolver() != null)
+                return MethodNameResolver.getMethodNameOf((TraceResolver) buildTraceResolver(ctx.trace_resolver()));
+            return MethodNameResolver.getMethodNameOf(TraceResolver.getIdentity(y));
+        }
+        semanticError(ctx, "Could not find schemaVar in %s", ctx);
+        return null;
+    }
+
+
 
     @Override
     public Object visitGoalspecs(KeYParser.GoalspecsContext ctx) {

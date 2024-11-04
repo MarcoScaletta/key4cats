@@ -1804,6 +1804,13 @@ public class TermBuilder {
             TRUE());
     }
 
+    public Term chop(Term left, Term right){
+        return tf.createTerm(Junctor.CHOP,left,right);
+    }
+    public Term conc(Term left, Term right){
+        return tf.createTerm(Junctor.CONC,left,right);
+    }
+
     public Term created(Term o) {
         return created(getBaseHeap(), o);
     }

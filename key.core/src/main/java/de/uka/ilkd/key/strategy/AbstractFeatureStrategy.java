@@ -13,10 +13,7 @@ import de.uka.ilkd.key.proof.rulefilter.IHTacletFilter;
 import de.uka.ilkd.key.proof.rulefilter.TacletFilter;
 import de.uka.ilkd.key.rule.RuleApp;
 import de.uka.ilkd.key.rule.RuleSet;
-import de.uka.ilkd.key.strategy.feature.ConditionalFeature;
-import de.uka.ilkd.key.strategy.feature.Feature;
-import de.uka.ilkd.key.strategy.feature.MutableState;
-import de.uka.ilkd.key.strategy.feature.RuleSetDispatchFeature;
+import de.uka.ilkd.key.strategy.feature.*;
 import de.uka.ilkd.key.strategy.feature.instantiator.BackTrackingManager;
 import de.uka.ilkd.key.strategy.feature.instantiator.ForEachCP;
 import de.uka.ilkd.key.strategy.feature.instantiator.OneOfCP;
@@ -173,6 +170,14 @@ public abstract class AbstractFeatureStrategy extends StaticFeatureCollection im
 
     protected Feature instantiate(String sv, ProjectionToTerm value) {
         return instantiate(new Name(sv), value);
+    }
+
+    protected Feature checkSameTrace(ProjectionToTerm trace1, ProjectionToTerm trace2,ProjectionToTerm trace3){
+        return new SameTraceFeature(trace1,trace2,trace3);
+    }
+
+    protected Feature afterSymbolicExecution(){
+        return new AfterSymbolicExecution();
     }
 
 }

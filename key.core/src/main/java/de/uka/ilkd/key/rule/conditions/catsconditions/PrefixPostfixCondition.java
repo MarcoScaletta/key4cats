@@ -12,37 +12,31 @@ import de.uka.ilkd.key.rule.VariableCondition;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
 
+import javax.xml.validation.Schema;
+
 /**
  * @author Marco Scaletta
  */
 public class PrefixPostfixCondition implements VariableCondition {
 
 
-    private final SchemaVariable termSV;
-    private final SchemaVariable prefixSV;
-    private final SchemaVariable lastElemPrefixSV;
-    private final SchemaVariable postfixSV;
+    private final Term termSV;
+    private final Term prefixSV;
+    private final Term postfixSV;
 
-    public PrefixPostfixCondition(SchemaVariable term,SchemaVariable prefix,SchemaVariable lastElemPrefix,SchemaVariable postfix) {
+
+    public PrefixPostfixCondition(Term term, Term prefix,Term postfix) {
         this.termSV = term;
         this.prefixSV = prefix;
         this.postfixSV = postfix;
-        this.lastElemPrefixSV = lastElemPrefix;
-    }
-
-    public PrefixPostfixCondition(SchemaVariable term, SchemaVariable prefix,SchemaVariable postfix) {
-        this.termSV = term;
-        this.prefixSV = prefix;
-        this.postfixSV = postfix;
-        this.lastElemPrefixSV = null;
     }
 
     @Override
     public MatchConditions check(SchemaVariable var, SVSubstitute instCandidate, MatchConditions matchCond, Services services) {
         SVInstantiations svInst = matchCond.getInstantiations();
-        Term term = (Term) svInst.getInstantiation(termSV);
-        Term prefixTerm = (Term) svInst.getInstantiation(prefixSV);
-        Term postfixTerm = (Term) svInst.getInstantiation(postfixSV);
+        Term term = termSV.op() instanceof SchemaVariable ? (Term) svInst.getInstantiation((SchemaVariable) termSV.op()) : termSV;
+        Term prefixTerm = prefixSV.op() instanceof SchemaVariable ? (Term) svInst.getInstantiation((SchemaVariable) prefixSV.op()) : prefixSV;
+        Term postfixTerm = postfixSV.op() instanceof SchemaVariable ? (Term) svInst.getInstantiation((SchemaVariable) postfixSV.op()) : postfixSV;
 
         if(term == null || prefixTerm == null || postfixTerm == null) {
             return matchCond;

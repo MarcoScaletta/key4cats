@@ -1,4 +1,4 @@
-\single:noObservationsTrivialPrecondition;
+\single:callPlaceBetOnceSufficientContract;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<
