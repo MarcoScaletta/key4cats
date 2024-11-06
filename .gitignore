@@ -70,3 +70,4 @@ checkstyle-diff.txt
 /cats/src/main/java/key4cats/parsers/*
 /cats/src/test/resources/TestsCATs.java
 /cats/src/test/resources/tracerules.key
+/key.core/src/main/antlr4/KeYLexer.tokens
