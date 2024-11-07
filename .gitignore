@@ -72,3 +72,4 @@ checkstyle-diff.txt
 /cats/src/test/resources/tracerules.key
 /key.core/src/main/antlr4/KeYLexer.tokens
 /cats/results_info
+/key.ui/examples/traces/test/tracerules.key
