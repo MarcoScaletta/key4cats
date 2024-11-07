@@ -1,4 +1,4 @@
-\single:callPlaceBetOnceSufficientContract;
+\single:callDummyProc2And1SafeLocalContextOr;
 TestsCATs.java;
 [callBetTwiceFail] {placeBetOnlyOnce;} callPlaceBetTwice :
     <<

@@ -473,6 +473,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
 
         setupArithPrimaryCategories(d);
         setupObserveTaclet(d);
+        setupAfterSETaclet(d);
         setupPolySimp(d, numbers);
         setupInEqSimp(d, numbers);
 
@@ -718,6 +719,11 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "observingInAnte", observe);
     }
 
+    private void setupAfterSETaclet(RuleSetDispatchFeature d){
+        bindRuleSet(d, "afterSE", afterSymbolicExecution());
+    }
+
+
     private void setupElimPostTaclet(RuleSetDispatchFeature d){
         TermBuffer prefixRes = new TermBuffer();
         TermGenerator preFixGenerator = new PreFixGenerator();
@@ -743,7 +749,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                         instantiate("preFormula", sub(chopping, 0)),
                         instantiate("innerFormula", sub(chopping, 1)),
                         instantiate("postFormula", sub(chopping, 2))
-                        , longConst(-1000)
+                        , longConst(-100)
 ////                        ,
 //                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
 //                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),
@@ -2084,6 +2090,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         setupCallTaclets(d);
         setupElimPreTaclet(d);
         setupObserveTaclet(d);
+        setupAfterSETaclet(d);
         setupElimPostTaclet(d);
 
         disableInstantiate();
