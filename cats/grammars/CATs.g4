@@ -2,8 +2,7 @@ grammar CATs;
 import CATSLexer;
 
 
-problem: (mod) SEMI (className=id JAVA_EXT)
-    SEMI (contractWithId)+;
+problem: contractWithId+;
 
 contractWithId : BRACKL (TEST OBS_AS)? id BRACKR contract;
 contract : (LBRACE (id SEMI)+ RBRACE)?   target=catOf;

@@ -10,69 +10,64 @@ import java.util.*;
 
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
-    public enum Mode {ALL, SINGLE};
 
     private final String include = "traceRules.key";
     private final String className;
     private final String javaSource = ".";
-    private final Map<Identifier, Contract> contractsMap;
-    private final Set<Identifier> contractToBeGenerated;
-    private final Mode mode;
-    public ProofCATsBuilder(String catsFileName) {
-        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileName));
+    private final Map<String, Contract> contractsMap;
+    private final Set<String> contractToBeGenerated;
+    private final KeY4CATs.ProofGenMode mode;
+    public ProofCATsBuilder(String catsFileContent, String contract, String className, KeY4CATs.ProofGenMode mode) {
+        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileContent));
         CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
         CATsParser.ProblemContext problemContext = parser.problem();
 
+        this.className = className;
+        this.mode = mode;
         try{
-            CATsParser.ModContext modeCtx = problemContext.mod();
-            className = problemContext.className.getText();
-
             this.contractsMap = createContractMap(problemContext.contractWithId());
-            if(modeCtx.SINGLE() != null) {
-                mode = Mode.SINGLE;
-                contractToBeGenerated = Set.of((Identifier) problemContext.mod().id().accept(this));
-            }
-            else {
-                mode = Mode.ALL;
-                contractToBeGenerated = this.contractsMap.keySet();
-            }
         }catch(Exception e){
             e.printStackTrace();
             throw new RuntimeException(String.format("Exception while parsing: %s", e.getMessage()) );
         }
+        switch (mode){
+            case KeY4CATs.ProofGenMode.SINGLE:
+                contractToBeGenerated = Set.of(contract);
+                break;
+            case KeY4CATs.ProofGenMode.ALL:
+                contractToBeGenerated = this.contractsMap.keySet();
+                break;
+            default:
+                contractToBeGenerated = Set.of();
+        }
+
     }
 
-    public Mode getMode(){
-        return mode;
-    }
-
-
-    private Map<Identifier,Contract> createContractMap(List<CATsParser.ContractWithIdContext> contractWithIdContext){
-        Map<Identifier,Contract> map = new HashMap<>();
+    private Map<String,Contract> createContractMap(List<CATsParser.ContractWithIdContext> contractWithIdContext){
+        Map<String,Contract> map = new HashMap<>();
         contractWithIdContext.forEach(
                 ctx->{
-                    Identifier id = (Identifier) ctx.id().accept(this);
+                    String id = ctx.id().getText();
                     if(map.containsKey(id))
-                        throw new RuntimeException(String.format("Multiple declarations for contract %s", id.toKeY()));
+                        throw new RuntimeException(String.format("Multiple declarations for contract %s", id));
                     map.put(id, this.getContractFromCtx(ctx));
                 }
         );
         return map;
     }
 
-    public Proof assembleProof(Identifier contractID){
+    public Proof assembleProof(String contractID){
         Contract toProve =this.contractsMap.get(contractID);
         if(toProve == null)
             throw new RuntimeException(String.format("Cannot prove undefined contract \"%s\"",
-                    contractID.toKeY()));
+                    contractID));
         CATof target = toProve.target();
         List<AssumeCAT> assumeCATs = toProve.contractIds().stream().map(
-
                 x-> {
-                    if (this.contractsMap.get(x) == null)
+                    if (this.contractsMap.get(x.toKeY()) == null)
                         throw new RuntimeException(String.format("Contract \"%s\" is assumed but not declared",
                                 x.toKeY()));
-                    return    new AssumeCAT(this.contractsMap.get(x).target());
+                    return    new AssumeCAT(this.contractsMap.get(x.toKeY()).target());
                 }
         ).toList();
         return new Proof(String.format("\"%s\"", include), javaSource, new Problem( assumeCATs,target));
@@ -86,7 +81,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     }
 
-    public Set<Identifier> getContractIds(){
+    public Set<String> getContractIds(){
         return contractToBeGenerated;
     }
 
