@@ -7,7 +7,11 @@ import java.util.Objects;
 class Utils{
 
     public static String listToKeY(List<? extends KeYGen> elems){
-        return String.join(", ", elems.stream().map(x -> x.toKeY()).toList());
+        return listToKeY(elems, ", ");
+    }
+
+    public static String listToKeY(List<? extends KeYGen> elems, String delim){
+        return String.join(delim, elems.stream().map(KeYGen::toKeY).toList());
     }
 
 }

@@ -34,7 +34,7 @@ record Problem(List<AssumeCAT> assumptionCATs, CATof target) implements KeYGen{
     public String toKeY() {
         return String.format(
                 "\\problem{\n%s\n==>\n%s\n}",
-                Utils.listToKeY(assumptionCATs), target.toKeY());
+                Utils.listToKeY(assumptionCATs, ",\n"), target.toKeY());
     }
 }
 
