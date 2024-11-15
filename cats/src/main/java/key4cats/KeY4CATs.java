@@ -5,11 +5,13 @@ import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
+import de.uka.ilkd.key.proof.io.AbstractProblemLoader;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,11 +20,15 @@ import static de.uka.ilkd.key.core.Main.loadCommandLineFiles;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 public class KeY4CATs {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeY4CATs.class);
 
     public enum ProofGenMode{ALL, SINGLE,FULL};
+
+    public static final PrintStream unmutedOut = System.out;
+    public static final PrintStream mutedOut = new PrintStream(OutputStream.nullOutputStream());
 
     enum KeYMode {AUTO, GUI};
 //    final static String javafile;
@@ -115,11 +121,25 @@ public class KeY4CATs {
 
         Set<String> contractNames = p.getContractIds();
 
-        if(proofGenMode == ProofGenMode.SINGLE || proofGenMode == ProofGenMode.FULL){
-            if(!contractNames.iterator().hasNext())
-                throw new RuntimeException( "No contract to be proven (check what command you run)");
+        if(!contractNames.iterator().hasNext())
+            throw new RuntimeException( "No contract to be proven (check what command you run)");
+        if(proofGenMode == ProofGenMode.SINGLE) {
+                prove(p, directory, contractName);
+        }
+        if(proofGenMode == ProofGenMode.FULL){
+            int i = 0;
+            LOGGER.info(String.format("Full proof for %s. Contracts to be proven: %s", contractName, contractNames.size()));
+            Set<String> openProofs = new LinkedHashSet<>();
             for (String cName : contractNames) {
-                prove(p, directory, cName);
+                i++;
+                boolean proved = prove(p, directory, cName);
+                if(!proved)
+                    openProofs.add(cName);
+                LOGGER.info(String.format("Contract proved: [%s/%s]", i-openProofs.size(), contractNames.size()));
+            }
+            if(!openProofs.isEmpty()){
+                LOGGER.warn(String.format("%s contracts could not be proven", openProofs.size()));
+                openProofs.forEach(x->LOGGER.warn(String.format("Could not prove: \"%s\"",x)));
             }
         }else {
             for (String contractName : contractNames) {
@@ -131,15 +151,16 @@ public class KeY4CATs {
         }
     }
 
-    private static void prove(ProofCATsBuilder p, String directory, String contractName) throws IOException{
+    private static boolean prove(ProofCATsBuilder p, String directory, String contractName) throws IOException{
         generateProof(p,directory,contractName);
         if(executionMode == KeYMode.GUI) {
             LOGGER.info("Starting Interactive Mode (continue in the newly opened window)");
             openFileWithGUI(directory, contractName);
+            return false;
         }
         else if(executionMode == KeYMode.AUTO) {
-            LOGGER.info("Proving the contract automatically");
-            openFileWithCLI(directory, contractName);
+            LOGGER.info(String.format("Proving \"%s\" automatically",contractName));
+            return openFileWithCLI(directory, contractName);
         }else {
             throw new RuntimeException("Execution Mode should be GUI or AUTO but found: "+ executionMode);
         }
@@ -147,7 +168,7 @@ public class KeY4CATs {
 
     private static void generateProof(ProofCATsBuilder p, String directory, String contractName) throws IOException{
         File keyFile = new File(String.format("%s/%s.key", directory, contractName));
-        LOGGER.info(String.format("Generating proof for %s in file %s", contractName,keyFile));
+        LOGGER.debug(String.format("Generating proof for %s in file %s", contractName,keyFile));
         DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
         dataOutputStream.writeBytes(p.assembleProof(contractName).toKeY());
         dataOutputStream.flush();
@@ -217,17 +238,29 @@ public class KeY4CATs {
         loadCommandLineFiles(windowUserInterfaceControl, List.of(keyFile));
     }
 
-    private static void openFileWithCLI(String directory, String contractName) {
+    private static void muteOut(){
+        System.setOut(mutedOut);
+    }
+    private static void unmuteOut(){
+        System.setOut(unmutedOut);
+    }
+
+    private static boolean openFileWithCLI(String directory, String contractName) {
         try {
             File keyFile = new File(String.format("%s/%s.key", directory, contractName));
+            if(LOGGER.isInfoEnabled() || LOGGER.isTraceEnabled() )
+                muteOut();
             KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(keyFile);
             env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
+            if(LOGGER.isInfoEnabled() || LOGGER.isTraceEnabled() )
+                unmuteOut();
             boolean proved = env.getLoadedProof().closed();
             LOGGER.info("Proof: " + (proved ? "CLOSED (proven)" : "OPEN (cannot prove)"));
             if(stats)
                 LOGGER.info(env.getLoadedProof().getStatistics().toString());
             else
                 LOGGER.info("Nodes: " +  env.getLoadedProof().countNodes());
+            return proved;
         }catch (ProblemLoaderException e){
             throw new RuntimeException(e);
         }
