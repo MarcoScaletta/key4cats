@@ -74,7 +74,6 @@ public class KeY4CATs {
     static Option INTERACTIVE = Option.builder("i")
             .desc("Execute KeY in interactive mode via gui")
             .longOpt("interactive")
-            .hasArg().argName("MODE")
             .build();
 
     static Option JAVA_CLASS = Option.builder("class")
