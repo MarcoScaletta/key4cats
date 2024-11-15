@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class KeY4CATs {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeY4CATs.class);
 
-    public enum ProofGenMode{ALL, SINGLE};
+    public enum ProofGenMode{ALL, SINGLE,FULL};
 
     enum KeYMode {AUTO, GUI};
 //    final static String javafile;
@@ -36,6 +36,14 @@ public class KeY4CATs {
             .required(true)
             .desc("Generate proof for all the contract")
             .build();
+
+    static Option FULL_PROOF = Option.builder("f")
+            .required(true)
+            .desc("Generate proof for <CONTRACT_NAME> and for all contracts assumed in <CONTRACT_NAME>")
+            .longOpt("full-proof")
+            .hasArg().argName("CONTRACT_NAME")
+            .build();
+
 
     static Option SHOW_STATS = Option.builder("stats")
             .required(false)
@@ -70,7 +78,7 @@ public class KeY4CATs {
             .hasArg().argName("JAVA_FILE")
             .build();
 
-    static final OptionGroup LOAD_PROOF_OPTION = new OptionGroup().addOption(SINGLE_PROOF).addOption(ALL_PROOFS);
+    static final OptionGroup LOAD_PROOF_OPTION = new OptionGroup().addOption(FULL_PROOF).addOption(SINGLE_PROOF).addOption(ALL_PROOFS);
 
 
 
@@ -80,6 +88,7 @@ public class KeY4CATs {
         options.addOptionGroup(LOAD_PROOF_OPTION);
         options.addOption(CATS_FILE);
         options.addOption(JAVA_CLASS);
+        options.addOption(FULL_PROOF);
         options.addOption(INTERACTIVE);
         options.addOption(SHOW_STATS);
     }
@@ -92,10 +101,12 @@ public class KeY4CATs {
     static String keyHome = System.getenv("KEY");
     static KeYMode executionMode = KeYMode.AUTO;
     static boolean stats = false;
+    static String directory;
 
 
     public static void main(String [] args) throws IOException {
         checkOptions(args);
+        checkOptions();
         File catsFile = new File(keyHome + catsFilename);
         String directory = catsFile.getParent();
         final InputStream targetStream = new DataInputStream(new FileInputStream(catsFile));
@@ -104,19 +115,11 @@ public class KeY4CATs {
 
         Set<String> contractNames = p.getContractIds();
 
-        if(proofGenMode == ProofGenMode.SINGLE){
+        if(proofGenMode == ProofGenMode.SINGLE || proofGenMode == ProofGenMode.FULL){
             if(!contractNames.iterator().hasNext())
-                throw new RuntimeException("No Contract Provided for Single Mode");
-            File keyFile = new File(String.format("%s/%s.key", directory, contractName));
-            DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
-            dataOutputStream.writeBytes(p.assembleProof(contractName).toKeY());
-            dataOutputStream.flush();
-            if(executionMode == KeYMode.GUI)
-                openFileWithGUI(keyFile);
-            else if(executionMode == KeYMode.AUTO) {
-                openFileWithCLI(keyFile);
-            }else {
-                throw new RuntimeException("Execution Mode should be GUI or AUTO but found: "+ executionMode);
+                throw new RuntimeException( "No contract to be proven (check what command you run)");
+            for (String cName : contractNames) {
+                prove(p, directory, cName);
             }
         }else {
             for (String contractName : contractNames) {
@@ -126,6 +129,33 @@ public class KeY4CATs {
                 dataOutputStream.flush();
             }
         }
+    }
+
+    private static void prove(ProofCATsBuilder p, String directory, String contractName) throws IOException{
+        generateProof(p,directory,contractName);
+        if(executionMode == KeYMode.GUI) {
+            LOGGER.info("Starting Interactive Mode (continue in the newly opened window)");
+            openFileWithGUI(directory, contractName);
+        }
+        else if(executionMode == KeYMode.AUTO) {
+            LOGGER.info("Proving the contract automatically");
+            openFileWithCLI(directory, contractName);
+        }else {
+            throw new RuntimeException("Execution Mode should be GUI or AUTO but found: "+ executionMode);
+        }
+    }
+
+    private static void generateProof(ProofCATsBuilder p, String directory, String contractName) throws IOException{
+        File keyFile = new File(String.format("%s/%s.key", directory, contractName));
+        LOGGER.info(String.format("Generating proof for %s in file %s", contractName,keyFile));
+        DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
+        dataOutputStream.writeBytes(p.assembleProof(contractName).toKeY());
+        dataOutputStream.flush();
+    }
+
+    private static void checkOptions(){
+        if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && executionMode == KeYMode.GUI)
+            throw  new RuntimeException("Only one proof at a time can be loaded interactively.");
     }
 
     private static void checkOptions(String[] args){
@@ -140,7 +170,7 @@ public class KeY4CATs {
             if(cl.hasOption(HELP_OPTION)) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.setOptionComparator(null);
-                formatter.printHelp( "cats (-auto[default] | -gui) --java-file <JAVA_FILE> --cats-file <CATS_FILE> (--single | --all) <CONTRACT_NAME>", allOptions);
+                formatter.printHelp( "cats --java-file <JAVA_FILE> --cats-file <CATS_FILE> (--single |--full | --all) <CONTRACT_NAME> [-i]", allOptions);
                 System.exit(0);
             }
         }catch (ParseException e1){
@@ -152,6 +182,10 @@ public class KeY4CATs {
                     if(cl.hasOption(SINGLE_PROOF)) {
                         proofGenMode = ProofGenMode.SINGLE;
                         contractName = cl.getOptionValue(SINGLE_PROOF);
+                    }
+                    if(cl.hasOption(FULL_PROOF)) {
+                        proofGenMode = ProofGenMode.FULL;
+                        contractName = cl.getOptionValue(FULL_PROOF);
                     }
                 }
                 if (cl.hasOption(INTERACTIVE))
@@ -177,14 +211,16 @@ public class KeY4CATs {
 
 
 
-    private static void openFileWithGUI(File file) {
+    private static void openFileWithGUI(String directory, String contractName) {
+        File keyFile = new File(String.format("%s/%s.key", directory, contractName));
         WindowUserInterfaceControl windowUserInterfaceControl = MainWindow.getInstance().getUserInterface();
-        loadCommandLineFiles(windowUserInterfaceControl, List.of(file));
+        loadCommandLineFiles(windowUserInterfaceControl, List.of(keyFile));
     }
 
-    private static void openFileWithCLI(File file) {
+    private static void openFileWithCLI(String directory, String contractName) {
         try {
-            KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(file);
+            File keyFile = new File(String.format("%s/%s.key", directory, contractName));
+            KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(keyFile);
             env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
             boolean proved = env.getLoadedProof().closed();
             LOGGER.info("Proof: " + (proved ? "CLOSED (proven)" : "OPEN (cannot prove)"));

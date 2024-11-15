@@ -1,6 +1,9 @@
 package key4cats;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 
 class Proof implements KeYGen{

@@ -4,6 +4,7 @@ import de.uka.ilkd.key.util.Pair;
 import key4cats.parsers.CATs.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import recoder.kit.Identity;
 
 import java.util.*;
 
@@ -34,6 +35,9 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             case KeY4CATs.ProofGenMode.SINGLE:
                 contractToBeGenerated = Set.of(contract);
                 break;
+            case KeY4CATs.ProofGenMode.FULL:
+                contractToBeGenerated = getFullDependency(contract);
+                break;
             case KeY4CATs.ProofGenMode.ALL:
                 contractToBeGenerated = this.contractsMap.keySet();
                 break;
@@ -41,6 +45,27 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                 contractToBeGenerated = Set.of();
         }
 
+    }
+
+
+    public Set<String> getFullDependency(String id){
+        return getFullDependency(id, new LinkedHashSet<>());
+    }
+
+
+    public Set<String> getFullDependency(String id, Set<String> knownIds){
+        Set<String> newDependencies = new LinkedHashSet<>(knownIds);
+        newDependencies.add(id);
+        if(!contractsMap.containsKey(id))
+            throw new RuntimeException("Contract not defined: " + id);
+        contractsMap.get(id).contractIds().forEach(
+                contractId -> {
+                    String contractIdStr = contractId.toKeY();
+                    if(!knownIds.contains(contractIdStr))
+                       newDependencies.addAll(getFullDependency(contractIdStr,newDependencies));
+                }
+        );
+        return newDependencies;
     }
 
     private Map<String,Contract> createContractMap(List<CATsParser.ContractWithIdContext> contractWithIdContext){
