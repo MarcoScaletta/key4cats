@@ -135,11 +135,11 @@ public class KeY4CATs {
                 boolean proved = prove(p, directory, cName);
                 if(!proved)
                     openProofs.add(cName);
-                LOGGER.info(String.format("Contract proved: [%s/%s]", i-openProofs.size(), contractNames.size()));
             }
+            System.out.printf("[Closed:%s, Open:%s, Tot:%s]%n", i, openProofs.size(), contractNames.size());
             if(!openProofs.isEmpty()){
-                LOGGER.warn(String.format("%s contracts could not be proven", openProofs.size()));
-                openProofs.forEach(x->LOGGER.warn(String.format("Could not prove: \"%s\"",x)));
+                System.out.printf("%s contracts could not be proven%n", openProofs.size());
+                openProofs.forEach(x->System.out.printf(String.format("\t - Could not prove: [%s]%n",x)));
             }
         }else {
             for (String contractName : contractNames) {
@@ -159,7 +159,7 @@ public class KeY4CATs {
             return false;
         }
         else if(executionMode == KeYMode.AUTO) {
-            LOGGER.info(String.format("Proving \"%s\" automatically",contractName));
+            System.out.print(String.format("[\"%s\"] (AUTO):",contractName));
             return openFileWithCLI(directory, contractName);
         }else {
             throw new RuntimeException("Execution Mode should be GUI or AUTO but found: "+ executionMode);
@@ -255,15 +255,23 @@ public class KeY4CATs {
             if(LOGGER.isInfoEnabled() || LOGGER.isTraceEnabled() )
                 unmuteOut();
             boolean proved = env.getLoadedProof().closed();
-            LOGGER.info("Proof: " + (proved ? "CLOSED (proven)" : "OPEN (cannot prove)"));
+            System.out.print((proved ? String.format("%s",green("CLOSED (proven)")) : String.format("%s",red("OPEN (cannot prove)"))));
             if(stats)
-                LOGGER.info(env.getLoadedProof().getStatistics().toString());
+                System.out.println("\n" + env.getLoadedProof().getStatistics().toString());
             else
-                LOGGER.info("Nodes: " +  env.getLoadedProof().countNodes());
+                System.out.printf(" {n_nodes:%s}%n",  env.getLoadedProof().countNodes());
             return proved;
         }catch (ProblemLoaderException e){
             throw new RuntimeException(e);
         }
     }
 
+
+
+    static String red(String s){
+        return "\033[31m " + s + "\033[0m ";
+    }
+    static String green(String s){
+        return "\033[32m " + s + "\033[0m ";
+    }
 }
