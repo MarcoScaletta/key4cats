@@ -1,0 +1,12 @@
+placeBetInnerSimple,56
+trivialMultipleObsCallee,273
+callPlaceBetOnceSufficientContract,2016
+callPlaceBetDecidedBet,2111
+simpleSchemTraceInclusion,257
+callDummyProc1AssumeNoDummyProc1Before,266
+callDummyProc2And1SafeLocalContextOr,2272
+callPlaceBetOnlyOnceAssumePreTrace,266
+callPlaceBetOnceSetVarsToOne,289
+casinoCaseStudySimple,718
+casinoCaseStudySimpleCompletePlaceBet,998
+noObservationsTrivialPrecondition,46
