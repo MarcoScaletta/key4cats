@@ -12,19 +12,20 @@ javaFileName: (ALPHA+ DIGIT*)+ JAVA_EXT;
 natural: DIGIT+;
 exprElem : var=id | val=natural;
 exprOp : op=(PLUS | MIN | TIMES | DIV) ;
-expr: term=exprElem | expr1=expr op=exprOp expr2=expr;
+expr: term=exprElem | expr1=expr op=exprOp expr2=expr | LPAREN expr1=expr op=exprOp expr2=expr RPAREN;
 
-predOp : AND | OR ;
+predOp : AND | OR | IMPL;
 
 predicate :
         TRUE
     |   FALSE
     |   NOT LPAREN  negpred=predicate RPAREN
     |   pred1=predicate op=predOp pred2=predicate
+    |   LPAREN  pred1=predicate op=predOp pred2=predicate RPAREN
     |   boolExpr=booleanExpr;
 
 boolExprOp : EQ | NEQ | GT | GE | LT | LE;
-booleanExpr : expr1=expr op=boolExprOp expr2=expr;
+booleanExpr : expr1=expr op=boolExprOp expr2=expr | LPAREN expr1=expr op=boolExprOp expr2=expr RPAREN ;
 
 catOf : method=id COL cat;
 cat : CAT_START preTr=trace OR innerTr=trace OR postTr=trace CAT_END;

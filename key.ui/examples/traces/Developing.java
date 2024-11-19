@@ -10,7 +10,8 @@ class Developing{
 
     public static void decideBet(boolean sync){ //USED
         if(coinSide == guess){
-            wallet += 2*bet;
+            wallet = wallet + bet;
+            wallet = wallet + bet;
         }
         bet = 0;
         return;

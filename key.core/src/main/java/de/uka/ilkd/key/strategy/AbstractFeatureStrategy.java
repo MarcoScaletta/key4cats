@@ -176,6 +176,10 @@ public abstract class AbstractFeatureStrategy extends StaticFeatureCollection im
         return new SameTraceFeature(trace1,trace2,trace3);
     }
 
+    protected Feature checkNoObservations(ProjectionToTerm trace){
+        return new NoObservationsFeature(trace);
+    }
+
     protected Feature afterSymbolicExecution(){
         return new AfterSymbolicExecution();
     }

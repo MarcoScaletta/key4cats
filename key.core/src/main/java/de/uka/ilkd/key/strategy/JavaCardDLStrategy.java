@@ -701,8 +701,10 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
             // to be instantiated:
             //      - updatePostfix
             //      - tracePostfix
+
             Feature instantiateElimPrefix = forEach(prefixRes, postFixGenerator,
                     add(
+                            checkNoObservations(sub(sub(prefixRes, 1), 0)),
                             checkSameTrace(instOf("trace"),instOf("tracePrefix"),  sub(sub(prefixRes, 1), 0)),
                             instantiate("updatePostfix", sub(prefixRes, 0)),
                             instantiate("tracePostfix", sub(sub(prefixRes, 1), 0)),

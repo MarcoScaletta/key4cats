@@ -11,6 +11,7 @@ POPEV: 'pop';
 RETEV:'ret';
 AND: '&';
 OR: '|';
+IMPL: '->';
 EQ: '=';
 NEQ: '!=';
 GT: '>';
