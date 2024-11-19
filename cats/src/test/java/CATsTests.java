@@ -22,7 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class CATsTests {
 
     private final String fileName;
-
+    public static final PrintStream originalOut = System.out;
     public CATsTests() throws IOException {
         String resultInfo = "results_info";
         fileName = Files.readString(new File(resultInfo).toPath());
@@ -106,11 +106,20 @@ public class CATsTests {
     }
 
 
-    private Proof prove(Path file)
-            throws ProblemLoaderException {
+    private Proof prove(Path file) throws ProblemLoaderException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(baos));
         KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(file.toFile());
         env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
-        return env.getLoadedProof();
+        System.setOut(originalOut);
+        String outputOfProof = baos.toString();
+        if(outputOfProof.endsWith("Replay result: Proof replayed successfully.\n")) {
+            System.out.println(outputOfProof);
+            return env.getLoadedProof();
+        }
+        else {
+            throw new RuntimeException("Problem during the proof" + outputOfProof);
+        }
     }
 
 }
