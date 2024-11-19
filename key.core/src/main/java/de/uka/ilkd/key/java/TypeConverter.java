@@ -138,6 +138,18 @@ public final class TypeConverter {
         LDT responsibleLDT = getResponsibleLDT(op, subs, services, ec);
         if (responsibleLDT != null) {
             return tb.func(responsibleLDT.getFunctionFor(op, services, ec), subs);
+        } else if (op instanceof GreaterThan) {
+            assert subs.length == 2;
+            return tb.gt(subs[0], subs[1]);
+        } else if (op instanceof LessThan) {
+            assert subs.length == 2;
+            return tb.lt(subs[0], subs[1]);
+        } else if (op instanceof LessOrEquals) {
+            assert subs.length == 2;
+            return tb.lt(subs[0], subs[1]);
+        } else if (op instanceof GreaterOrEquals) {
+            assert subs.length == 2;
+            return tb.geq(subs[0], subs[1]);
         } else if (op instanceof Equals) {
             assert subs.length == 2;
             return tb.equals(subs[0], subs[1]);
