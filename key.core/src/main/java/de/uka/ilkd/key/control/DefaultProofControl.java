@@ -35,6 +35,12 @@ public class DefaultProofControl extends AbstractProofControl {
      */
     private Thread autoModeThread;
 
+    private Throwable uncaughtException = null;
+
+    public Throwable getUncaughtException(){
+        return uncaughtException;
+    }
+
     /**
      * Constructor.
      *
@@ -105,6 +111,10 @@ public class DefaultProofControl extends AbstractProofControl {
             this.proof = proof;
             this.goals = goals;
             this.ptl = ptl;
+            uncaughtException = null;
+            this.setUncaughtExceptionHandler(
+                    (t, e) -> uncaughtException = e
+            );
         }
 
         @Override

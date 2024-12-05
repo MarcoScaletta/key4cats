@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import de.uka.ilkd.key.control.DefaultProofControl;
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 
@@ -84,7 +85,7 @@ public class CATsTests {
                     "casinoCaseStudySimpleFail",
                     "casinoCaseStudySimpleCompletePlaceBetFail"
             })
-    public void failingProofs(String contract) throws Exception{
+    public void failingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
         Proof proof = prove(file);
         if(!proof.closed())
@@ -105,21 +106,18 @@ public class CATsTests {
         }
     }
 
-
-    private Proof prove(Path file) throws ProblemLoaderException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(baos));
-        KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(file.toFile());
+    private Proof prove(Path file)  {
+        KeYEnvironment<DefaultUserInterfaceControl> env;
+        try{
+            env = KeYEnvironment.load(file.toFile());
+        }catch(ProblemLoaderException e ){
+            throw new RuntimeException("Problem loading proof:", e);
+        }
         env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
-        System.setOut(originalOut);
-        String outputOfProof = baos.toString();
-        if(outputOfProof.endsWith("Replay result: Proof replayed successfully.\n")) {
-            System.out.println(outputOfProof);
-            return env.getLoadedProof();
+        if (((DefaultProofControl) env.getProofControl()).getUncaughtException() != null) {
+            throw new RuntimeException("Unexpected Exception during test: ", ((DefaultProofControl) env.getProofControl()).getUncaughtException());
         }
-        else {
-            throw new RuntimeException("Problem during the proof" + outputOfProof);
-        }
+        return env.getLoadedProof();
     }
 
 }
