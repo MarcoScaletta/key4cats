@@ -1,11 +1,14 @@
 package key4cats;
 
-import de.uka.ilkd.key.util.Pair;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import key4cats.parsers.CATs.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import recoder.kit.Identity;
+import com.github.javaparser.JavaParser;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -15,38 +18,68 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private final String include = "traceRules.key";
     private final String className;
     private final String javaSource = ".";
+    private final String javaFileActualSource;
+    private final Set<String> javaVarNames = new LinkedHashSet<>();
+    private final Set<String> javaMethodNames = new LinkedHashSet<>();
     private final Map<String, Contract> contractsMap;
     private final Set<String> contractToBeGenerated;
     private final KeY4CATs.ProofGenMode mode;
-    public ProofCATsBuilder(String catsFileContent, String contract, String className, KeY4CATs.ProofGenMode mode) {
-        CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileContent));
-        CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
-        CATsParser.ProblemContext problemContext = parser.problem();
+    public ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
+
 
         this.className = className;
         this.mode = mode;
-        try{
-            this.contractsMap = createContractMap(problemContext.contractWithId());
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new RuntimeException(String.format("Exception while parsing: %s", e.getMessage()) );
-        }
-        switch (mode){
-            case KeY4CATs.ProofGenMode.SINGLE:
-                contractToBeGenerated = Set.of(contract);
-                break;
-            case KeY4CATs.ProofGenMode.FULL:
-                contractToBeGenerated = getFullDependency(contract);
-                break;
-            case KeY4CATs.ProofGenMode.ALL:
-                contractToBeGenerated = this.contractsMap.keySet();
-                break;
-            default:
-                contractToBeGenerated = Set.of();
-        }
 
+        javaFileActualSource = catsFile.getParent() + "/" + className + ".java";
+        File javaFile = new File(javaFileActualSource);
+        if(!javaFile.exists()) {
+            throw new RuntimeException("File " + javaFileActualSource + " does not exist.");
+        }
+        setJavaVarMethodNames(javaFile);
+
+        try {
+            final InputStream targetStream = new DataInputStream(new FileInputStream(catsFile));
+            String catsFileContent = new String(targetStream.readAllBytes(), StandardCharsets.UTF_8);
+
+            CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileContent));
+            CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
+            CATsParser.ProblemContext problemContext = parser.problem();
+
+                this.contractsMap = createContractMap(problemContext.contractWithId());
+            } catch (Exception e) {
+                throw new RuntimeException(String.format("Exception while building proof obligation: %s", e.getMessage()));
+            }
+            switch (mode) {
+                case KeY4CATs.ProofGenMode.SINGLE:
+                    contractToBeGenerated = Set.of(contract);
+                    break;
+                case KeY4CATs.ProofGenMode.FULL:
+                    contractToBeGenerated = getFullDependency(contract);
+                    break;
+                case KeY4CATs.ProofGenMode.ALL:
+                    contractToBeGenerated = this.contractsMap.keySet();
+                    break;
+                default:
+                    contractToBeGenerated = Set.of();
+            }
     }
 
+
+    private void setJavaVarMethodNames(File file) throws FileNotFoundException {
+        Optional<CompilationUnit> cu = new JavaParser().parse(file).getResult();
+
+        if (cu.isEmpty()) {
+            throw new RuntimeException("Problem parsing " + javaFileActualSource + ".");
+        }
+        if (cu.get().getClassByName(className).isEmpty()) {
+            throw new RuntimeException("Class  " + className + " not defined in " + javaFileActualSource + ".");
+        }
+
+        ClassOrInterfaceDeclaration classDecl = cu.get().getClassByName(className).get();
+        javaVarNames.addAll(classDecl.getFields().stream().flatMap(it -> it.getVariables().stream().map(v -> v.getName().toString())).toList());
+        javaMethodNames.addAll(classDecl.getMethods().stream().map(v -> v.getName().toString()).toList());
+
+    }
 
     public Set<String> getFullDependency(String id){
         return getFullDependency(id, new LinkedHashSet<>());
@@ -112,6 +145,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     @Override
     public KeYGen visitCatOf(CATsParser.CatOfContext ctx) {
+        if(!javaMethodNames.contains(ctx.id().getText()))
+            throw new RuntimeException(String.format("Method \"%s\" not defined in class \"%s\"",ctx.id().getText(),className));
         return new CATof(
                 new Identifier(className +"::"+ ctx.id().getText()),
                 (CAT) ctx.cat().accept(this));
@@ -162,6 +197,13 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public KeYGen visitObs(CATsParser.ObsContext ctx) {
         if(ctx.observing.getText().equals("thisCallId"))
             throw new RuntimeException("Observing variables cannot be called \"callId\".");
+        if(javaMethodNames.contains(ctx.observing.getText()))
+            throw new RuntimeException("Name \"" + ctx.observing.getText() + "\" for observing variable not permitted: a method exists with the same name");
+        if(javaVarNames.contains(ctx.observing.getText()))
+            throw new RuntimeException("Name \"" + ctx.observing.getText() + "\" for observing variable not permitted: a program variable exists with the same name");
+        if(!javaVarNames.contains(ctx.observed.getText()))
+            throw new RuntimeException(String.format("Variable \"%s\" not defined in class \"%s\"",ctx.observed.getText(),className));
+
         Identifier observing = (Identifier) ctx.observing.accept(this);
         return new Obs(getProgVarName(ctx.observed), observing);
     }

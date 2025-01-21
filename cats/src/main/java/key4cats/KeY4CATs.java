@@ -5,12 +5,10 @@ import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
-import de.uka.ilkd.key.proof.io.AbstractProblemLoader;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,17 +18,16 @@ import static de.uka.ilkd.key.core.Main.loadCommandLineFiles;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 public class KeY4CATs {
     private static final Logger LOGGER = LoggerFactory.getLogger(KeY4CATs.class);
 
-    public enum ProofGenMode{ALL, SINGLE,FULL};
+    public enum ProofGenMode{ALL, SINGLE,FULL}
 
     public static final PrintStream unmutedOut = System.out;
     public static final PrintStream mutedOut = new PrintStream(OutputStream.nullOutputStream());
 
-    enum KeYMode {AUTO, GUI};
+    enum KeYMode {AUTO, GUI}
 //    final static String javafile;
     static Option HELP_OPTION = Option.builder("h")
         .required(true)
@@ -114,12 +111,9 @@ public class KeY4CATs {
         checkOptions();
         File catsFile = new File(keyHome + catsFilename);
         String directory = catsFile.getParent();
-        final InputStream targetStream = new DataInputStream(new FileInputStream(catsFile));
-        String catsFileContent = new String(targetStream.readAllBytes(), StandardCharsets.UTF_8);
-        ProofCATsBuilder p = new ProofCATsBuilder(catsFileContent, contractName, javaClassFilename,proofGenMode);
-
-        Set<String> contractNames = p.getContractIds();
-
+        try {
+            ProofCATsBuilder p = new ProofCATsBuilder(catsFile, contractName, javaClassFilename, proofGenMode);
+            Set<String> contractNames = p.getContractIds();
         if(!contractNames.iterator().hasNext())
             throw new RuntimeException( "No contract to be proven (check what command you run)");
         if(proofGenMode == ProofGenMode.SINGLE) {
@@ -147,6 +141,11 @@ public class KeY4CATs {
                 dataOutputStream.writeBytes(p.assembleProof(contractName).toKeY());
                 dataOutputStream.flush();
             }
+        }
+
+        }catch(RuntimeException e){
+            System.err.print(e);
+            System.exit(1);
         }
     }
 
@@ -273,4 +272,5 @@ public class KeY4CATs {
     static String green(String s){
         return "\033[32m " + s + "\033[0m ";
     }
+
 }

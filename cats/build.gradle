@@ -10,7 +10,7 @@ plugins {
 description "CATs"
 configurations { antlr4 }
 dependencies {
-
+    implementation 'com.github.javaparser:javaparser-core:3.26.3'
     implementation project(":key.core")
 
     implementation project(":key.ui")
