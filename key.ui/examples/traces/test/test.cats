@@ -22,11 +22,24 @@
     <<
         ~~ ** x::y . `true` |
         start(callDecideBetAndPlaceBet, \id) ** ~~ ** pop(callDecideBetAndPlaceBet, \id) ** x::y1 . `true` | ~~ >>
+
+[removeOneNoPlaceBet] removeOne :
+    <<
+        ~~ ** x::y . `true`|
+        start(removeOne,\id) ** ~{placeBet}~ ** pop(removeOne,\id) ** x::y1 . `y1=y-1` |
+        ~~
+    >>
+
 [callPlaceBetOnceInsufficientContractFail] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
     <<
         ~~ ** x::y . `true` |
         start(callRemoveOneAndPlaceBetOnce, \id) ** ~~ ** pop(callRemoveOneAndPlaceBetOnce, \id) ** x::y1 . `true` | ~~ >>
-[callPlaceBetOnceSufficientContract] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
+[callPlaceBetOnceAfterRemoveOneUnderspecifiedFail] {placeBetOnlyOnce;removeOne;} callRemoveOneAndPlaceBetOnce :
+    <<
+        ~{placeBet}~ ** x::y . `true` |
+        start(callRemoveOneAndPlaceBetOnce,\id) ** ~~ ** pop(callRemoveOneAndPlaceBetOnce,\id) ** x::y1 . `true` | ~~ >>
+
+[callPlaceBetOnceAfterRemoveOne] {placeBetOnlyOnce;removeOneNoPlaceBet;} callRemoveOneAndPlaceBetOnce :
     <<
         ~{placeBet}~ ** x::y . `true` |
         start(callRemoveOneAndPlaceBetOnce,\id) ** ~~ ** pop(callRemoveOneAndPlaceBetOnce,\id) ** x::y1 . `true` | ~~ >>

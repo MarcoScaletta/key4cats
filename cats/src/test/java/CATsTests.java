@@ -6,8 +6,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import de.uka.ilkd.key.control.DefaultProofControl;
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
@@ -23,7 +21,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class CATsTests {
 
     private final String fileName;
-    public static final PrintStream originalOut = System.out;
     public CATsTests() throws IOException {
         String resultInfo = "results_info";
         fileName = Files.readString(new File(resultInfo).toPath());
@@ -43,7 +40,7 @@ public class CATsTests {
                     "placeBetAbsTrSelf",
                     "placeBetInnerSimple",
                     "trivialMultipleObsCallee",
-                    "callPlaceBetOnceSufficientContract",
+                    "callPlaceBetOnceAfterRemoveOne",
                     "callPlaceBetDecidedBet",
                     "simpleSchemTraceInclusion",
                     "callDummyProc1AssumeNoDummyProc1Before",
@@ -55,7 +52,7 @@ public class CATsTests {
                     "noObservationsTrivialPrecondition"
             }
             )
-    public void succeedingProofs(String contract) throws Exception{
+    public void succeedingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
         Proof proof = prove(file);
         if(proof.closed())
@@ -81,6 +78,7 @@ public class CATsTests {
                     "callDummyProc1And2And3CATFail",
                     "simpleSchemTraceInclusionFail",
                     "callDummyProc1WithAssumptionsButAssumeNothingFail",
+                    "callPlaceBetOnceAfterRemoveOneUnderspecifiedFail",
                     "callPlaceBetOnlyOncePreCondNotMetFail",
                     "casinoCaseStudySimpleFail",
                     "casinoCaseStudySimpleCompletePlaceBetFail"
