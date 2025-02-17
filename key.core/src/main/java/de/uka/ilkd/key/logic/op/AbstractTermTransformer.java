@@ -72,11 +72,14 @@ public abstract class AbstractTermTransformer extends AbstractSortedOperator
     public static final AbstractTermTransformer CONSTANT_VALUE = new ConstantValue();
 
     public static final AbstractTermTransformer FIRST_OF_TRACE = new TraceResolver.FirstOfTrace();
+    public static final AbstractTermTransformer FIRST_OF_UPDATE = new TraceResolver.FirstOfUpdate();
     public static final AbstractTermTransformer LAST_OF_TRACE = new TraceResolver.LastOfTrace();
 
     public static final AbstractTermTransformer TRACE_IDENTITY = new TraceResolver.TraceIdentity();
 
     public static final AbstractTermTransformer POSTFIX_TRACE = new TraceResolver.PostfixTrace();
+
+    public static final AbstractTermTransformer POSTFIX_UPDATE = new TraceResolver.PostfixUpdate();
 
     //PrefixTrace
     public static final AbstractTermTransformer ENUM_CONSTANT_VALUE = new EnumConstantValue();

@@ -73,6 +73,8 @@ public class UpdateManager extends SeqManager<Term> {
             throw new RuntimeException("Negative index for list");
         if (end > this.updateList.size())
             throw new RuntimeException("Index out of bound: " + end + " for list of length " + this.updateList.size());
+        if (begin >= end)
+            throw new RuntimeException("Sublist with index out of bound. Begin ("+ begin+ ")  should be smaller than end (" + end+") for list " + this.updateList);
         List<Term> sublist =this.updateList.subList(begin, end);
         Term update = sublist.getFirst();
         for (int i = 1; i < sublist.size(); i++) {

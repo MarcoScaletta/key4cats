@@ -10,4 +10,12 @@ class BufferCaseStudy{
         BufferCaseStudy.next(true);
         return;
     }
+
+
+    // safe = i.hasNext();
+    // access safe (line 12)
+    // ... but no next();
+    // if(safe){
+    // access safe (line 13)
+    // i.next();}
 }

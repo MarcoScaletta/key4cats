@@ -417,9 +417,10 @@ public class TacletPBuilder extends ExpressionBuilder {
         if(ctx.term() != null && accept(ctx.term()) instanceof Term t && t.op() instanceof SchemaVariable sv) {
             if (t.sort().name().equals(new Name("MethodName")))
                 return MethodNameResolver.getIdentity(TraceResolver.getIdentity(sv));
-            if (t.sort() == Sort.FORMULA)
+            if (t.sort() == Sort.FORMULA || t.sort() ==Sort.UPDATE)
                 return TraceResolver.getIdentity(sv);
         }
+        semanticError(ctx, "Could not find schemaVar in %s", ctx);
         return null;
 
     }
@@ -434,11 +435,9 @@ public class TacletPBuilder extends ExpressionBuilder {
         if(ctx.OBSERVING_VAR() != null)
             return TraceResolver.getObservingVarResolver(y);
         if(ctx.OBSERVED_VAR() != null)
-            return TraceResolver.getObservingVarResolver(y);
-        if(ctx.OBSERVED_VAR() != null)
-            return TraceResolver.getObservingVarResolver(y);
-        if(ctx.POSTFIX_TRACE()    != null)
-            return TraceResolver.getPrefixTrace(y);
+            return TraceResolver.getObservedVarResolver(y);
+        if(ctx.POSTFIX_TRACE()  != null)
+            return TraceResolver.getPostfixTrace(y);
         semanticError(ctx, "Could not find schemaVar in %s", ctx);
         return null;
     }

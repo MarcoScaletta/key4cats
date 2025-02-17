@@ -50,7 +50,7 @@ public abstract class TraceResolver {
         return new TraceResolver.IdentityResolver(s);
     }
 
-    public static TraceResolver getPrefixTrace(SchemaVariable s) {
+    public static TraceResolver getPostfixTrace(SchemaVariable s) {
         return new PostfixTraceResolver(s);
     }
 
@@ -107,13 +107,11 @@ public abstract class TraceResolver {
             super(traceSV);
         }
         @Override
-        public Term resolve(Term term, Services services) {
-            if(term == null || !TraceManager.isTrace(term))
-                return null;
-            TraceManager tm = new TraceManager(term,services);
-            if(tm.getSize() <= 1)
-                return null;
-            return new TraceManager(tm.getTracePairs().subList(1, tm.getSize()),services).getTermFromList();
+        public Term resolve(Term seq, Services services) {
+            if(seq != null && ((seq.sort() == Sort.FORMULA && TraceManager.isTrace(seq)) || seq.sort() == Sort.UPDATE)){
+                return (seq.sort() == Sort.FORMULA ? new TraceManager(seq,services) : new UpdateManager(seq,services)).getPostfixTerm(1);
+            }
+            return null;
         }
 
     }
@@ -165,6 +163,16 @@ public abstract class TraceResolver {
         }
     }
 
+    public static final class FirstOfUpdate extends AbstractTermTransformer {
+        public FirstOfUpdate(){
+            super(new Name("#firstOfUpdate"), 1, Sort.UPDATE);
+        }
+        @Override
+        public Term transform(Term term, SVInstantiations svInst, Services services) {
+            return new FirstElemResolver().resolve(term.sub(0),services);
+        }
+    }
+
     public static final class LastOfTrace extends AbstractTermTransformer {
         public LastOfTrace(){
             super(new Name("#lastOf"), 1);
@@ -188,6 +196,17 @@ public abstract class TraceResolver {
     public static final class PostfixTrace extends AbstractTermTransformer {
         public PostfixTrace(){
             super(new Name("#postfixTrace"), 1);
+        }
+        @Override
+        public Term transform(Term term, SVInstantiations svInst, Services services) {
+            return new PostfixTraceResolver().resolve(term.sub(0),services);
+        }
+    }
+
+
+    public static final class PostfixUpdate extends AbstractTermTransformer {
+        public PostfixUpdate(){
+            super(new Name("#postfixUpdate"), 1, Sort.UPDATE);
         }
         @Override
         public Term transform(Term term, SVInstantiations svInst, Services services) {

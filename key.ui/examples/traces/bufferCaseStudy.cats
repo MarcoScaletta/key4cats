@@ -6,16 +6,22 @@
         |
         ~~
     >>
-
+//  simple example for iterator
 [next]  next :
     <<
 //        ~~  ** pop(hasNext,_) ** resHasNext::hasNext . `hasNext=1` ** ~{next}~
-        ~{next}~ ** resHasNext::h1 . `true`
+//        ~~  ** pop(hasNext,_) ** ~{next,hasNext}~` ** resHasNext::hasNext . `hasNext=1`
+//        ~~  ** pop(hasNext,_) ** resHasNext::hasNext . `hasNext=1`
+// requires
+        ~~  ** pop(hasNext,_) ** ~{next}~ ** resHasNext::h1 . `true`
         |
 //        ~~ ** pop(hasNext,_) ** resHasNext::h1 . `true`
 //        |
+//ensures
+//      ~~
         start(next,\id) ** ~~ ** pop(next,\id) ** resHasNext::h2 . `true`
         |
+//expects
         ~~
     >>
 

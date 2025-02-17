@@ -241,6 +241,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "concrete",
             add(longConst(-11000), ScaleFeature.createScaled(FindDepthFeature.INSTANCE, 10.0)));
         bindRuleSet(d, "simplify", -4500);
+        bindRuleSet(d, "schematicTrace", -4000);
         bindRuleSet(d, "simplify_enlarging", -2000);
         bindRuleSet(d, "simplify_ENLARGING", -1900);
         bindRuleSet(d, "simplify_expression", -100);
@@ -464,7 +465,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "elimPrefix", add(
                 not(isInstantiated("updatePostfix")),
                 not(isInstantiated("tracePostfix")),
-                longConst(-200))); // smarter costs!!
+                longConst(-4500))); // smarter costs!!
 
         bindRuleSet(d, "elimPostfix", add(
                 not(isInstantiated("updatePrefix")),
@@ -708,7 +709,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                             checkSameTrace(instOf("trace"),instOf("tracePrefix"),  sub(sub(prefixRes, 1), 0)),
                             instantiate("updatePostfix", sub(prefixRes, 0)),
                             instantiate("tracePostfix", sub(sub(prefixRes, 1), 0)),
-                            longConst(-1000)
+                            longConst(-4500)
 //                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1)))
 //                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
                     ));
