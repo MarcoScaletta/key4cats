@@ -1,0 +1,14 @@
+simplify_expression: -100
+schemTr: -500
+observingInAnte: -4500
+closure: -15000
+simplify: -4500
+simplify_prog ???
+elimPrefix: -200
+split_if: ??
+simplify_autoname: ??
+traceCall: -100
+concrete: -11000
+update_elim: -8000
+update_apply: -4500
+update_join: -4600
