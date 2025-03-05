@@ -1,3 +1,14 @@
+# KeY4CATs -- Trace-based Deductive Verifier
+Do the following
+* Generate the parser for CATs: run the script ``/Users/scal9000/Documents/tools/key/cats/generate-parsers.sh``
+* Add the environment variable: ``KEY=<key-directory>``
+* Run 
+```gradle cats:run --args='--java-class <java-class-name> --cats-file <cats-file-relative-path> -s <cat-name>'```
+  * Use ``-i`` for interactive
+
+For example
+``KEY=<key-dir> gradle cats:run --args=' --java-class BufferCaseStudy --cats-file /key.ui/examples/traces/bufferCaseStudy.cats -s main -i'``
+
 # KeY -- Deductive Java Program Verifier
 
 [![Tests](https://github.com/KeYProject/key/actions/workflows/tests.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/tests.yml) [![CodeQL](https://github.com/KeYProject/key/actions/workflows/codeql.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/codeql.yml) [![CodeQuality](https://github.com/KeYProject/key/actions/workflows/code_quality.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/code_quality.yml) 
