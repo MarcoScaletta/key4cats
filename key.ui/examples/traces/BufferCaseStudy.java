@@ -7,7 +7,9 @@ class BufferCaseStudy{
 
     public static void bufferCaseStudy(boolean sync){
         BufferCaseStudy.hasNext(true);
-        BufferCaseStudy.next(true);
+        if(resHasNext == 1) {
+            BufferCaseStudy.next(true);
+        }
         return;
     }
 

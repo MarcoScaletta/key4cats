@@ -6,14 +6,13 @@
         |
         ~~
     >>
-//  simple example for iterator
+//  a simple example for iterator:
+// - 'hasNext()' must occur immediately before 'next()'
+// - no change of state can occur in between
 [next]  next :
     <<
-//        ~~  ** pop(hasNext,_) ** resHasNext::hasNext . `hasNext=1` ** ~{next}~
-//        ~~  ** pop(hasNext,_) ** ~{next,hasNext}~` ** resHasNext::hasNext . `hasNext=1`
-//        ~~  ** pop(hasNext,_) ** resHasNext::hasNext . `hasNext=1`
 // requires
-        ~~  ** pop(hasNext,_) ** ~{next}~ ** resHasNext::h1 . `true`
+        ~~  ** pop(hasNext,_) ** resHasNext::h1 . `h1=1`
         |
 //        ~~ ** pop(hasNext,_) ** resHasNext::h1 . `true`
 //        |
@@ -22,6 +21,32 @@
         start(next,\id) ** ~~ ** pop(next,\id) ** resHasNext::h2 . `true`
         |
 //expects
+        ~~
+    >>
+//  a more complex example for iterator:
+// - 'hasNext()' does not have to occur immediately before 'next()'
+// - there is no call to 'next()' after the last call to 'hasNext()' and this call to 'next'
+[nextComplex]  next :
+    <<
+// requires
+        ~~  ** pop(hasNext,_) ** ~{next}~ ** resHasNext::h1 . `h1=1`
+        |
+//        ~~ ** pop(hasNext,_) ** resHasNext::h1 . `true`
+//        |
+//ensures
+//      ~~
+        start(next,\id) ** ~~ ** pop(next,\id) ** resHasNext::h2 . `true`
+        |
+//expects
+        ~~
+    >>
+
+[mainComplex] {nextComplex;hasNext;} bufferCaseStudy :
+    <<
+        ~{next}~ ** resHasNext::h1 . `true`
+        |
+        start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`
+        |
         ~~
     >>
 
