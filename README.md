@@ -13,7 +13,7 @@ For example
 A CAT file (`.cats`) contains a list of CATs.
 
 ### Syntax of a Trace
-```java
+```
     <trace>: 
         <state-fml> 
         | <observation> "." <trace>
@@ -50,7 +50,7 @@ A CAT file (`.cats`) contains a list of CATs.
 
 ### Syntax of a CAT
 
-```java
+```
 
 <cat>: <signature-cat> ":" <require-spec> ";" <ensure-spec> ";" <expect-spec> ";"
 
