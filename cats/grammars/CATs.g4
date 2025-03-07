@@ -28,7 +28,18 @@ boolExprOp : EQ | NEQ | GT | GE | LT | LE;
 booleanExpr : expr1=expr op=boolExprOp expr2=expr | LPAREN expr1=expr op=boolExprOp expr2=expr RPAREN ;
 
 catOf : method=id COL cat;
-cat : CAT_START preTr=trace OR innerTr=trace OR postTr=trace CAT_END;
+oldSyntaxCat : CAT_START preTr=trace OR innerTr=trace OR postTr=trace CAT_END;
+
+cat :
+    (REQUIRES COL preTr=trace SEMI
+    ENSURES COL innerTr=trace SEMI
+    EXPECTS COL postTr=trace SEMI)
+    |
+    (
+    CAT_START preTr=trace OR innerTr=trace OR postTr=trace CAT_END
+    )
+
+    ;
 
 trace :
         stateFml

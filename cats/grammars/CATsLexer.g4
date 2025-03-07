@@ -44,6 +44,11 @@ BRACKR: ']';
 ID : '\\id';
 JAVA_EXT : '.java';
 
+REQUIRES: 'requires';
+ENSURES: 'ensures';
+EXPECTS: 'expects';
+
+
 TEST: '\\test';
 SINGLE: '\\single';
 ALL: '\\all';

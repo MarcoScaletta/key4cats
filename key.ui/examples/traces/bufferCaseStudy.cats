@@ -42,19 +42,25 @@
     >>
 
 [mainComplex] {nextComplex;hasNext;} bufferCaseStudy :
+    requires: ~{next}~ ** resHasNext::h1 . `true`;
+    ensures:  start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`;
+    expects: ~~ ;
+
+
+[main] {next;hasNext;} bufferCaseStudy :
     <<
-        ~{next}~ ** resHasNext::h1 . `true`
+        ~{next}~ ** resHasNext::mainH1 . `true`
         |
-        start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`
+        start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::mainH2 . `true`
         |
         ~~
     >>
 
-[main] {next;hasNext;} bufferCaseStudy :
-    <<
-        ~{next}~ ** resHasNext::h1 . `true`
-        |
-        start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`
-        |
-        ~~
-    >>
+//[mainUpdate] {next;hasNext;} bufferCaseStudyUpdate :
+//    <<
+//        ~{next}~ ** resHasNext::h1 . `true`
+//        |
+//        start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`
+//        |
+//        ~~
+//    >>
