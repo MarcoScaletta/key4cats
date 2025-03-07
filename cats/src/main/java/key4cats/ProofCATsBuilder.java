@@ -11,6 +11,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import static key4cats.TraceOp.chop;
+
 
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
@@ -24,6 +26,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private final Map<String, Contract> contractsMap;
     private final Set<String> contractToBeGenerated;
     private final KeY4CATs.ProofGenMode mode;
+    private Identifier currentCAT_ID = null;
     public ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
 
 
@@ -147,8 +150,10 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     public KeYGen visitCatOf(CATsParser.CatOfContext ctx) {
         if(!javaMethodNames.contains(ctx.id().getText()))
             throw new RuntimeException(String.format("Method \"%s\" not defined in class \"%s\"",ctx.id().getText(),className));
+        Identifier currentCAT_ID = new Identifier(className +"::"+ ctx.id().getText());
+        this.currentCAT_ID = currentCAT_ID;
         return new CATof(
-                new Identifier(className +"::"+ ctx.id().getText()),
+                currentCAT_ID,
                 (CAT) ctx.cat().accept(this));
     }
 
@@ -160,6 +165,23 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
         Trace postTr = (Trace)ctx.postTr.accept(this);
 
         return new CAT(preTr, inTr, postTr);
+    }
+
+    @Override
+    public KeYGen visitInnerTrace(CATsParser.InnerTraceContext ctx) {
+        if(ctx.fullTrace != null)
+            return ctx.fullTrace.accept(this);
+        if(ctx.shortTrace != null && currentCAT_ID != null) {
+            Event startEv = new Event("start", currentCAT_ID, new CallId());
+            Event popEv = new Event("pop", currentCAT_ID, new CallId());
+            return chop(
+                    startEv,
+                    (Trace) ctx.inner.accept(this),
+                    popEv,
+                    (Trace) ctx.postCond.accept(this)
+                    );
+        }
+        return null;
     }
 
     @Override

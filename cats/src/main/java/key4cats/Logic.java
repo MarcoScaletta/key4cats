@@ -88,6 +88,19 @@ class TraceOp extends Operator implements Trace{
         super(elem1, elem2, m.get(op));
 
     }
+
+    public static Trace chop(Trace ... traceArgs ){
+        return chop(Arrays.stream(traceArgs).toList());
+    }
+    public static Trace chop(List<Trace> traces ){
+        if(traces.isEmpty())
+            throw new RuntimeException("Cannot chop empty list of traces");
+        if(traces.size() == 1)
+            return traces.getFirst();
+        else
+            return new TraceOp(traces.getFirst(), chop(traces.subList(1, traces.size())), "**");
+    }
+
 }
 
 record AbsTr(List<Identifier> methods) implements Trace{

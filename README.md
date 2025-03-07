@@ -9,6 +9,86 @@ Do the following
 For example
 ``KEY=<key-dir> gradle cats:run --args=' --java-class BufferCaseStudy --cats-file /key.ui/examples/traces/bufferCaseStudy.cats -s main -i'``
 
+## Syntax of a CAT file 
+A CAT file (`.cats`) contains a list of CATs.
+
+### Syntax of a Trace
+```java
+    <trace>: 
+        <state-fml> 
+        | <observation> "." <trace>
+        | <event>   
+        | <abs-trace>
+        | <trace> <trace-op> <trace>  
+        ;
+        
+    <state-fml>: 
+        "`" <predicate> "`" // `true` , `y=2`
+        ;
+        
+    <observation>: 
+        <observed-var>"::"<observing-var>  // x::y
+        ;
+        
+    <event>:
+        "start(" <method-name> "," <int> ")"    // start(m,0)
+        | "pop(" <method-name> "," <int> ")"    // pop(m,0)
+        | "ret(" <int> ")"                      // ret(0)
+        ;
+        
+    <abs-trace>: 
+        "~{" <method-name>";"...";"<method-name> "}~"  // ~~ , ~{m,m1,m2}~
+        ; 
+        
+    <trace-op> : <and> | <or> | <chop> | <concat> ;
+    <and> = "&" ;
+    <or> = "|" ;
+    <chop> = "**";
+    <concat> = "." ;
+        
+```
+
+### Syntax of a CAT
+
+```java
+
+<cat>: <signature-cat> ":" <require-spec> ";" <ensure-spec> ";" <expect-spec> ";"
+
+<signature-cat>: 
+    "[" <cat-name> "]" "{" List(<cat-name>) "}" <method-name>
+
+<require-spec>: "requires:" <pre-trace> ";"
+
+<ensure-spec>: "ensures: [" <inner-trace> "]" <chop> <post-cond> ";"
+
+<expect-spec>: "expects:" <post-trace> ";"
+```
+* `<cat-name>` (`String`): name of the CAT that is specified.
+* `List(<cat-name>)` (list of `String` with separator `";"`): list of name of CATs for called methods that are assumed to be valid. These CATs must be specified in the same file. If the list is empty the braces can be omitted.
+* `<method-name>` (`String`): name of the method to be verified.
+* `<pre-trace>` (`<trace>`): pre-trace of this CAT.
+* `<pre-cond>` (`<trace>`): pre-condition of this CAT.
+* `<inner-trace>` (`<trace>`): inner-trace of this CAT for which the `start` and `pop` are implicit. 
+* `<post-cond>` (`<trace>`):  post-condition, it should contain a list of observations followed a state formula.
+* `<post-trace>` (`<trace>`): post-trace of this CAT.
+
+### Example of a CAT
+
+```
+    [catOfM1] m1: ...
+    [catOfM2] {} m2: ...
+     
+    [catOfM] {catOfM1;catOfM2} m:
+        requires: ~~ ** x::y `y=0`; 
+        ensures: ~~ ** x::y1 `y=y1`;
+        expects: ~~; 
+```
+1. `requires`: Anything allowed before m, x is equals to 0 in the pre-state.
+2. `ensures`: Anything allowed in m, x in post-state has the same value as x in the pre-state.
+3. `expects`: Anything allowed after m
+
+**A missing CAT for a called method would make the symbolic execution stop**
+
 # KeY -- Deductive Java Program Verifier
 
 [![Tests](https://github.com/KeYProject/key/actions/workflows/tests.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/tests.yml) [![CodeQL](https://github.com/KeYProject/key/actions/workflows/codeql.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/codeql.yml) [![CodeQuality](https://github.com/KeYProject/key/actions/workflows/code_quality.yml/badge.svg)](https://github.com/KeYProject/key/actions/workflows/code_quality.yml) 

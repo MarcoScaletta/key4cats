@@ -46,6 +46,11 @@
     ensures:  start(bufferCaseStudy,\id) ** ~~ ** pop(bufferCaseStudy,\id) ** resHasNext::h2 . `true`;
     expects: ~~ ;
 
+[newContracts]  hasNext :
+    requires: ~~ ** resHasNext::h1 . `true`
+    ensures:  [~{next}~] ** resHasNext::h2 . `true`;
+    expects: ~~ ;
+
 
 [main] {next;hasNext;} bufferCaseStudy :
     <<
