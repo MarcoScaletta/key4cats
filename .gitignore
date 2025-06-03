@@ -73,3 +73,6 @@ checkstyle-diff.txt
 /key.core/src/main/antlr4/KeYLexer.tokens
 /cats/results_info
 /key.ui/examples/traces/test/tracerules.key
+/cats/gen/AsyncLexer.interp
+/cats/gen/AsyncLexer.java
+/cats/gen/AsyncLexer.tokens
