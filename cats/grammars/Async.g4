@@ -1,5 +1,5 @@
-grammar AsyncParser;
-import AsyncLexer;
+grammar Async;
+import AsyncLxr;
 
 
 program: procedure* main ;
