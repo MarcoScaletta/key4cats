@@ -6,6 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import de.uka.ilkd.key.control.DefaultProofControl;
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
@@ -54,12 +55,15 @@ public class CATsTests {
             )
     public void succeedingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
+        long startTime = System.nanoTime();
         Proof proof = prove(file);
+        long elapsedTime = System.nanoTime() - startTime;
         if(proof.closed())
             printResults(contract,proof.countNodes());
         else
             printResults(contract,-1000);
-        System.out.println(proof.countNodes());
+        System.out.println(proof.countNodes());System.out.printf("Time:%sms%n", TimeUnit.NANOSECONDS.toMillis(elapsedTime));
+        System.out.printf("Avg time:%sμs%n", TimeUnit.NANOSECONDS.toMicros(elapsedTime / proof.countNodes()));
         assert(proof.closed());
     }
 
@@ -85,12 +89,17 @@ public class CATsTests {
             })
     public void failingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
+        long startTime = System.nanoTime();
         Proof proof = prove(file);
+        long elapsedTime = System.nanoTime() - startTime;
         if(!proof.closed())
             printResults(contract,proof.countNodes());
         else
             printResults(contract,-1000);
-        System.out.println(proof.countNodes());
+
+        System.out.printf("Nodes: %s%n", proof.countNodes());
+        System.out.printf("Time: %sms%n", TimeUnit.NANOSECONDS.toMillis(elapsedTime));
+        System.out.printf("Avg time: %sμs%n", TimeUnit.NANOSECONDS.toMicros(elapsedTime / proof.countNodes()));
         assert(!proof.closed());
     }
 
