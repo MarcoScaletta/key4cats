@@ -3,6 +3,7 @@ package key4cats;
 
 import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
+import de.uka.ilkd.key.core.Log;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
@@ -117,7 +118,10 @@ public class KeY4CATs {
         if(!contractNames.iterator().hasNext())
             throw new RuntimeException( "No contract to be proven (check what command you run)");
         if(proofGenMode == ProofGenMode.SINGLE) {
-                prove(p, directory, contractName);
+            LOGGER.info(String.format("Single proof for \"%s\"", contractName));
+
+            prove(p, directory, "removeOne");
+            prove(p, directory, contractName);
         }
         if(proofGenMode == ProofGenMode.FULL){
             int i = 0;
@@ -157,7 +161,7 @@ public class KeY4CATs {
             return false;
         }
         else if(executionMode == KeYMode.AUTO) {
-            System.out.print(String.format("[\"%s\"] (AUTO):",contractName));
+            LOGGER.info(String.format("Starting Auto Mode"));
             return openFileWithCLI(directory, contractName);
         }else {
             throw new RuntimeException("Execution Mode should be GUI or AUTO but found: "+ executionMode);
@@ -246,18 +250,17 @@ public class KeY4CATs {
     private static boolean openFileWithCLI(String directory, String contractName) {
         try {
             File keyFile = new File(String.format("%s/%s.key", directory, contractName));
-            if(LOGGER.isInfoEnabled() || LOGGER.isTraceEnabled() )
-                muteOut();
+            LOGGER.info(String.format("Loading %s/%s.key ...", directory, contractName));
             KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(keyFile);
+            LOGGER.info("Started proof...");
             env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
-            if(LOGGER.isInfoEnabled() || LOGGER.isTraceEnabled() )
-                unmuteOut();
             boolean proved = env.getLoadedProof().closed();
-            System.out.print((proved ? String.format("%s",green("CLOSED (proven)")) : String.format("%s",red("OPEN (cannot prove)"))));
-            if(stats)
-                System.out.println("\n" + env.getLoadedProof().getStatistics().toString());
-            else
-                System.out.printf(" {n_nodes:%s}%n",  env.getLoadedProof().countNodes());
+            String proofInfo = ((proved ? String.format("%s",green("CLOSED (proven)")) : String.format("%s",red("OPEN (cannot prove)"))));
+            if(stats) {
+                LOGGER.info(proofInfo);
+                LOGGER.info(env.getLoadedProof().getStatistics().toString());
+            } else
+                LOGGER.info(String.format("%s {n_nodes:%s}{time:%sms}%n",  proofInfo, env.getLoadedProof().countNodes(), env.getLoadedProof().getAutoModeTime()));
             return proved;
         }catch (ProblemLoaderException e){
             throw new RuntimeException(e);
