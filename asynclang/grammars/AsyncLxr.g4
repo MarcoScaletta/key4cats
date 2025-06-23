@@ -1,4 +1,4 @@
-lexer grammar AsyncLexer;
+lexer grammar AsyncLxr;
 
 WS:  [ \t\n\r\u00a0]+ -> channel(HIDDEN); //U+00A0 = non breakable whitespace
 DIGIT: [0-9];
