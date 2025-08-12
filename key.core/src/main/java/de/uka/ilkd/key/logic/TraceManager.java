@@ -3,6 +3,8 @@ package de.uka.ilkd.key.logic;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
+import de.uka.ilkd.key.logic.op.SpecialCallIds;
+import de.uka.ilkd.key.logic.op.TraceEvent;
 import de.uka.ilkd.key.rule.conditions.catsconditions.IsAtomicTraceElem;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;
@@ -175,6 +177,7 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
     public static Term conc(Term trace1, Term trace2, Services services){
         return services.getTermBuilder().conc(trace1,trace2);
     }
+
 //todo:optimize
 //    public static Term unchop(TraceManager trace1, TraceManager trace2, Services services){
 //        TraceManager newTr = new TraceManager(trace1.getTracePairs(),services);
@@ -190,5 +193,49 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
                 term.op() == Junctor.CHOP ||
                 term.op() == Junctor.CONC;
     }
+
+    public static int compareTracesLength(Term trace1, Term trace2, Services services){
+        TraceManager tm1 = new TraceManager(trace1,services);
+        TraceManager tm2 = new TraceManager(trace2,services);
+        return tm1.getSize() - tm2.getSize();
+    }
+
+//    public boolean equalsWithWildcards(TraceManager otherTM){
+//        if(otherTM.getSize() != this.getSize())
+//            return false;
+//        for (int i=0; i<this.getSize(); i++){
+//            Pair<Term,Junctor>  thisElem = this.getList().get(i);
+//            Pair<Term,Junctor>  otherElem = otherTM.getList().get(i);
+//
+//            // if the junctor or operator are NOT equals, the two traces are for sure different
+//            if (thisElem.first.op() != otherElem.first.op())
+//                return false;
+//            if(i < this.getSize()-1 && !thisElem.second.equals(otherElem.second))
+//                return false;
+//            // if the two trace formulas are exactly the same, the next part is skipped
+//            if(!thisElem.first.equals(otherElem.first)) {
+//                Term wildcard = services.getTermFactory().createTerm(SpecialCallIds.wildcard);
+//                int idIndex = -1;
+//
+//                if (thisElem.first.op() == TraceEvent.START_TR_EV ||  thisElem.first.op() == TraceEvent.POP_TR_EV) {
+//                    if(!thisElem.first.subs().get(0).equals(otherElem.first.subs().get(1)))
+//                        return false;
+//                    idIndex = 1;
+//                }
+//                if (thisElem.first.op() == TraceEvent.RET_TR_EV)
+//                    idIndex = 0;
+//                // if the operator is not a trace event, then there cannot be any wildcard, therefore the index is -1
+//                if(idIndex == -1)
+//                    return false;
+//                if(!(thisElem.first.subs().get(idIndex).equals(wildcard)) && !(otherElem.first.subs().get(idIndex).equals(wildcard)))
+//                    return false;
+//                else{
+//                    System.out.println("Wildcard!");
+//                }
+//            }
+//        }
+//        return true;
+//    }
+
 
 }

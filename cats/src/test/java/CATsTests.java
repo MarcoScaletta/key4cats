@@ -50,7 +50,9 @@ public class CATsTests {
                     "callPlaceBetOnceSetVarsToOne",
                     "casinoCaseStudySimple",
                     "casinoCaseStudySimpleCompletePlaceBet",
-                    "noObservationsTrivialPrecondition"
+                    "noObservationsTrivialPrecondition",
+                    "removeOneOnce",
+                    "removeOneTwice"
             }
             )
     public void succeedingProofs(String contract) {

@@ -31,7 +31,8 @@ public class ChopForCall implements VariableCondition {
         this.innerFmlSV = innerFml;
         this.postFmlSV = postFml;
     }
-
+    // choppingTrace: generate a list of Term from a Term (trace)
+    //      the result represents the sequence of subtraces separated by chop operator (**)
     private static List<Term> choppingTrace(Term trace, Services services){
 
         LinkedList<Term> chops = new LinkedList<>();
@@ -59,18 +60,14 @@ public class ChopForCall implements VariableCondition {
         return chops;
     }
 
+    // unchop: inverse of choppingTrace
+    //      returns the trace resulting from stiching together (with chop operator **) the list of subtraces contained traces
     private static Term unchop(List<Term> traces, Services services){
 
         return traces.subList(1, traces.size()).stream().reduce(traces.getFirst(),
                 (subUnchopped, trace) ->
                 services.getTermFactory().createTerm(Junctor.CHOP, subUnchopped, trace) );
     }
-
-//    public static Term unchop(List<Term> traces, Services services) {
-//        if(traces.size()>1)
-//            return TraceManager.unchopTraceManagers(traces.stream().map(x -> new TraceManager(x,services)).toList(),services);
-//        return traces.getFirst();
-//    }
 
     private static boolean containsSchemTr(Term trace){
         if(trace.op() instanceof SchematicTrace)
@@ -103,7 +100,8 @@ public class ChopForCall implements VariableCondition {
         if(choppedTrace.size() == 1) {
             //this means that the trailTrace consists of a single atomic trace element or schematic trace
             if (!(choppedTrace.getFirst().op() instanceof SchematicTrace)) {
-                // this means that trailTrace consists of a single atomic trace element
+                // the trailTrace may also consist of a conjunction
+                // otherwise trailTrace consists of a single atomic trace element
                 // of course since this element is atomic it cannot be chopped
                 // the result is therefore null
                 return null;
@@ -119,15 +117,14 @@ public class ChopForCall implements VariableCondition {
             LinkedList<Term> postTraceList =   new LinkedList<>(choppedTrace.subList(j,choppedTrace.size()));
 
             // (pre ** ~~, in, _) --> (pre ** ~~, ~~ ** in, _)
-            if(lastPreFormula.op() instanceof SchematicTrace && !containsSchemTr(innerTraceList))
+            if(lastPreFormula.op() instanceof SchematicTrace)
                 innerTraceList.addFirst(lastPreFormula);
             // (_, in ** ~~, post) --> (_, in ** ~~, ~~ ** post)
-            if(innerTraceList.getLast().op() instanceof SchematicTrace && !containsSchemTr(postTraceList))
+            if(innerTraceList.getLast().op() instanceof SchematicTrace)
                 postTraceList.addFirst(innerTraceList.getLast());
             // (_, in, ~~ ** post) --> (_, in ** ~~, ~~ ** post)
             if(postTraceList.getFirst().op() instanceof SchematicTrace)
                 innerTraceList.addLast(postTraceList.getFirst());
-
             if(containsSchemTr(innerTraceList) && containsSchemTr(postTraceList))
                 pairs.add(new Pair<>(
                         unchop(innerTraceList, services),

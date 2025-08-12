@@ -321,6 +321,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
 
         bindRuleSet(d, "comprehensions",
             add(NonDuplicateAppModPositionFeature.INSTANCE, longConst(-50)));
+        bindRuleSet(d, "backtrack", add(longConst(1000)));
 
         bindRuleSet(d, "comprehensions_high_costs",
             add(NonDuplicateAppModPositionFeature.INSTANCE, longConst(10000)));
@@ -465,7 +466,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "elimPrefix", add(
                 not(isInstantiated("updatePostfix")),
                 not(isInstantiated("tracePostfix")),
-                longConst(-4500))); // smarter costs!!
+                longConst(-10000))); // smarter costs!!
 
         bindRuleSet(d, "elimPostfix", add(
                 not(isInstantiated("updatePrefix")),
@@ -752,7 +753,7 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                         instantiate("preFormula", sub(chopping, 0)),
                         instantiate("innerFormula", sub(chopping, 1)),
                         instantiate("postFormula", sub(chopping, 2))
-                        , longConst(-100)
+                        , longConst(-1000)
 ////                        ,
 //                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
 //                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),

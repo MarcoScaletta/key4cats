@@ -107,4 +107,16 @@ class TestsCATs{
         return;
     }
 
+    public static void removeOneOnce(boolean sync){ //USED
+        TestsCATs.removeOne(true);
+        return;
+    }
+
+
+    public static void removeOneTwice(boolean sync){ //USED
+        TestsCATs.removeOne(true);
+        TestsCATs.removeOne(true);
+        return;
+    }
+
 }

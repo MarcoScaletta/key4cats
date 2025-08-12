@@ -18,23 +18,33 @@ import java.util.*;
 
 public class ChoppingGenerator implements TermGenerator {
 
+    public static int countingChops = 0;
+
+
+    //UNUSED
+    private static Set<Triple<Term,Term,Term>> pairsOfFullFormulasUpdatesAndPrefixes = new HashSet<>();
 
     @Override
     public Iterator<Term> generate(RuleApp app, PosInOccurrence pos, Goal goal, MutableState mState) {
         TacletApp tApp = (TacletApp) app;
         Term fullFormula = (Term) tApp.instantiations().lookupValue(new Name("fullFormula"));
+        Term update = (Term) tApp.instantiations().lookupValue(new Name("u"));
+
         Services services = goal.proof().getServices();
 
-
         Sequent seq = goal.sequent();
-        List<TraceManager> traces = seq.antecedent().asList().stream()
-                .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
-                .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
-        Optional<TraceManager> optionalLongestPreFmlTraceManager = traces.stream().max(Comparator.comparingInt(TraceManager::getSize));
+
+        // traces: taking all the judgments in the antecedent
+
+        TraceManager fullFormulaTM = new TraceManager(fullFormula,services);
+
+        List<TraceManager> traces = getJudgementInAntecedent(seq, services);
+
+        Optional<TraceManager> optionalLongestPreFmlTraceManager =
+                traces.stream().filter(fullFormulaTM::hasPrefix).max(Comparator.comparingInt(TraceManager::getSize));
         if(optionalLongestPreFmlTraceManager.isEmpty())
             return Collections.emptyIterator();
         TraceManager longestPreFmlTM = optionalLongestPreFmlTraceManager.get();
-        TraceManager fullFormulaTM = new TraceManager(fullFormula,services);
 
         int lastIndexCommonPrefix = fullFormulaTM.hasCommonPrefixOrIsEquals(longestPreFmlTM);
 
@@ -44,6 +54,12 @@ public class ChoppingGenerator implements TermGenerator {
             // if true: the longest formula in the antecedent is not prefix of fullformula
             return Collections.emptyIterator();
         }
+//        Triple<Term,Term,Term> pairOfFullFormulaUpdateAndPrefixe = new Triple<>(fullFormula,update,longestPreFmlTM.getTermFromList());
+//        if(pairsOfFullFormulasUpdatesAndPrefixes.contains(pairOfFullFormulaUpdateAndPrefixe))
+//            return Collections.emptyIterator();
+//        else
+//            pairsOfFullFormulasUpdatesAndPrefixes.add(pairOfFullFormulaUpdateAndPrefixe);
+
 
         if(fullFormulaTM.getTracePairs().get(lastIndexCommonPrefix).second != Junctor.CHOP){
             // if true: prefix in fullFormula is not connected with chop
@@ -68,16 +84,27 @@ public class ChoppingGenerator implements TermGenerator {
         if(choppingTrail == null)
             return Collections.emptyIterator();
         else {
-            LinkedHashSet<Triple<Term,Term,Term>> triples = new LinkedHashSet<>();
+            LinkedList<Triple<Term,Term,Term>> triples = new LinkedList<>();
                 for(Pair<Term,Term> choppedTrail : choppingTrail){
-                    triples.add(new Triple<>(longestPreFmlTM.getTermFromList(), choppedTrail.first, choppedTrail.second));
                     if(alternativePreFml != null)
                         triples.add(new Triple<>(alternativePreFml, choppedTrail.first, choppedTrail.second));
+                    else
+                        triples.add(new Triple<>(longestPreFmlTM.getTermFromList(), choppedTrail.first, choppedTrail.second));
+
                 }
+            triples.sort((x,y) ->
+                 TraceManager.compareTracesLength(x.second,y.second,services)*-1
+            );
+
             return triples.stream().map(x -> services.getTermBuilder().ife(x.first,x.second,x.third)).toList().iterator();
         }
     }
 
 
+    private List<TraceManager> getJudgementInAntecedent(Sequent seq, Services services){
+        return seq.antecedent().asList().stream()
+                .filter(x -> x.formula().op() instanceof UpdateApplication && x.formula().sub(1).op() instanceof Modality)
+                .map(x -> new TraceManager(x.formula().sub(1).sub(0), services)).toList();
+    }
 
 }

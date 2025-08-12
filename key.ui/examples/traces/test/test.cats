@@ -280,3 +280,16 @@
         start(placeBet,\id) ** ~{placeBet,decideBet}~ ** pop(placeBet,\id) ** `true` |
         ~~
     >>
+
+[removeOneOnce] {removeOne;} removeOneOnce :
+    <<
+        ~~ ** x::y . `true`|
+        start(removeOneOnce,\id) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneOnce,\id) ** x::y1 . `y1=y-1` |
+        ~~
+    >>
+[removeOneTwice] {removeOne;} removeOneTwice :
+    <<
+        ~~ ** x::y . `true`|
+        start(removeOneTwice,\id) ** ~~ ** start(removeOne,_) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneTwice,\id) ** x::y1 . `y1=y-2` |
+        ~~
+    >>
