@@ -120,7 +120,6 @@ public class KeY4CATs {
         if(proofGenMode == ProofGenMode.SINGLE) {
             LOGGER.info(String.format("Single proof for \"%s\"", contractName));
 
-            prove(p, directory, "removeOne");
             prove(p, directory, contractName);
         }
         if(proofGenMode == ProofGenMode.FULL){
