@@ -44,7 +44,7 @@ import org.jspecify.annotations.NonNull;
  */
 @KeYGuiExtension.Info(name = "Slicing",
     description = "Author: Arne Keller <arne.keller@posteo.de>",
-    experimental = false,
+    experimental = true,
     optional = true,
     priority = 9001)
 @HelpInfo(path = "/user/ProofSlicing/")

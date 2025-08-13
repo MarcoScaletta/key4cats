@@ -25,8 +25,9 @@ public class ProofCachingSettings extends AbstractPropertiesSettings {
     /**
      * Whether proof caching is enabled.
      */
+    // KeY4CATs: default caching False
     private final AbstractPropertiesSettings.PropertyEntry<Boolean> enabled =
-        createBooleanProperty(ENABLED_KEY, true);
+        createBooleanProperty(ENABLED_KEY, false);
     /**
      * Behaviour when disposing a proof that is referenced elsewhere.
      */
