@@ -213,6 +213,10 @@ public class OutputStreamProofSaver {
                 }
                 final Sequent problemSeq = proof.root().sequent();
                 ps.println("\\problem {");
+                if(!problemSeq.antecedent().isEmpty()){
+                    printer.printSemisequent(problemSeq.antecedent());
+                    printer.printConstant("==>");
+                }
                 printer.printSemisequent(problemSeq.succedent());
                 ps.println(printer.result());
                 ps.println("}\n");

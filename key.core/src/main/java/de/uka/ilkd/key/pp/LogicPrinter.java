@@ -727,6 +727,7 @@ public class LogicPrinter {
      * @param semiseq the semisequent to be printed
      */
     public void printSemisequent(Semisequent semiseq) {
+        layouter.beginC();
         for (int i = 0; i < semiseq.size(); i++) {
             layouter.markStartSub();
             printConstrainedFormula(semiseq.get(i));
@@ -1411,7 +1412,8 @@ public class LogicPrinter {
     public void printInfixTermContinuingBlock(Term l, int assLeft, String name, Term t, Term r,
             int assRight) {
         boolean isKeyword = false;
-        layouter.print("(");
+        if(t.op() != SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR)
+            layouter.print("(");
         if (services != null) {
             LocSetLDT loc = services.getTypeConverter().getLocSetLDT();
             isKeyword = (t.op() == Junctor.AND || t.op() == Junctor.OR || t.op() == Junctor.IMP
@@ -1431,7 +1433,8 @@ public class LogicPrinter {
         }
         layouter.ind(1, 0);
         maybeParens(r, assRight);
-        layouter.print(")");
+        if(t.op() != SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR)
+            layouter.print(")");
     }
 
     /**
