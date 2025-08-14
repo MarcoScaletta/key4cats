@@ -44,7 +44,8 @@ record Identifier(String id) implements ExprElem{
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof Identifier) && Objects.equals(((Identifier) obj).id, this.id);
+        return (obj instanceof Identifier) &&
+                ((Identifier) obj).id.equals(this.id);
     }
 
     @Override

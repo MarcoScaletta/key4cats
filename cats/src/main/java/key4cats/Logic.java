@@ -36,13 +36,22 @@ class BoolOpExpr extends Operator implements Predicate{
     }
 }
 
-interface Trace extends KeYGen{}
+interface Trace extends KeYGen{
+    Set<Trace> getElems();
+}
 
-record StateFml(Predicate pred) implements Trace{
+
+record StateFml(Predicate pred) implements Trace {
     @Override
     public String toKeY() {
         return String.format("`%s`", pred.toKeY());
     }
+
+    @Override
+    public Set<Trace> getElems() {
+        return Set.of(this);
+    }
+
 }
 
 record Obs(Identifier observed, Identifier observing) implements KeYGen{
@@ -55,6 +64,10 @@ record Obs(Identifier observed, Identifier observing) implements KeYGen{
 class ObsTr extends Operator implements Trace {
     public ObsTr(Obs elem1, Trace elem2) {
         super(elem1, elem2, "$.");
+    }
+    @Override
+    public Set<Trace> getElems() {
+        return Set.of(this);
     }
 }
 
@@ -74,6 +87,22 @@ class Event implements Trace{
                 subs.stream().map(KeYGen::toKeY).toList())) : "");
         return String.format("\\%sTrEv%s", eventName, subsString);
     }
+    @Override
+    public Set<Trace> getElems() {
+        return Set.of(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Event &&
+                ((Event) obj).eventName.equals(this.eventName) &&
+                ((Event) obj).subs.equals(this.subs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventName,subs);
+    }
 }
 
 class TraceOp extends Operator implements Trace{
@@ -87,6 +116,12 @@ class TraceOp extends Operator implements Trace{
     public TraceOp(Trace elem1, Trace elem2, String op) {
         super(elem1, elem2, m.get(op));
 
+    }
+    @Override
+    public Set<Trace> getElems() {
+        Set<Trace> elems = new HashSet<>(((Trace) elem1).getElems());
+        elems.addAll(((Trace) elem2).getElems());
+        return elems;
     }
 
     public static Trace chop(Trace ... traceArgs ){
@@ -111,6 +146,10 @@ record AbsTr(List<Identifier> methods) implements Trace{
         else
             return String.format("~(%s)~", String.join(", ", Utils.listToKeY(methods)));
     }
+    @Override
+    public Set<Trace> getElems() {
+        return Set.of(this);
+    }
 }
 
 record Wildcard() implements KeYGen{
@@ -125,7 +164,13 @@ record CallId() implements KeYGen{
     public String toKeY() {
         return "thisCallId";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CallId;
+    }
 }
+
 
 class CAT implements KeYGen{
 

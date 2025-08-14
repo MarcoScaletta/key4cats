@@ -169,11 +169,19 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     @Override
     public KeYGen visitInnerTrace(CATsParser.InnerTraceContext ctx) {
-        if(ctx.fullTrace != null)
-            return ctx.fullTrace.accept(this);
+        Event startEv = new Event("start", currentCAT_ID, new CallId());
+        Event popEv = new Event("pop", currentCAT_ID, new CallId());
+        if(ctx.fullTrace != null) {
+            TraceOp fullTrace = (TraceOp) ctx.fullTrace.accept(this);
+            Set<Trace> traceElems = fullTrace.getElems();
+            Trace newTrace = fullTrace;
+            if(!traceElems.contains(startEv))
+                newTrace = chop(startEv, newTrace);
+            if(!traceElems.contains(popEv))
+                newTrace = chop(newTrace,popEv);
+            return newTrace;
+        }
         if(ctx.shortTrace != null && currentCAT_ID != null) {
-            Event startEv = new Event("start", currentCAT_ID, new CallId());
-            Event popEv = new Event("pop", currentCAT_ID, new CallId());
             return chop(
                     startEv,
                     (Trace) ctx.inner.accept(this),
