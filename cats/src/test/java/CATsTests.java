@@ -87,7 +87,8 @@ public class CATsTests {
                     "callPlaceBetOnceAfterRemoveOneUnderspecifiedFail",
                     "callPlaceBetOnlyOncePreCondNotMetFail",
                     "casinoCaseStudySimpleFail",
-                    "casinoCaseStudySimpleCompletePlaceBetFail"
+                    "casinoCaseStudySimpleCompletePlaceBetFail",
+                    "removeOneMissingStartEvFail"
             })
     public void failingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));

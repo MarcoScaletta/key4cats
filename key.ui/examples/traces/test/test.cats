@@ -287,7 +287,25 @@
         start(removeOneOnce,\id) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneOnce,\id) ** x::y1 . `y1=y-1` |
         ~~
     >>
+
+[removeOneTwiceSimple] {removeOne;} removeOneTwice :
+    requires: ~~ ** x::y . `true`;
+    ensures:  ~~ ** start(removeOne,_) ** ~~ ** start(removeOne,_) ** ~~ ** x::y1 . `y1=y-2`;
+    expects: ~~;
+
 [removeOneTwice] {removeOne;} removeOneTwice :
+    <<
+        ~~ ** x::y . `true`|
+        start(removeOneTwice,\id) ** ~~ ** start(removeOne,_) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneTwice,\id) ** x::y1 . `y1=y-2` |
+        ~~
+    >>
+
+[removeOneNoEvs] removeOne :
+    requires: ~~ ** x::y . `true`;
+    ensures: ~{removeOne}~ ** x::y1 . `y1=y-1`;
+    expects: ~~;
+
+[removeOneTwiceNoEvs] {removeOneNoEvs;} removeOneTwice :
     <<
         ~~ ** x::y . `true`|
         start(removeOneTwice,\id) ** ~~ ** start(removeOne,_) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneTwice,\id) ** x::y1 . `y1=y-2` |

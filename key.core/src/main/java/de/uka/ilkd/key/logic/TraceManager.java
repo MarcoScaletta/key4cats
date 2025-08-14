@@ -50,6 +50,7 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
 
 
     public List<Pair<Term,Junctor>> getTracePairs(){return this.tracePair;}
+    public List<Term> getListOfConcatenatedAndChoppedTerms(){return this.tracePair.stream().map(x->x.first).toList();}
 
     private void separateTrace(Term trace, SVInstantiations instMap, List<Junctor> junctors){
         this.tracePair = separateTraceRec(trace, instMap, junctors);

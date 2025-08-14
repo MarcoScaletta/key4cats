@@ -129,6 +129,7 @@ PREFIX_POSTFIX_CONDITION: '\\prefixPostfixCondition';
 IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
 HAS_POSTFIX: '\\hasPostfix';
 IS_SCHEMATIC_TRACE_INCLUDED: '\\isSchematicTraceIncluded';
+CONTAINS_EVENT: '\\containsEvent';
 IS_UPDATE_EVENT: '\\isUpdateEvent';
 NO_VARS_IN_STATES: '\\noVarsInStates';
 IS_EVENT: '\\isEvent';

@@ -677,6 +677,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | IS_SCHEMATIC_TRACE_OVER_M
   | HAS_POSTFIX
   | IS_SCHEMATIC_TRACE_INCLUDED
+  | CONTAINS_EVENT
   | IS_UPDATE_EVENT
   | DIFFERENTFIELDS
   | NO_VARS_IN_STATES
