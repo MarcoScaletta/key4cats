@@ -3,8 +3,6 @@ package de.uka.ilkd.key.logic;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.logic.op.Junctor;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.SpecialCallIds;
-import de.uka.ilkd.key.logic.op.TraceEvent;
 import de.uka.ilkd.key.rule.conditions.catsconditions.IsAtomicTraceElem;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
 import de.uka.ilkd.key.util.Pair;

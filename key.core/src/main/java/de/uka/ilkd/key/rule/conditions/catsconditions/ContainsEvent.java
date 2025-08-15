@@ -5,13 +5,9 @@ import de.uka.ilkd.key.logic.Term;
 import de.uka.ilkd.key.logic.TraceManager;
 import de.uka.ilkd.key.logic.op.SVSubstitute;
 import de.uka.ilkd.key.logic.op.SchemaVariable;
-import de.uka.ilkd.key.logic.op.SchematicTrace;
-import de.uka.ilkd.key.logic.op.TraceEvent;
 import de.uka.ilkd.key.rule.VariableConditionAdapter;
 import de.uka.ilkd.key.rule.inst.SVInstantiations;
-import org.key_project.util.collection.ImmutableArray;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
