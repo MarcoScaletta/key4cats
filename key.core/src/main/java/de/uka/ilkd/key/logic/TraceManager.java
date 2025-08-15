@@ -74,9 +74,9 @@ public class TraceManager extends SeqManager<Pair<Term,Junctor>> {
         return separatedTrace;
     }
 
-    public SeqManager<Pair<Term,Junctor>> getSeqManagerFromTerm(Term term, Services services){
-        return new TraceManager(term,services);
-    }
+//    public SeqManager<Pair<Term,Junctor>> getSeqManagerFromTerm(Term term, Services services){
+//        return new TraceManager(term,services);
+//    }
 
     @Override
     public Pair<Term, Junctor> getFirst() {
