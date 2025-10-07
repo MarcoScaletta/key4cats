@@ -1,15 +1,45 @@
 # KeY4CATs -- Trace-based Deductive Verifier
-Do the following
+
+Usage:
+
+```    
+    cats [-i] [-stats] TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> 
+```
+```
+    cats -no-ver TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> 
+```
+Where `TARGET` can be: `-s <CAT_ID>`, `-f <CAT_ID>`, or `-all`
+
+
+`-i` and `-stats` are option for the verification.
+
+With `-no-ver` proof obligations are generated but not verified.
+
+Information on the arguments is the following:
+```
+-s,--single <CAT_ID>               Targets single contract <CAT_ID> from file <CATSL_FILE>
+-f,--full <CAT_ID>                 Targets <CAT_ID> and also all contracts assumed by <CAT_ID> from file <CATSL_FILE>
+-all,--all-cats                    Targets all CATs defined in <CATSL_FILE>
+-no-ver,--no-verification          Only generates Proof Obligations (.key files)
+-catsl,--catsl-file <CATSL_FILE>   Select <CATSL_FILE> to load
+-java,--java-file <JAVA_CLASS>     Refer to code in <JAVA_CLASS>.java
+-i,--interactive                   Interactive mode via KeY GUI (working for verification of single CAT)
+-stats,--statistics                Show statistics of verification
+```
+
+Using gradle do the follwing:
 * Generate the parser for CATs: run the script ``/Users/scal9000/Documents/tools/key/cats/generate-parsers.sh``
 * Add the environment variable: ``KEY=<key-directory>``
-* Run 
-```gradle cats:run --args='--java-class <java-class-name> --cats-file <cats-file-relative-path> -s <cat-name>'```
-  * Use ``-i`` for interactive
+* To generate proof obligations and verify contract(s) run:
+```
+gradle cats:run --args='[-i] [-stats] TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS>'
+```
+* To **only generate** proof obligations run:
+```
+gradle cats:run --args=' -no-ver TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS>'
+```
 
-For example
-``KEY=<key-dir> gradle cats:run --args=' --java-class BufferCaseStudy --cats-file /key.ui/examples/traces/bufferCaseStudy.cats -s main -i'``
-
-## Syntax of a CAT file 
+## Syntax of CATSL specification 
 A CAT file (`.cats`) contains a list of CATs.
 
 ### Syntax of a Trace
@@ -52,16 +82,16 @@ A CAT file (`.cats`) contains a list of CATs.
 
 ```
 
-<cat>: <signature-cat> ":" <require-spec> ";" <ensure-spec> ";" <expect-spec> ";"
+<cat>: <signature-cat> ":" <assumes-cl> ";" <ensures-cl> ";" <expects-cl> ";"
 
 <signature-cat>: 
     "[" <cat-name> "]" "{" List(<cat-name>) "}" <method-name>
 
-<require-spec>: "requires:" <pre-trace> ";"
+<assumes-cl>: "requires:" <pre-trace> <chop> <pre-cond> ";"
 
-<ensure-spec>: "ensures: [" <inner-trace> "]" <chop> <post-cond> ";"
+<ensures-cl>: "ensures: [" <inner-trace> "]" <chop> <post-cond> ";"
 
-<expect-spec>: "expects:" <post-trace> ";"
+<expects-cl>: "expects:" <post-trace> ";"
 ```
 * `<cat-name>` (`String`): name of the CAT that is specified.
 * `List(<cat-name>)` (list of `String` with separator `";"`): list of name of CATs for called methods that are assumed to be valid. These CATs must be specified in the same file. If the list is empty the braces can be omitted.

@@ -6,6 +6,8 @@ import key4cats.parsers.CATs.*;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import com.github.javaparser.JavaParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +18,7 @@ import static key4cats.TraceOp.chop;
 
 public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProofCATsBuilder.class);
 
     private final String include = "traceRules.key";
     private final String className;
@@ -52,7 +55,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             } catch (Exception e) {
                 throw new RuntimeException(String.format("Exception while building proof obligation: %s", e.getMessage()));
             }
-            switch (mode) {
+            switch (this.mode) {
                 case KeY4CATs.ProofGenMode.SINGLE:
                     contractToBeGenerated = Set.of(contract);
                     break;
@@ -67,6 +70,13 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             }
     }
 
+    public void generateProof(String directory, String contractName) throws IOException{
+        File keyFile = new File(String.format("%s/%s.key", directory, contractName));
+        LOGGER.info(String.format("Generating proof for %s in file %s", contractName,keyFile));
+        DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
+        dataOutputStream.writeBytes(this.assembleProof(contractName).toKeY());
+        dataOutputStream.flush();
+    }
 
     private void setJavaVarMethodNames(File file) throws FileNotFoundException {
         Optional<CompilationUnit> cu = new JavaParser().parse(file).getResult();
