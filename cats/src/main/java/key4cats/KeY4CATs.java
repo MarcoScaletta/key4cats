@@ -274,6 +274,9 @@ public class KeY4CATs {
             contractName = cl.getOptionValue(FULL_PROOF);
             proofGenMode = ProofGenMode.FULL;
         }
+        if(cl.hasOption(INTERACTIVE)) {
+            executionMode = KeYMode.GUI;
+        }
         if(cl.hasOption(ALL_CATS)) {
             proofGenMode = ProofGenMode.ALL;
         }
