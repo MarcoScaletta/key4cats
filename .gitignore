@@ -76,3 +76,4 @@ checkstyle-diff.txt
 /cats/gen/AsyncLexer.interp
 /cats/gen/AsyncLexer.java
 /cats/gen/AsyncLexer.tokens
+/key.ui/examples/traces/dev/tracerules.key
