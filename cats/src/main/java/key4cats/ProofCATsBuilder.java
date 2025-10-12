@@ -1,5 +1,6 @@
 package key4cats;
 
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import key4cats.parsers.CATs.*;
@@ -30,7 +31,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private final Set<String> contractToBeGenerated;
     private final KeY4CATs.ProofGenMode mode;
     private Identifier currentCAT_ID = null;
-    public ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
+    public
+    ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
 
 
         this.className = className;
@@ -79,8 +81,16 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     }
 
     private void setJavaVarMethodNames(File file) throws FileNotFoundException {
-        Optional<CompilationUnit> cu = new JavaParser().parse(file).getResult();
-
+        ParseResult<CompilationUnit> parseResult = new JavaParser().parse(file);
+        if (!parseResult.getProblems().isEmpty()) {
+            StringBuilder message = new StringBuilder("Problem parsing " + javaFileActualSource + ":");
+            for (com.github.javaparser.Problem p : parseResult.getProblems()){
+                message.append(String.format("\n - %s", p.getMessage()));
+            }
+            throw new RuntimeException(message.toString());
+        }
+        Optional<CompilationUnit> cu = parseResult.getResult();
+        System.out.println(file);
         if (cu.isEmpty()) {
             throw new RuntimeException("Problem parsing " + javaFileActualSource + ".");
         }
@@ -141,7 +151,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                     return    new AssumeCAT(this.contractsMap.get(x.toKeY()).target());
                 }
         ).toList();
-        return new Proof(String.format("\"%s\"", include), javaSource, new Problem( assumeCATs,target));
+        return new Proof(String.format("\"%s\"", include), javaSource, new Problem(assumeCATs,target));
     }
 
     private Contract getContractFromCtx(CATsParser.ContractWithIdContext ctx){
