@@ -253,6 +253,14 @@
         ~{placeBet,decideBet}~ ** start(decideBet, _ ) ** ~~
     >>
 
+[placeBetMoreComplete] placeBet :
+    <<
+        (~{placeBet,decideBet}~ | (~~ ** pop(decideBet, _ ))) ** ~{placeBet,decideBet}~ ** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,\id) ** ~{placeBet,decideBet}~ **  pop(placeBet,\id)  ** wallet::w .`w = oldW - b`|
+        ~{placeBet,decideBet}~ ** start(decideBet, _ ) ** ~~
+    >>
+
+
 [decideBetNoCallsToPlaceBetNorDecideBet]  decideBet:
     <<
         ~~ ** amountToBet::b . `true` |
@@ -310,4 +318,25 @@
         ~~ ** x::y . `true`|
         start(removeOneTwice,\id) ** ~~ ** start(removeOne,_) ** ~~ ** start(removeOne,_) ** ~~ ** pop(removeOneTwice,\id) ** x::y1 . `y1=y-2` |
         ~~
+    >>
+
+[placeBetReallyComplete] placeBet : //working
+    <<
+        (~{placeBet}~ | (~~ ** pop(decideBet, _ ))) **~{placeBet}~** amountToBet::b . wallet::oldW .`b > 0 & b<=oldW`|
+        start(placeBet,\id) ** ~{placeBet}~ **  pop(placeBet,\id)  ** wallet::w .`w = oldW - b`|
+        ~{placeBet}~
+    >>
+
+[decideBetComplete]  decideBet:
+    <<
+        (~~ ** pop(placeBet, _ )) ** ~{decideBet}~ ** amountToBet::b . `true` |
+        start(decideBet,\id) ** ~{placeBet}~ ** pop(decideBet,\id) ** amountToBet::b1 . `true` |
+        ~~
+    >>
+
+[casinoCaseStudyNoDoubleDecision] {decideBetComplete;placeBetComplete;} casinoCaseStudySingleBetAndDecision:
+    <<
+        ~{placeBet,decideBet}~ ** amountToBet::b . `true` |
+        ~~ ** amountToBet::b1 . `true` |
+        ~{placeBet,decideBet}~
     >>

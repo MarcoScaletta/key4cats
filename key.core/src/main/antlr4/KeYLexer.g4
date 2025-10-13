@@ -133,6 +133,7 @@ CONTAINS_EVENT: '\\containsEvent';
 IS_UPDATE_EVENT: '\\isUpdateEvent';
 NO_VARS_IN_STATES: '\\noVarsInStates';
 IS_EVENT: '\\isEvent';
+IS_ELEMENTARY_UPDATE: '\\isElementaryUpdate';
 IS_RUN_EVENT: '\\isRunEvent';
 IS_HAVOC: '\\isHavoc';
 IS_SAME_HAVOC: '\\isSameHavoc';

@@ -52,7 +52,8 @@ public class CATsTests {
                     "casinoCaseStudySimpleCompletePlaceBet",
                     "noObservationsTrivialPrecondition",
                     "removeOneOnce",
-                    "removeOneTwice"
+                    "removeOneTwice",
+                    "casinoCaseStudyNoDoubleDecision"
             }
             )
     public void succeedingProofs(String contract) {

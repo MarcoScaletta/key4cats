@@ -6,8 +6,9 @@ class Casino {
         wallet = wallet - bet;
         return;
     }
-    public static void decideBet(boolean sync){
+    public static void decideBet(boolean sync){ //USED
         if(coin == guess){
+            wallet = wallet + bet;
             wallet = wallet + bet;
         }
         bet = 0;

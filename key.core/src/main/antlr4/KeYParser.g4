@@ -671,6 +671,7 @@ varexpId: // weigl, 2021-03-12: This will be later just an arbitrary identifier.
   | PREFIX_POSTFIX_CONDITION
   | IS_EVENT_WITH_METHOD
   | IS_EVENT
+  | IS_ELEMENTARY_UPDATE
   | IS_RUN_EVENT
   | IS_HAVOC
   | IS_SAME_HAVOC

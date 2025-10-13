@@ -8,7 +8,7 @@
     >>
 [decideBet]  decideBet:
     <<
-        ~~ ** amount::b . `true` |
+        (~~ ** pop(placeBet, _ )) ** ~{decideBet}~ ** amount::b . `true` |
         start(decideBet,\id) ** ~{placeBet}~ ** pop(decideBet,\id) ** amount::b1 . `true` |
         ~~
     >>

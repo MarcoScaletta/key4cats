@@ -359,6 +359,11 @@ public class TacletBuilderManipulators {
     public static final AbstractConditionBuilder IS_EVENT =
             new ConstructorBasedBuilder("isEvent",
                     IsEvent.class, TRACE);
+
+    public static final AbstractConditionBuilder IS_ELEMENTARY_EVENT =
+            new ConstructorBasedBuilder("isElementaryUpdate",
+                    IsElementaryUpdate.class, TRACE);
+
     public static final AbstractConditionBuilder IS_HAVOC =
             new ConstructorBasedBuilder("isHavoc",
                     IsHavoc.class, TRACE);
@@ -486,7 +491,7 @@ public class TacletBuilderManipulators {
                 IS_ATOMIC_TRACE_ELEM,IS_SCHEMATIC_TRACE_OVER_M,
                 PREFIX_POSTFIX_CONDITION,
                 IS_SCHEMATIC_TRACE_INCLUDED,
-                IS_EVENT,
+                IS_EVENT, IS_ELEMENTARY_EVENT,
                 IS_HAVOC,IS_SAME_HAVOC,IS_RUN_EVENT,
                 NO_VARS_IN_STATES, HAS_POSTFIX,
                 IS_EVENT_WITH_METHOD,
