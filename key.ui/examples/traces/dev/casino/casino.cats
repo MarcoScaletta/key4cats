@@ -4,7 +4,7 @@
     <<
         (~{placeBet}~ | (~~ ** pop(decideBet, _ ))) **~{placeBet}~** amount::b . wallet::oldW .`b > 0 & b<=oldW`|
         start(placeBet,\id) ** ~{placeBet,decideBet}~ **  pop(placeBet,\id)  ** wallet::w .`w = oldW - b`|
-        ~{placeBet}~
+        ~{placeBet}~ ** start(decideBet, _ ) ** ~~
     >>
 [decideBet]  decideBet:
     <<
