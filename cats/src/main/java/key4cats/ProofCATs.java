@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 class Proof implements KeYGen{
-    String include;
+    String include=null;
     String javaSource;
     Problem problem;
     Proof(String include, String javaSource, Problem problem){
@@ -15,16 +15,21 @@ class Proof implements KeYGen{
         this.javaSource = javaSource;
         this.problem = problem;
     }
+    Proof(String javaSource, Problem problem){
+        this.javaSource = javaSource;
+        this.problem = problem;
+    }
     @Override
     public String toKeY() {
         return String.format(
-                "\\include %s;\n" +
-                "\\javaSource \"%s\";\n" +
-                "%s\n",
-                this.include,
-                this.javaSource,
-                this.problem.toKeY()
-        );
+                """
+                %s
+                \\javaSource "%s";
+                %s
+                """,
+                this.include != null ? "\\include %s;\n" : "",
+            this.javaSource,
+            this.problem.toKeY());
     }
 }
 

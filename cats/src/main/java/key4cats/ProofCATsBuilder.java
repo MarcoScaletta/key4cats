@@ -90,7 +90,6 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             throw new RuntimeException(message.toString());
         }
         Optional<CompilationUnit> cu = parseResult.getResult();
-        System.out.println(file);
         if (cu.isEmpty()) {
             throw new RuntimeException("Problem parsing " + javaFileActualSource + ".");
         }
@@ -151,7 +150,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                     return    new AssumeCAT(this.contractsMap.get(x.toKeY()).target());
                 }
         ).toList();
-        return new Proof(String.format("\"%s\"", include), javaSource, new Problem(assumeCATs,target));
+        return new Proof(javaSource, new Problem(assumeCATs,target));
     }
 
     private Contract getContractFromCtx(CATsParser.ContractWithIdContext ctx){

@@ -141,7 +141,6 @@ public class KeY4CATs {
             else {
                 File catsFile = new File(keyHome + catsFilename);
                 directory = catsFile.getParent();
-                System.out.println(directory);
                 ProofCATsBuilder p = new ProofCATsBuilder(catsFile, contractName, javaClassFilename, proofGenMode);
                 Set<String> contractNames = p.getContractIds();
                 if(!contractNames.iterator().hasNext())
@@ -231,8 +230,6 @@ public class KeY4CATs {
         CommandLineParser parser = new DefaultParser();
         Set<String> argsSet = Arrays.stream(args).collect(Collectors.toSet());
 
-        System.err.println(argsSet);
-        System.err.println(argsSet.contains("-" + PROOF_OBLIGATION.getOpt()));
         try {
             if(argsSet.contains("-" + HELP_OPTION.getOpt()) || argsSet.contains("--" + HELP_OPTION.getLongOpt())) {
                 printHelp();
