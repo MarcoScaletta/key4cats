@@ -38,10 +38,12 @@ public class SameTraceFeature implements Feature {
             if (app.rule().name().compareTo(new Name("elimPrefixNoSchemTr")) == 0) {
                 return NumberRuleAppCost.getZeroCost();
             }
-            if (app.rule().name().compareTo(new Name("elimPrefixWithSchemTrChop")) == 0) {
+            if (app.rule().name().compareTo(new Name("elimPrefixWithSchemTrChop")) == 0 ||
+                    app.rule().name().compareTo(new Name("elimPrefixNoSchemTrChop")) == 0) {
                 if (traceTM.equals(prefixTM.chop(postfixTM)))
                     return NumberRuleAppCost.getZeroCost();
-            } else if (app.rule().name().compareTo(new Name("elimPrefixWithSchemTrConc")) == 0) {
+            } else if (app.rule().name().compareTo(new Name("elimPrefixWithSchemTrConc")) == 0||
+                    app.rule().name().compareTo(new Name("elimPrefixNoSchemTrConc")) == 0) {
                 if (traceTM.equals(prefixTM.conc(postfixTM)))
                     return NumberRuleAppCost.getZeroCost();
             }
