@@ -11,10 +11,12 @@ import java.util.ResourceBundle;
 import de.uka.ilkd.key.java.JavaInfo;
 import de.uka.ilkd.key.java.Services;
 import de.uka.ilkd.key.java.StatementBlock;
+import de.uka.ilkd.key.java.TypeConverter;
 import de.uka.ilkd.key.java.abstraction.KeYJavaType;
 import de.uka.ilkd.key.java.abstraction.PrimitiveType;
 import de.uka.ilkd.key.java.abstraction.Type;
 import de.uka.ilkd.key.java.declaration.VariableDeclaration;
+import de.uka.ilkd.key.ldt.HeapLDT;
 import de.uka.ilkd.key.logic.*;
 import de.uka.ilkd.key.logic.op.*;
 import de.uka.ilkd.key.logic.sort.ArraySort;
@@ -137,6 +139,7 @@ public class DefaultBuilder extends AbstractBuilder<Object> {
     protected Operator lookupVarfuncId(ParserRuleContext ctx, String varfuncName, String sortName,
             Sort sort) {
         Name name = new Name(varfuncName);
+
         Operator[] operators =
             new Operator[] { schemaVariables().lookup(name), variables().lookup(name),
                 programVariables().lookup(new ProgramElementName(varfuncName)),
@@ -173,6 +176,10 @@ public class DefaultBuilder extends AbstractBuilder<Object> {
                     return v;
                 }
             }
+        }
+        ProgramVariable var = services.getJavaInfo().getAttribute(varfuncName, sortName);
+        if (var != null) {
+            return var;
         }
         semanticError(ctx, "Could not find (program) variable or constant %s", varfuncName);
         return null;
