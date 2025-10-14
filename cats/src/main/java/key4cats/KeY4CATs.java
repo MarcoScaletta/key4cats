@@ -5,7 +5,9 @@ import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
+import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
+import de.uka.ilkd.key.proof.io.ProofSaver;
 import org.apache.commons.cli.HelpFormatter;
 
 import java.io.*;
@@ -331,11 +333,14 @@ public class KeY4CATs {
     private static boolean openFileWithCLI(String proofObligationFileName){
         try{
             File keyFile = new File(proofObligationFileName);
+
             LOGGER.info(String.format("Loading %s ...", proofObligationFileName));
             KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(keyFile);
             LOGGER.info("Started proof...");
             env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
-            boolean proved = env.getLoadedProof().closed();
+            Proof proof = env.getLoadedProof();
+            boolean proved = proof.closed();
+            saveProof(proof, proofObligationFileName);
             String proofInfo = ((proved ? String.format("%s",green("CLOSED (proven)")) : String.format("%s",red("OPEN (cannot prove)"))));
             if(stats) {
                 LOGGER.info(proofInfo);
@@ -346,6 +351,21 @@ public class KeY4CATs {
         }catch (ProblemLoaderException e){
             throw new RuntimeException(e);
         }
+    }
+
+    private static void saveProof(Proof proof, String proofObligationFileNameFileName) {
+
+        String savingProofName =
+                proofObligationFileNameFileName.endsWith(".proof")?
+                        proofObligationFileNameFileName :
+                        String.format("%s.proof", proofObligationFileNameFileName);
+        LOGGER.info(String.format("Saving proof %s ... ", savingProofName));
+        File proofFile = new File(savingProofName);
+        ProofSaver ps = new ProofSaver(proof, proofFile, true);
+        String error = ps.save();
+        if(error != null)
+            throw new RuntimeException(error);
+
     }
 
     private static boolean openFileWithCLI(String directory, String contractName) {
