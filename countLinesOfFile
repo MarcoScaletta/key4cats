@@ -1,0 +1,1 @@
+while read i ; do echo `echo $i && cat ./$i |   sed -e  '\~//~d' -e '/./!d'| wc -l`;done < filename
