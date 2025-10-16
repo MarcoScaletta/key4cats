@@ -1,0 +1,8 @@
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/integerSimplificationRules.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/booleanRules.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/formulaNormalisationRules.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/ifThenElseRules.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/propRule.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/integerAssignment2UpdateRules.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/intRulesUncheckedSemantics.key
+key.core/src/main/resources/de/uka/ilkd/key/proof/rules/tracerules.key
