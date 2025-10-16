@@ -1,6 +1,6 @@
 #!/bin/sh
 
-grammars=("CATs" "Async")
+grammars=("CATs")
 echo "Generating parsers:" 
 for grammar in "${grammars[@]}"; do
     echo \\t ">" ${grammar}
