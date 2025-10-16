@@ -31,7 +31,7 @@ catOf : method=id COL cat;
 oldSyntaxCat : CAT_START preTr=trace OR innerTr=innerTrace OR postTr=trace CAT_END;
 
 cat :
-    (REQUIRES COL preTr=trace SEMI
+    ((REQUIRES | ASSUMES) COL preTr=trace SEMI
     ENSURES COL innerTr=innerTrace SEMI
     EXPECTS COL postTr=trace SEMI)
     |

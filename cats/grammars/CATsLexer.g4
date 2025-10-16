@@ -45,6 +45,7 @@ ID : '\\id';
 JAVA_EXT : '.java';
 
 REQUIRES: 'requires';
+ASSUMES: 'assumes';
 ENSURES: 'ensures';
 EXPECTS: 'expects';
 
