@@ -30,7 +30,7 @@ public final class PathConfig {
     /**
      * The default name of the directory that contains KeY settings.
      */
-    public static final String KEY_DIRECTORY_NAME = ".key";
+    public static final String KEY_DIRECTORY_NAME = ".key4cats";
 
     /**
      * In which file to store the recent files.
