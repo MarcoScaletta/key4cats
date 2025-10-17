@@ -219,7 +219,9 @@ public class KeYResourceManager {
      * @return the title string to be used by the KeY <code>UserInterfaces</code>
      */
     public String getUserInterfaceTitle() {
-        return String.format("KeY %s%s", this.getVersion(),
-            visibleBranch() ? " [" + getBranch() + "]" : "");
+//        return String.format("KeY %s%s", this.getVersion(),
+//            visibleBranch() ? " [" + getBranch() + "]" : "");
+
+        return "KeY4CATs (KeY GUI)";
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.*;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.fonticons.IconFactory;
 import de.uka.ilkd.key.util.KeYConstants;
+import de.uka.ilkd.key.util.KeYResourceManager;
 import de.uka.ilkd.key.util.UnicodeHelper;
 
 public class AboutAction extends MainWindowAction {
@@ -33,9 +34,15 @@ public class AboutAction extends MainWindowAction {
     public void showAbout() {
 
         JOptionPane.showMessageDialog(mainWindow,
-            new Object[] { IconFactory.keyVersionLogo(),
+            new Object[] { IconFactory.key4CATsVersionLogo(),
+                    "KeY4CATs is based on the KeY System [1].",
+                    "\nInternal Version: " + KeYConstants.INTERNAL_VERSION+
+                    "\n\n"+
+                    "[1] KeY System (Version: " + KeYResourceManager.getManager().getVersion() +")",
                 KeYConstants.COPYRIGHT.replace("and", "\n" + UnicodeHelper.emSpaces(8) + "and")
-                    + "\n\nWWW: http://key-project.org/" + "\n\nVersion " + KeYConstants.VERSION },
+                    + "\n\nWWW: http://key-project.org/"
+
+            },
             "The KeY Project", JOptionPane.INFORMATION_MESSAGE);
 
         // JOptionPane pane = new JOptionPane(

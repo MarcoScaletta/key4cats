@@ -167,6 +167,7 @@ public final class IconFactory {
     private static final Image keyLogoShadow = getImage("images/key-shadow.png");
     // The following should be updated with every major version step.
     private static final Image keyVersionLogo = getImage("images/key-shadow-2.12.png");
+    private static final Image key4CATsVersionLogo = getImage("images/key4cats-shadow.png");
     private static final Image keyLogoSmall = getImage("images/key-color-icon-square.gif");
     private static final Image oneStepSimplifier = getImage("images/toolbar/oneStepSimplifier.png");
 
@@ -344,6 +345,10 @@ public final class IconFactory {
 
     public static Icon keyVersionLogo() {
         return new ImageIcon(keyVersionLogo);
+    }
+
+    public static Icon key4CATsVersionLogo() {
+        return new ImageIcon(key4CATsVersionLogo);
     }
 
     public static Icon keyVersionLogo(int x, int y) {

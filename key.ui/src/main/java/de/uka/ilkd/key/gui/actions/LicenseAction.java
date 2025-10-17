@@ -65,6 +65,8 @@ public class LicenseAction extends MainWindowAction {
 
     public void showLicense() {
         URL lic = KeYResourceManager.getManager().getResourceFile(MainWindow.class, "LICENSE.TXT");
+        URL licKeY4CATs = KeYResourceManager.getManager().getResourceFile(MainWindow.class, "LICENSE_KeY4CATs.TXT");
+
 
         URL thirdPartyLic = KeYResourceManager.getManager().getResourceFile(MainWindow.class,
             "THIRD_PARTY_LICENSES.txt");
@@ -74,6 +76,8 @@ public class LicenseAction extends MainWindowAction {
         JTabbedPane pane = new JTabbedPane();
         fr.add(pane);
 
+        pane.addTab("KeY4CATs License",
+                createLicenseViewer(readStream(licKeY4CATs, KEY_FALLBACK)));
         pane.addTab("KeY License", createLicenseViewer(readStream(lic, KEY_FALLBACK)));
         pane.addTab("Third party libraries", createLicenseViewer(readStream(thirdPartyLic, "")));
 
