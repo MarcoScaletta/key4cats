@@ -124,7 +124,7 @@ public class KeY4CATs {
     static String catsFilename;
     static String javaClassFilename;
     static String proofObligationFileName;
-    static String keyHome = System.getenv("KEY");
+//    static String keyHome = System.getenv("KEY4CATs");
     static KeYMode executionMode = KeYMode.AUTO;
     static LoadingMode loadingMode;
     static boolean stats = false;
@@ -138,10 +138,10 @@ public class KeY4CATs {
             if(loadingMode == LoadingMode.PO){
                 directory = new File(proofObligationFileName).getParent();
                 LOGGER.info(String.format("Loading proof obligation from %s", proofObligationFileName));
-                prove(keyHome + proofObligationFileName);
+                prove( proofObligationFileName);
             }
             else {
-                File catsFile = new File(keyHome + catsFilename);
+                File catsFile = new File( catsFilename);
                 directory = catsFile.getParent();
                 ProofCATsBuilder p = new ProofCATsBuilder(catsFile, contractName, javaClassFilename, proofGenMode);
                 Set<String> contractNames = p.getContractIds();
