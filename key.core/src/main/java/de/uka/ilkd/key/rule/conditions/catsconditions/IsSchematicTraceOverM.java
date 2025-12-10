@@ -44,7 +44,7 @@ public class IsSchematicTraceOverM extends VariableConditionAdapter {
 
     public static Set<Term> getForbiddenProcsRec(Term schemTrTerm){
         Set<Term> separatedTrace = new HashSet<>();
-            if (schemTrTerm.op() instanceof SchematicTraceJunctor) {
+            if (schemTrTerm.op() instanceof ParamsJunctor) {
                 separatedTrace.add(schemTrTerm.sub(1));
                 separatedTrace.addAll(getForbiddenProcsRec(schemTrTerm.sub(0)));
             } else

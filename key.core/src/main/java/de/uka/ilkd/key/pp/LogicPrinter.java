@@ -1412,7 +1412,7 @@ public class LogicPrinter {
     public void printInfixTermContinuingBlock(Term l, int assLeft, String name, Term t, Term r,
             int assRight) {
         boolean isKeyword = false;
-        if(t.op() != SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR)
+        if(t.op() != ParamsJunctor.PARAMS_JUNCTOR)
             layouter.print("(");
         if (services != null) {
             LocSetLDT loc = services.getTypeConverter().getLocSetLDT();
@@ -1433,7 +1433,7 @@ public class LogicPrinter {
         }
         layouter.ind(1, 0);
         maybeParens(r, assRight);
-        if(t.op() != SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR)
+        if(t.op() != ParamsJunctor.PARAMS_JUNCTOR)
             layouter.print(")");
     }
 

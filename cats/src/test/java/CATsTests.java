@@ -118,12 +118,7 @@ public class CATsTests {
     }
 
     private Proof prove(Path file)  {
-        KeYEnvironment<DefaultUserInterfaceControl> env;
-        try{
-            env = KeYEnvironment.load(file.toFile());
-        }catch(ProblemLoaderException e ){
-            throw new RuntimeException("Problem loading proof:", e);
-        }
+        KeYEnvironment<DefaultUserInterfaceControl> env = Utils.loadPO(file);
         env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
         if (((DefaultProofControl) env.getProofControl()).getUncaughtException() != null) {
             throw new RuntimeException("Unexpected Exception during test: ", ((DefaultProofControl) env.getProofControl()).getUncaughtException());

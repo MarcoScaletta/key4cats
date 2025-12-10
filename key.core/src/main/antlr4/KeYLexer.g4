@@ -255,15 +255,23 @@ CONTRACTS : '\\contracts';
 INVARIANTS : '\\invariants';
 
 // Event keywords
+// UPDATE EVENTS
 RUN_EV: '\\runEv';
 INVOC_EV: '\\invocEv';
 START_EV: '\\startEv';
 RET_EV: '\\retEv';
 POP_EV: '\\popEv';
+AWAIT_EV: '\\awaitEv';
+REACT_EV: '\\reactEv';
+
+// TRACE EVENTS
 
 START_TR_EV: '\\startTrEv';
 RET_TR_EV: '\\retTrEv';
 POP_TR_EV: '\\popTrEv';
+INVOC_TR_EV: '\\invocTrEv';
+AWAIT_TR_EV: '\\awaitTrEv';
+REACT_TR_EV: '\\reactTrEv';
 
 HAVOC: '\\havoc';
 

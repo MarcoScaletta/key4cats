@@ -362,8 +362,8 @@ update_term: (LBRACE u=sequential_term RBRACE) (atom_prefix | unary_formula);
 callId: CALL_ID;
 wildcard: WILDCARD;
 trace_event_term: name=trace_event_name args=argument_list;
-update_event_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV ;
-trace_event_name : START_TR_EV | RET_TR_EV | POP_TR_EV ;
+update_event_name : RUN_EV | INVOC_EV | START_EV | RET_EV | POP_EV | AWAIT_EV | REACT_EV ;
+trace_event_name : START_TR_EV | RET_TR_EV | POP_TR_EV  | INVOC_TR_EV | AWAIT_TR_EV | REACT_TR_EV;
 
 // observation: \obs(observed_1 :-: observing_1, ..., observed_N :-: observing_N,)
 obs_term : OBS ( LPAREN observed=term COMMA observing=term RPAREN | IDENT DOUBLECOLON id=simple_ident LPAREN observing=term RPAREN );

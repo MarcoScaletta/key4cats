@@ -214,54 +214,92 @@ public class ExpressionBuilder extends DefaultBuilder {
     @Override
     public Term visitEvent_update_trace_term(KeYParser.Event_update_trace_termContext ctx) {
         Term upJ = null;
-
+        UpdateEvent updateEvent;
         List<Term> argsList = accept(ctx.args);
         if(argsList == null)
             return null;
         ImmutableArray<Term> args = new ImmutableArray<>(argsList);
         if(ctx.name.RUN_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( UpdateEvent.RUN_EV, args, null, null));
+            updateEvent = UpdateEvent.RUN_EV;
+        } else if(ctx.name.START_EV() != null) {
+            updateEvent = UpdateEvent.START_EV;
+        } else if(ctx.name.INVOC_EV() != null) {
+            updateEvent = UpdateEvent.INVOC_EV;
+            List<Term> argsWithParams = argsList.subList(0,2);
+            if(argsList.size() > 2)
+                argsWithParams.add(params(argsList.subList(2, argsList.size())));
+            else
+                argsWithParams.add(
+                        getTermFactory().createTerm( ParamsJunctor.EMPTY_JUNCTOR)
+                );
+            args = new ImmutableArray<>(argsWithParams);
+        } else if(ctx.name.POP_EV() != null) {
+            updateEvent = UpdateEvent.POP_EV;
+        } else if(ctx.name.RET_EV() != null) {
+            updateEvent = UpdateEvent.RET_EV;
+        } else if(ctx.name.AWAIT_EV() != null) {
+            updateEvent = UpdateEvent.AWAIT_EV;
+        } else if(ctx.name.REACT_EV() != null) {
+            updateEvent = UpdateEvent.REACT_EV;
+        } else if(ctx.name.RUN_EV() != null) {
+            updateEvent = UpdateEvent.RUN_EV;
+        } else {
+            updateEvent = null;
         }
-        else if(ctx.name.START_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( UpdateEvent.START_EV, args, null, null));
-        }
-        else if(ctx.name.INVOC_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( UpdateEvent.INVOC_EV, args, null, null));
-        }
-        else if(ctx.name.POP_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( UpdateEvent.POP_EV, args, null, null));
-        }
-        else if(ctx.name.RET_EV() != null) {
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( UpdateEvent.RET_EV, args, null, null));
-        }
-        else
+        if(updateEvent == null)
              semanticError(ctx, "Unexpected token: %s", ctx.name);
 
-         return upJ;
+        ImmutableArray<Term> finalArgs = args;
+        return capsulateTf(ctx, () -> getTermFactory().createTerm( updateEvent, finalArgs, null, null));
     }
 
     @Override
     public Term visitTrace_event_term(KeYParser.Trace_event_termContext ctx) {
         Term upJ = null;
         List<Term> argsList = accept(ctx.args);
+        TraceEvent traceEvent;
         if(argsList == null)
             return null;
         ImmutableArray<Term> args = new ImmutableArray<>(argsList);
         //replacing old TraceEvent Operators
         if(ctx.name.START_TR_EV() != null) {
-//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getStartEv(services), args, null, null));
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.START_TR_EV, args, null, null));
+            traceEvent = TraceEvent.START_TR_EV;
         }else if(ctx.name.POP_TR_EV() != null) {
-//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getPopEv(services), args, null, null));
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.POP_TR_EV, args, null, null));
+            traceEvent = TraceEvent.POP_TR_EV;
         }else if(ctx.name.RET_TR_EV() != null) {
-//            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.getRetEv(services), args, null, null));
-            upJ = capsulateTf(ctx, () -> getTermFactory().createTerm( TraceEvent.RET_TR_EV, args, null, null));
+            traceEvent = TraceEvent.RET_TR_EV;
+        }else if(ctx.name.AWAIT_TR_EV() != null) {
+            traceEvent = TraceEvent.AWAIT_TR_EV;
+        }else if(ctx.name.REACT_TR_EV() != null) {
+            traceEvent = TraceEvent.REACT_TR_EV;
+        }else if(ctx.name.INVOC_TR_EV() != null) {
+            traceEvent = TraceEvent.INVOC_TR_EV;
+            if(argsList.size() < 2)
+                semanticError(ctx, "Invocation Events with less then 2 parameters: %s", ctx.name);
+            List<Term> argsWithParams = argsList.subList(0,2);
+            if(argsList.size() > 2)
+                argsWithParams.add(params(argsList.subList(2, argsList.size())));
+            else
+                argsWithParams.add(
+                        getTermFactory().createTerm( ParamsJunctor.EMPTY_JUNCTOR)
+                );
+            args = new ImmutableArray<>(argsWithParams);
+        } else {
+            traceEvent = null;
         }
-        else
+        if(traceEvent== null)
             semanticError(ctx, "Unexpected token: %s", ctx.name);
+        ImmutableArray<Term> finalArgs = args;
+        return capsulateTf(ctx, () -> getTermFactory().createTerm( traceEvent, finalArgs, null, null));
+    }
 
-        return upJ;
+    public Term params(List<Term> terms){
+        Term t = terms.getFirst();
+        if(terms.size() > 1)
+            for (Term tNext : terms.subList(1,terms.size())) {
+                t =getTermFactory().createTerm(ParamsJunctor.PARAMS_JUNCTOR, t, tNext);
+            }
+        return t;
     }
 
     @Override
@@ -277,10 +315,11 @@ public class ExpressionBuilder extends DefaultBuilder {
     public Term visitMethod_names_list(KeYParser.Method_names_listContext ctx){
         Term t = accept(ctx.a);
         for (KeYParser.TermContext c : ctx.b) {
-            t = binaryTerm(ctx, SchematicTraceJunctor.SCHEM_TRACE_JUNCTOR, t, accept(c));
+            t = binaryTerm(ctx, ParamsJunctor.PARAMS_JUNCTOR, t, accept(c));
         }
         return t;
     }
+
 
     @Override
     public Term visitObs_term(KeYParser.Obs_termContext ctx){

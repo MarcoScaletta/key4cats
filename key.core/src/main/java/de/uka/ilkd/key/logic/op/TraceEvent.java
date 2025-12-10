@@ -16,6 +16,10 @@ public class TraceEvent extends AbstractSortedOperator {
     public final static TraceEvent POP_TR_EV = new TraceEvent(new Name("\\popTrEv"), Sort.ANY,Sort.ANY);
     public final static TraceEvent RET_TR_EV = new TraceEvent(new Name("\\retTrEv"), Sort.ANY);
 
+    public final static TraceEvent AWAIT_TR_EV = new TraceEvent(new Name("\\awaitTrEv"));
+    public final static TraceEvent REACT_TR_EV = new TraceEvent(new Name("\\reactTrEv"));
+    public final static TraceEvent INVOC_TR_EV = new TraceEvent(new Name("\\invocTrEv"), Sort.ANY, Sort.ANY,Sort.ANY);
+
     private TraceEvent(Name name, Sort... sorts) {
         super(name, sorts, Sort.FORMULA, false);
     }
