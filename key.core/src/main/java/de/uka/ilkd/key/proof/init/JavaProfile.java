@@ -77,7 +77,7 @@ public class JavaProfile extends AbstractProfile {
     }
 
     public JavaProfile() {
-        this("standardRules-traces.key");
+        this("standardRules-traces-sync.key");
     }
 
     private JavaProfile(boolean perms) {
