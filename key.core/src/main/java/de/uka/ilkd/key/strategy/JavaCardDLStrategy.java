@@ -319,6 +319,9 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
         bindRuleSet(d, "simplify_instanceof_static",
             add(EqNonDuplicateAppFeature.INSTANCE, longConst(-500)));
 
+        bindRuleSet(d, "simplify_add_judgments",
+                add(EqNonDuplicateAppFeature.INSTANCE,NonDuplicateAppModPositionFeature.INSTANCE, longConst(500)));
+
         bindRuleSet(d, "comprehensions",
             add(NonDuplicateAppModPositionFeature.INSTANCE, longConst(-50)));
         bindRuleSet(d, "backtrack", add(longConst(1000)));
@@ -753,11 +756,11 @@ public class JavaCardDLStrategy extends AbstractFeatureStrategy {
                         instantiate("preFormula", sub(chopping, 0)),
                         instantiate("innerFormula", sub(chopping, 1)),
                         instantiate("postFormula", sub(chopping, 2))
-                        , longConst(-1000)
-////                        ,
-//                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
-//                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),
-//                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
+                        , longConst(-100)
+                        ,
+                        applyTF(sub(chopping, 0),rec(any(),longTermConst(1))),
+                        applyTF(sub(chopping, 1),rec(any(),longTermConst(1))),
+                        applyTF(sub(chopping, 2),rec(any(),longTermConst(1)))
                 ));
 
         bindRuleSet(d, "traceCall", instantiateTraceCall); //use smarter costs for each instantiation of formulas

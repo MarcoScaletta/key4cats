@@ -393,6 +393,10 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("hasPostfix",
                     HasPostfix.class, TRACE);
 
+    public static final AbstractConditionBuilder HAS_POSTFIX_HEAD_TAIL_INST =
+            new ConstructorBasedBuilder("hasPostfix",
+                    HasPostfix.class, TRACE,SV,SV);
+
     public static final AbstractConditionBuilder IS_SCHEMATIC_TRACE_INCLUDED =
             new ConstructorBasedBuilder("isSchematicTraceIncluded",
                     TraceInclusion.class, SV,SV);
@@ -495,7 +499,8 @@ public class TacletBuilderManipulators {
                 IS_HAVOC,IS_SAME_HAVOC,IS_RUN_EVENT,
                 NO_VARS_IN_STATES, HAS_POSTFIX,
                 IS_EVENT_WITH_METHOD,
-                CONTAINS_EVENT
+                CONTAINS_EVENT,
+                HAS_POSTFIX_HEAD_TAIL_INST
                 );
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
             GET_VARIANT, IS_LABELED);
