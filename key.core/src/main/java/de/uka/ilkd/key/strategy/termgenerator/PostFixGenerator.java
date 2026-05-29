@@ -10,33 +10,70 @@ import de.uka.ilkd.key.rule.conditions.catsconditions.ContainsObservations;
 import de.uka.ilkd.key.rule.conditions.catsconditions.IsSchematicTraceOverM;
 import de.uka.ilkd.key.strategy.feature.MutableState;
 import de.uka.ilkd.key.util.Pair;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 
 public class PostFixGenerator implements TermGenerator {
 
+    class PostFixGenIterator implements Iterator<Term> {
+        private final Services services;
+        private final Sequent sequent;
+        private Iterator<Term> backingSetIt;
+        final TacletApp tApp;
+        final Term updateTerm;
+        final Term traceTerm;
+        final Term updatePrefixTerm;
+        final Term tracePrefixTerm;
+
+        public PostFixGenIterator(Sequent sequent, Services services, TacletApp tApp, Term updateTerm, Term traceTerm, Term updatePrefixTerm, Term tracePrefixTerm) {
+            this.sequent = sequent;
+            this.services = services;
+            this.tApp = tApp;
+            this.updateTerm = updateTerm;
+            this.traceTerm = traceTerm;
+            this.updatePrefixTerm = updatePrefixTerm;
+            this.tracePrefixTerm = tracePrefixTerm;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (backingSetIt == null) {
+                backingSetIt = lazySetGen(sequent, services, tracePrefixTerm, updatePrefixTerm, updateTerm, traceTerm);
+            }
+            return backingSetIt.hasNext();
+        }
+
+        @Override
+        public Term next() {
+            if (backingSetIt == null) {
+                backingSetIt = lazySetGen(sequent, services, tracePrefixTerm, updatePrefixTerm, updateTerm, traceTerm);
+            }
+            return backingSetIt.next();
+        }
+    }
 
     @Override
     public Iterator<Term> generate(RuleApp app, PosInOccurrence pos, Goal goal, MutableState mState) {
-        TacletApp tApp = (TacletApp) app;
-        Term updateTerm = (Term) tApp.instantiations().lookupValue(new Name("update"));
-        Term traceTerm = (Term) tApp.instantiations().lookupValue(new Name("trace"));
-        Term updatePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("updatePrefix"));
-        Term tracePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("tracePrefix"));
+        final TacletApp tApp = (TacletApp) app;
+        final Term updateTerm = (Term) tApp.instantiations().lookupValue(new Name("update"));
+        final Term traceTerm = (Term) tApp.instantiations().lookupValue(new Name("trace"));
+        final Term updatePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("updatePrefix"));
+        final Term tracePrefixTerm = (Term) tApp.instantiations().lookupValue(new Name("tracePrefix"));
 
+        return new PostFixGenIterator(goal.sequent(), goal.proof().getServices(), tApp, updateTerm, traceTerm, updatePrefixTerm, tracePrefixTerm);
+    }
+
+    private @NonNull Iterator<Term> lazySetGen(Sequent seq,  Services services, Term tracePrefixTerm, Term updatePrefixTerm, Term updateTerm, Term traceTerm) {
         if(tracePrefixTerm == null || updatePrefixTerm == null)
             return Collections.emptyIterator();
 
-        Services services = goal.proof().getServices();
-        Sequent seq = goal.sequent();
         List<Pair<UpdateManager,TraceManager>> judgmentsAnte = getMatchingJudgmentsFromAnte(seq, updateTerm, traceTerm, services);
 
         Optional<Pair<UpdateManager,TraceManager>> optionalMax = judgmentsAnte.stream().max(
                 Comparator.comparingInt(x -> ((Pair<UpdateManager,TraceManager>) x).first.getSize())
                         .thenComparingInt(x-> ((Pair<UpdateManager,TraceManager>) x).second.getSize())
         );
-
-
 
         if(optionalMax.isEmpty())
             return Collections.emptyIterator();
@@ -47,12 +84,10 @@ public class PostFixGenerator implements TermGenerator {
                 !tracePrefixTerm.equals(traceManager.getTermFromList()))
             return Collections.emptyIterator();
 
-
         return List.of(createJudgment(
-                new UpdateManager(updateTerm,services).getPostfixTerm(updateManager.getSize()),
-                new TraceManager(traceTerm,services).getPostfixTerm(traceManager.getSize()),
+                new UpdateManager(updateTerm, services).getPostfixTerm(updateManager.getSize()),
+                new TraceManager(traceTerm, services).getPostfixTerm(traceManager.getSize()),
                 services)).iterator();
-
 
 //
 //        UpdateManager updateManager = new UpdateManager(updateTerm, services);
@@ -90,22 +125,22 @@ public class PostFixGenerator implements TermGenerator {
             Term update,
             Term trace,
             Services services
-            ){
+    ){
         UpdateManager updateManager = new UpdateManager(update,services);
         TraceManager traceManager = new TraceManager(trace,services);
         List<Pair<UpdateManager,TraceManager>> list = seq.antecedent().asList().stream().filter(PostFixGenerator::isJudgment)
-                        .map(x -> new Pair<>(
-                                        new UpdateManager(x.formula().sub(0),services),
-                                        new TraceManager(x.formula().sub(1).sub(0),services)
-                                )
-                        ).toList();
+                .map(x -> new Pair<>(
+                                new UpdateManager(x.formula().sub(0),services),
+                                new TraceManager(x.formula().sub(1).sub(0),services)
+                        )
+                ).toList();
 
         List<Pair<UpdateManager,TraceManager>> res = list.stream().filter(
-                        judgment -> updateManager.hasStrictPrefix(judgment.first)
-                                && traceManager.hasStrictPrefix(judgment.second)
-                ).toList();
+                judgment -> updateManager.hasStrictPrefix(judgment.first)
+                        && traceManager.hasStrictPrefix(judgment.second)
+        ).toList();
         return res;
-}
+    }
 
     private static boolean isJudgment(SequentFormula sequentFormula){
         return sequentFormula.formula().op() instanceof UpdateApplication && sequentFormula.formula().sub(1).op() instanceof Modality;
@@ -117,13 +152,13 @@ public class PostFixGenerator implements TermGenerator {
             UpdateManager updateManager,
             Services services){
 
-            Term runEv = updateManager.getFirst();
-            Term schemTr = traceManager.getTracePairs().getFirst().first;
-            if(IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)))
-                return getListOfJudgments(
-                        updateManager.getTermFromList(),
-                        List.of(traceManager.getTermFromSubList(1,traceManager.getTracePairs().size())),
-                        services).iterator();
+        Term runEv = updateManager.getFirst();
+        Term schemTr = traceManager.getTracePairs().getFirst().first;
+        if(IsSchematicTraceOverM.isSchematicTraceOverM(schemTr, runEv.sub(0)))
+            return getListOfJudgments(
+                    updateManager.getTermFromList(),
+                    List.of(traceManager.getTermFromSubList(1,traceManager.getTracePairs().size())),
+                    services).iterator();
 
         return Collections.emptyIterator();
     }
@@ -135,13 +170,13 @@ public class PostFixGenerator implements TermGenerator {
     ){
         //todo:check if the sizes of trace manager can be lower
         if(updateManager.getSize() > 1
-            && traceManager.getSize() > 1
-            && updateManager.getFirst().op() == UpdateEvent.RUN_EV
+                && traceManager.getSize() > 1
+                && updateManager.getFirst().op() == UpdateEvent.RUN_EV
         ){
             if(traceManager.getTracePairs().getFirst().first.op() instanceof SchematicTrace)
                 return elimSchemTrPrefixMatchedWithRunEvPrefix(traceManager, updateManager, services);
             else if(traceManager.getTracePairs().getFirst().first.op() == TraceEvent.START_TR_EV
-                && traceManager.getTracePairs().get(1).first.op() instanceof SchematicTrace) {
+                    && traceManager.getTracePairs().get(1).first.op() instanceof SchematicTrace) {
                 //elimSchemTrPrefixMatchedWithRunEvPrefix
                 Term runEv = updateManager.getFirst();
                 Term startTrEv = traceManager.getTracePairs().getFirst().first;
@@ -168,7 +203,7 @@ public class PostFixGenerator implements TermGenerator {
             UpdateManager updateManager,
             Pair<UpdateManager,TraceManager> judgment,
             Services services
-            ){
+    ){
 
         TraceManager tracePrefix = judgment.second;
         UpdateManager updatePrefix = judgment.first;
@@ -199,8 +234,8 @@ public class PostFixGenerator implements TermGenerator {
 
     private Term createJudgment(Term update, Term trace, Services services){
         return  services.getTermFactory().createTerm(UpdateApplication.UPDATE_APPLICATION,
-                        update,
-                        services.getTermFactory().createTerm(Modality.DIA, trace));
+                update,
+                services.getTermFactory().createTerm(Modality.DIA, trace));
     }
 
     private List<Term> getListOfJudgments(Term update, List<Term> traces, Services services){
