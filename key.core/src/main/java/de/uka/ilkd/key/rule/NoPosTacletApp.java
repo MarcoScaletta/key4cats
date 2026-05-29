@@ -140,7 +140,7 @@ public class NoPosTacletApp extends TacletApp {
             }
 
             final TacletPrefix prefix = taclet.getPrefix(sv);
-            if (prefix.context()) {
+            if (prefix == null || prefix.context()) {
                 continue;
             }
 

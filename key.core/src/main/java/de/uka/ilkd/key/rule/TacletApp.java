@@ -1255,6 +1255,8 @@ public abstract class TacletApp implements RuleApp, EqualsModProofIrrelevancy {
         while (it.hasNext()) {
             SchemaVariable sv = it.next();
             if (sv instanceof TermSV || sv instanceof FormulaSV) {
+                if(taclet.getPrefix(sv) == null)
+                    return true;
                 if (!((Term) instantiations.getInstantiation(sv)).freeVars()
                         .subset(boundAtOccurrenceSet(taclet.getPrefix(sv), instantiations, pos))) {
 
