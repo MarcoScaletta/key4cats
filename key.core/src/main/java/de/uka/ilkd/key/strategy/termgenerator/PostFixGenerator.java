@@ -128,17 +128,16 @@ public class PostFixGenerator implements TermGenerator {
     ){
         UpdateManager updateManager = new UpdateManager(update,services);
         TraceManager traceManager = new TraceManager(trace,services);
-        List<Pair<UpdateManager,TraceManager>> list = seq.antecedent().asList().stream().filter(PostFixGenerator::isJudgment)
-                .map(x -> new Pair<>(
-                                new UpdateManager(x.formula().sub(0),services),
-                                new TraceManager(x.formula().sub(1).sub(0),services)
-                        )
-                ).toList();
-
-        List<Pair<UpdateManager,TraceManager>> res = list.stream().filter(
-                judgment -> updateManager.hasStrictPrefix(judgment.first)
-                        && traceManager.hasStrictPrefix(judgment.second)
-        ).toList();
+        List<Pair<UpdateManager,TraceManager>> res = new LinkedList<>();
+        for (SequentFormula sequentFormula : seq.antecedent()) {
+            if (PostFixGenerator.isJudgment(sequentFormula)) {
+                Pair<UpdateManager, TraceManager> judgment =
+                        new Pair<>(new UpdateManager(sequentFormula.formula().sub(0), services),
+                                new TraceManager(sequentFormula.formula().sub(1).sub(0), services));
+                if (updateManager.hasStrictPrefix(judgment.first) && traceManager.hasStrictPrefix(judgment.second))
+                    res.add(judgment);
+            }
+        }
         return res;
     }
 
