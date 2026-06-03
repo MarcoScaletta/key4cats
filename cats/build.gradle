@@ -11,6 +11,7 @@ description "CATs"
 configurations { antlr4 }
 dependencies {
     implementation 'com.github.javaparser:javaparser-core:3.26.3'
+    implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation project(":key.core")
 
     implementation project(":key.ui")

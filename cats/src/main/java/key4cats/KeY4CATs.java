@@ -10,6 +10,11 @@ import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import de.uka.ilkd.key.proof.io.ProofSaver;
 import org.apache.commons.cli.HelpFormatter;
 
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.Logger;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,11 +22,11 @@ import java.util.stream.Collectors;
 import static de.uka.ilkd.key.core.Main.loadCommandLineFiles;
 
 import org.apache.commons.cli.*;
-import org.slf4j.Logger;
+//import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KeY4CATs {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KeY4CATs.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(KeY4CATs.class);
 
     public enum ProofGenMode{SINGLE,FULL,ALL}
 
@@ -57,6 +62,11 @@ public class KeY4CATs {
             .hasArg().argName("CAT_ID")
             .build();
 
+    static Option BENCHMARK = Option.builder("b")
+            .desc("Warming up before verify single contract")
+            .longOpt("benchmark")
+            .build();
+
     static Option CATSL = Option.builder("catsl")
             .required(true)
             .desc("Select <CATSL_FILE> to load")
@@ -89,6 +99,7 @@ public class KeY4CATs {
 
 
     static final OptionGroup TARGET_OPTION = new MyOptionGroup().addOption(SINGLE_CAT).addOption(FULL_PROOF);
+    static final OptionGroup PO_OR_BENCHMARK = new MyOptionGroup().addOption(BENCHMARK).addOption(NO_VER);
     static final OptionGroup MAIN_OPTION_GROUP = new MyOptionGroup().addOption(CATSL).addOption(PROOF_OBLIGATION).addOption(HELP_OPTION);
 
 
@@ -102,7 +113,9 @@ public class KeY4CATs {
         mainOptions.addOptionGroup(MAIN_OPTION_GROUP);
 
         loadCATOptions.addOptionGroup(TARGET_OPTION);
-        loadCATOptions.addOption(NO_VER);
+        loadCATOptions.addOptionGroup(PO_OR_BENCHMARK);
+//        loadCATOptions.addOption(NO_VER);
+        loadCATOptions.addOption(BENCHMARK);
         loadCATOptions.addOption(CATSL);
         loadCATOptions.addOption(JAVA_CLASS);
         loadCATOptions.addOption(INTERACTIVE);
@@ -120,6 +133,7 @@ public class KeY4CATs {
 
     static ProofGenMode proofGenMode;
     static boolean requiredVerification;
+    static boolean benchmarkRequired;
     static String contractName;
     static String catsFilename;
     static String javaClassFilename;
@@ -151,8 +165,22 @@ public class KeY4CATs {
                     LOGGER.info(String.format("Single proof for \"%s\"", contractName));
                     p.generateProof(directory, contractName);
 
-                    if (requiredVerification)
+                    if (requiredVerification) {
+                        if(benchmarkRequired){
+                            int warmUpTime = 10;
+                            LOGGER.info("BENCHMARK WAS REQUESTED");
+                            LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
+                            ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                            for(int i=0;i<warmUpTime;i++) {
+                                prove(directory, contractName);
+                                System.out.print((i+1)+ "...");
+                            }
+                            System.out.println("done");
+                            ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.TRACE);
+                            LOGGER.info("END WARM UP");
+                        }
                         prove(directory, contractName);
+                    }
                 }
                 if (proofGenMode == ProofGenMode.FULL) {
                     if (contractNames.size() == 1)
@@ -223,6 +251,8 @@ public class KeY4CATs {
     }
 
     private static void checkOptions(){
+        if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && benchmarkRequired)
+            throw  new RuntimeException("Only one proof at a time can be verified as benchmark");
         if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && executionMode == KeYMode.GUI)
             throw  new RuntimeException("Only one proof at a time can be loaded interactively: more interactive proofs are currently not supported");
     }
@@ -274,7 +304,7 @@ public class KeY4CATs {
         verificationMessage += "\n\tcats --help";
         pw.println("Usage: " + verificationMessage);
         pw.println("With '-no-ver' proof obligation are generated but not verified");
-        String targetOptionsMessage = "TARGET can be: '-s <CAT_ID>', '-f <CAT_ID>', or '-all'";
+        String targetOptionsMessage = "TARGET can be: '-s <CAT_ID>', '-b <CAT_ID>', '-f <CAT_ID>', or '-all'";
         pw.println(targetOptionsMessage);
         pw.println();
         formatter.printOptions(pw, formatter.getWidth(),options,formatter.getLeftPadding(),formatter.getDescPadding());
@@ -283,6 +313,7 @@ public class KeY4CATs {
 
     private static void parseArgs(CommandLine cl){
         requiredVerification = !cl.hasOption(NO_VER);
+        benchmarkRequired = cl.hasOption(BENCHMARK);
         if(loadingMode == LoadingMode.CAT){
             if(cl.hasOption(SINGLE_CAT)) {
                 contractName = cl.getOptionValue(SINGLE_CAT);
@@ -292,7 +323,7 @@ public class KeY4CATs {
                 contractName = cl.getOptionValue(FULL_PROOF);
                 proofGenMode = ProofGenMode.FULL;
             }
-            if(!cl.hasOption(SINGLE_CAT) && (!cl.hasOption(FULL_PROOF)))
+            if(!cl.hasOption(SINGLE_CAT) && !cl.hasOption(FULL_PROOF))
                 proofGenMode = ProofGenMode.ALL;
 
             if(cl.hasOption(CATSL)){
