@@ -1,0 +1,4 @@
+#!/bin/sh
+KEY4CATs=$KEY/cats/build/libs/KeY4CATs.jar
+java -jar $KEY4CATs $@
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+set +x
+sh key4cats -stats -i -s oneRoundCAT -catsl ../resources/casino.cats -java Casino
+set -x

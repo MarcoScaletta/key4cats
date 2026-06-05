@@ -63,7 +63,12 @@ public class KeY4CATs {
             .build();
 
     static Option BENCHMARK = Option.builder("b")
-            .desc("Warming up before verify single contract")
+            .desc("Warming up before verification (only for single proofs and non-interactive mode)")
+            .longOpt("benchmark")
+            .build();
+
+    static Option BENCHMARK_PO = Option.builder("b")
+            .desc("Warming up before verification of proof obligation")
             .longOpt("benchmark")
             .build();
 
@@ -80,7 +85,12 @@ public class KeY4CATs {
             .build();
 
     static Option INTERACTIVE = Option.builder("i")
-            .desc("Interactive mode via KeY GUI (working for verification of single CAT)")
+            .desc("Interactive mode via KeY GUI (only for single proofs)")
+            .longOpt("interactive")
+            .build();
+
+    static Option INTERACTIVE_PO = Option.builder("i")
+            .desc("Interactive mode via KeY GUI")
             .longOpt("interactive")
             .build();
 
@@ -92,14 +102,14 @@ public class KeY4CATs {
             .build();
 
     static Option PROOF_OBLIGATION = Option.builder("po")
-            .desc("Load <PROOF_OBLIGATION> (.key/.proof file)")
+            .desc("Load <PO> (.key/.proof file)")
             .longOpt("proof-obligation")
-            .hasArg().argName("<PROOF_OBLIGATION>")
+            .hasArg().argName("PO")
             .build();
 
 
     static final OptionGroup TARGET_OPTION = new MyOptionGroup().addOption(SINGLE_CAT).addOption(FULL_PROOF);
-    static final OptionGroup PO_OR_BENCHMARK = new MyOptionGroup().addOption(BENCHMARK).addOption(NO_VER);
+    static final OptionGroup PO_OR_BENCHMARK = new MyOptionGroup().addOption(NO_VER).addOption(BENCHMARK);
     static final OptionGroup MAIN_OPTION_GROUP = new MyOptionGroup().addOption(CATSL).addOption(PROOF_OBLIGATION).addOption(HELP_OPTION);
 
 
@@ -113,19 +123,20 @@ public class KeY4CATs {
         mainOptions.addOptionGroup(MAIN_OPTION_GROUP);
 
         loadCATOptions.addOptionGroup(TARGET_OPTION);
-        loadCATOptions.addOptionGroup(PO_OR_BENCHMARK);
 //        loadCATOptions.addOption(NO_VER);
 //        loadCATOptions.addOption(BENCHMARK);
         loadCATOptions.addOption(CATSL);
         loadCATOptions.addOption(JAVA_CLASS);
+        loadCATOptions.addOptionGroup(PO_OR_BENCHMARK);
         loadCATOptions.addOption(INTERACTIVE);
         loadCATOptions.addOption(SHOW_STATS);
-        loadCATOptions.addOption(HELP_OPTION);
+//        loadCATOptions.addOption(HELP_OPTION);
 
 
         loadPOOptions.addOption(PROOF_OBLIGATION);
-        loadPOOptions.addOption(INTERACTIVE);
+        loadPOOptions.addOption(INTERACTIVE_PO);
         loadPOOptions.addOption(SHOW_STATS);
+        loadPOOptions.addOption(BENCHMARK_PO);
 
         helpOption.addOption(HELP_OPTION);
 
@@ -152,7 +163,20 @@ public class KeY4CATs {
             if(loadingMode == LoadingMode.PO){
                 directory = new File(proofObligationFileName).getParent();
                 LOGGER.info(String.format("Loading proof obligation from %s", proofObligationFileName));
-                prove( proofObligationFileName);
+                if(benchmarkRequired){
+                    int warmUpTime = 10;
+                    LOGGER.info("BENCHMARK WAS REQUESTED");
+                    LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
+                    ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                    for(int i=0;i<warmUpTime;i++) {
+                        prove(proofObligationFileName);
+                        System.out.print((i+1)+ "...");
+                    }
+                    System.out.println("done");
+                    ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.TRACE);
+                    LOGGER.info("END WARM UP");
+                }
+                prove(proofObligationFileName);
             }
             else {
                 File catsFile = new File( catsFilename);
@@ -265,6 +289,7 @@ public class KeY4CATs {
         try {
             if(argsSet.contains("-" + HELP_OPTION.getOpt()) || argsSet.contains("--" + HELP_OPTION.getLongOpt())) {
                 printHelp();
+                System.exit(0);
             }
             else if(argsSet.contains("-" + PROOF_OBLIGATION.getOpt()) || argsSet.contains("--" + PROOF_OBLIGATION.getLongOpt())) {
                 try{
@@ -290,27 +315,66 @@ public class KeY4CATs {
         }
     }
 
+
+
     private static void printHelp(){
+
+        printHelpCATs();
+        System.out.println();
+        printHelpPOs();
+        System.out.println();
+        printHelpHelp();
+    }
+
+    private static void printHelpCATs(){
         HelpFormatter formatter = new HelpFormatter();
         Options options = new Options();
         options.addOptions(loadCATOptions);
-        options.addOptions(loadPOOptions);
-        options.addOptions(helpOption);
         formatter.setWidth(120);
         PrintWriter pw = new PrintWriter(System.out);
         formatter.setOptionComparator(null);
-        String verificationMessage = "\n\tcats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i] [-stats] ";
-        verificationMessage += "\n\tcats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> -no-ver";
-        verificationMessage += "\n\tcats --help";
-        pw.println("Usage: " + verificationMessage);
+        String verificationMessage = "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i | -b] [-stats]";
+        verificationMessage += "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> -no-ver";
+//        verificationMessage += "\n\tkey4cats --help";
+        pw.println("LOADING CAT FILE");
+        pw.println("> Usage: " + verificationMessage);
         pw.println("With '-no-ver' proof obligation are generated but not verified");
-        String targetOptionsMessage = "TARGET can be: '-s <CAT_ID>', '-b <CAT_ID>', '-f <CAT_ID>', or '-all'";
+        String targetOptionsMessage = "TARGET can be: '-s <CAT_ID>', '-f <CAT_ID>' (by default all CATs are targetted)";
         pw.println(targetOptionsMessage);
         pw.println();
         formatter.printOptions(pw, formatter.getWidth(),options,formatter.getLeftPadding(),formatter.getDescPadding());
         pw.flush();
     }
 
+
+    private static void printHelpPOs(){
+        HelpFormatter formatter = new HelpFormatter();
+        Options options = new Options();
+        options.addOptions(loadPOOptions);
+        formatter.setWidth(120);
+        PrintWriter pw = new PrintWriter(System.out);
+        formatter.setOptionComparator(null);
+        String verificationMessage = "\n\tkey4cats -po <KEY_FILE> [-i | -b] [-stats]";
+        pw.println("LOADING KEY FILE");
+        pw.println("> Usage: " + verificationMessage);
+        String targetOptionsMessage = "<KEY_FILE> can have extensions .key and .proof";
+        pw.println(targetOptionsMessage);
+        pw.println();
+        formatter.printOptions(pw, formatter.getWidth(),options,formatter.getLeftPadding(),formatter.getDescPadding());
+        pw.flush();
+    }
+
+
+    private static void printHelpHelp(){
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.setWidth(120);
+        PrintWriter pw = new PrintWriter(System.out);
+        formatter.setOptionComparator(null);
+        pw.println();
+        String verificationMessage = "Print this message with 'key4cats --help (-h)' ";
+        pw.println(verificationMessage);
+        pw.flush();
+    }
     private static void parseArgs(CommandLine cl){
         requiredVerification = !cl.hasOption(NO_VER);
         benchmarkRequired = cl.hasOption(BENCHMARK);

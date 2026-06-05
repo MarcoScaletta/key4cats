@@ -1,0 +1,13 @@
+This folder contains two case studies:
+    - Casino
+    - RemoveOne
+
+Make sure the env var KEY evaluates to the path of the current project.
+To setup the variable in the current terminal session run (in the current folder)
+    "source setup_env"
+
+This will create env_var with the KEY variable and save its value in the current terminal session.
+
+Refer to the README in the corresponding folders.
+
+The first run of KeY4CATs IS EXPECTED to show a warning because the main folder .key4cats does not exists.

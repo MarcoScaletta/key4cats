@@ -1,0 +1,4 @@
+#!/bin/sh
+set +x
+sh key4cats -po ../resources/oneRoundCAT.key
+set -x

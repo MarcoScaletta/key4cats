@@ -1,0 +1,3 @@
+#!/bin/sh
+echo Running: sh key4cats wrongRoundCAT -catsl casino/casino.cats -java Casino
+sh key4cats wrongRoundCAT -catsl casino/casino.cats -java Casino

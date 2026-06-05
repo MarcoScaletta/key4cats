@@ -8,6 +8,7 @@ plugins {
 }
 
 description "CATs"
+version = ""
 configurations { antlr4 }
 dependencies {
     implementation 'com.github.javaparser:javaparser-core:3.26.3'
@@ -40,7 +41,7 @@ application {
 }
 
 shadowJar {
-    archiveClassifier.set("exe")
+    archiveClassifier.set("")
     archiveBaseName.set("KeY4CATs")
 }
 

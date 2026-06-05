@@ -1,0 +1,12 @@
+#!/bin/sh
+
+THIS_PATH=$KEY/cats/case-studies/casino/resources/
+
+echo "BENCHMARK placeBetCAT"
+sh key4cats -b -s placeBetCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK decideBetCAT"
+sh key4cats -b -s decideBetCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK oneRoundCAT"
+sh key4cats -b -s oneRoundCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK wrongRoundCAT"
+sh key4cats -b -s wrongRoundCAT -catsl $THIS_PATH/casino.cats -java Casino -stats

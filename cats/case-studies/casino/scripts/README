@@ -1,0 +1,11 @@
+Available scripts:
+- sh oneRoundCATOnlyProof
+- sh oneRoundCATLoadProof
+- sh oneRoundCATFull
+- sh oneRoundCATFullStats
+- sh oneRoundCATInteractive
+- sh benchmark
+
+Their named are self explanatory.
+
+The first run of KeY4CATs IS EXPECTED to show a warning because the main folder .key4cats does not exists.

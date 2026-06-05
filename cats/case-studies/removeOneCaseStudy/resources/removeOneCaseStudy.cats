@@ -1,23 +1,23 @@
-[removeOne] removeOne :
+[removeOneCAT] removeOne :
     assumes: ~~ ** x::y . `true`;
     ensures: start(removeOne,\id) ** ~~ ** pop(removeOne,\id) ** x::y1 . `y1=y-1`;
     expects: ~~;
 
-    [removeOneOnce] {removeOne;} removeOneOnce :
+    [removeOneOnceCAT] {removeOneCAT;} removeOneOnce :
 
         assumes: ~~ ** x::y . `true`;
         ensures: ~~ ** start(removeOne,_) **
                  ~~ ** x::y1 . `y1=y-1` ;
         expects: ~~;
 
-    [removeOneTwice] {removeOne;} removeOneTwice :
+    [removeOneTwiceCAT] {removeOneCAT;} removeOneTwice :
         assumes: ~~ ** x::y . `true`;
         ensures: ~~ ** start(removeOne,_) **
                  ~~ ** start(removeOne,_) **
                  ~~  ** x::y1 . `y1=y-2` ;
         expects: ~~;
 
-    [removeOneThrice] {removeOne;} removeOneThrice :
+    [removeOneThriceCAT] {removeOneCAT;} removeOneThrice :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** start(removeOne,_) **
              ~~ ** start(removeOne,_) **
@@ -25,7 +25,7 @@
              ~~ ** x::y1 . `y1=y-3` ;
     expects: ~~;
 
-    [removeOneQuad] {removeOne;} removeOneQuad :
+    [removeOneQuadCAT] {removeOneCAT;} removeOneQuad :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** start(removeOne,_) **
              ~~ ** start(removeOne,_) **
