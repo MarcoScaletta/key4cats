@@ -115,7 +115,7 @@ public class KeY4CATs {
         loadCATOptions.addOptionGroup(TARGET_OPTION);
         loadCATOptions.addOptionGroup(PO_OR_BENCHMARK);
 //        loadCATOptions.addOption(NO_VER);
-        loadCATOptions.addOption(BENCHMARK);
+//        loadCATOptions.addOption(BENCHMARK);
         loadCATOptions.addOption(CATSL);
         loadCATOptions.addOption(JAVA_CLASS);
         loadCATOptions.addOption(INTERACTIVE);
@@ -272,7 +272,7 @@ public class KeY4CATs {
                     loadingMode = LoadingMode.PO;
                     parseArgs(cl);
                 }catch (ParseException e){
-                    System.err.println("Problem with arguments, Type 'cats --help'");
+                    System.err.println("Problem with arguments, Run with '--help'");
                     throw new RuntimeException("Cannot parse arguments\n" + e.getMessage());
                 }
             }
