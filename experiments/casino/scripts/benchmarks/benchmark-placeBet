@@ -1,0 +1,20 @@
+#!/bin/sh
+
+
+if [[ -z "${KEY4CATs}" ]]; then
+  echo "Env. Variable KEY4CATs not defined: set it as the path to executable \"KeY4CATs.jar\""
+  exit 1
+fi
+
+alias key4cats="java -jar \$KEY4CATs $@"
+
+THIS_PATH=../../resources/
+
+echo "BENCHMARK placeBetCAT: proof should succeed"
+sh key4cats -b -s placeBetCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK decideBetCAT: proof should succeed"
+sh key4cats -b -s decideBetCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK oneRoundCAT: proof should succeed"
+sh key4cats -b -s oneRoundCAT -catsl $THIS_PATH/casino.cats -java Casino -stats
+echo "BENCHMARK wrongRoundCAT: proof should fail"
+sh key4cats -b -s wrongRoundCAT -catsl $THIS_PATH/casino.cats -java Casino -stats

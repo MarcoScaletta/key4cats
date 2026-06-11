@@ -1,0 +1,7 @@
+#!/bin/sh
+
+alias key4cats="java -jar $KEY4CATs $@"
+
+set +x
+key4cats -no-ver -s oneRoundCAT -catsl ../../resources/casino.cats -java Casino
+set -x

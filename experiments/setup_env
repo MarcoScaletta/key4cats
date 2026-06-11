@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo export KEY4CATs="$(dirname "$dir")"/cats/build/libs/KeY4CATs.jar > env_var
+. ./env_var
