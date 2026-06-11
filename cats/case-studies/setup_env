@@ -1,0 +1,5 @@
+#!/bin/sh
+
+dir=$(pwd)
+echo export KEY="$(dirname "$(dirname "$dir")")" > env_var
+. ./env_var
