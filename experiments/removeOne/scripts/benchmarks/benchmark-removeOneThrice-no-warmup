@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [[ -z "${KEY4CATs}" ]]; then
+  echo "Env. Variable KEY4CATs not defined: set it as the path to executable \"KeY4CATs.jar\""
+  exit 1
+fi
+
+alias key4cats="java -jar $KEY4CATs $@"
+
+THIS_PATH=../../resources/
+
+echo "Verifying removeOneThriceCAT WITHOUT JVM warmup (warmup of JVM is not necessary)"
+key4cats -s removeOneThriceCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java RemoveOneCaseStudy -stats
