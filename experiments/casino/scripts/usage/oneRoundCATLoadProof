@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-alias key4cats="java -jar $KEY4CATs $@"
-
+echo "load the generated proof obligation for oneRoundCAT"
+echo "(make sure you run \"oneRoundCATOnlyProof\" before)"
+echo "if correctly loaded, the proof should succeed"
 set +x
 key4cats -po ../../resources/oneRoundCAT.key
 set -x

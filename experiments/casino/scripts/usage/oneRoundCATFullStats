@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
-alias key4cats="java -jar $KEY4CATs $@"
-
+echo "proving oneRoundCAT full (with dependencies) and output full stats"
+echo "all proofs should succeed"
 set +x
 key4cats -stats -f oneRoundCAT -catsl ../../resources/casino.cats -java Casino
 set -x

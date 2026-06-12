@@ -1,0 +1,27 @@
+Make sure the env var KEY4CATs evaluates to the path of the current project (see README in folder "experiments")
+
+Run
+    sh all-benchmarks
+The contracts
+    - removeOneOnceCAT
+    - removeOneTwiceCAT
+will be verified with benchmark (warmup of JVM)
+
+
+
+The contracts
+    - removeOneThriceCAT
+    - removeOneQuadCAT
+
+will be verified WITHOUT warmup, since both proofs take enough time that the effects warmup of JVM is insignificant.
+
+IMPORTANT: For removeOneQuadCAT, the warmup is not recommended: the proof is expected to last more than 90 minutes (on M1 MacBook Pro with 16GB of RAM),
+and with the warmup would take 11 times longer.
+The proof will be loaded interactively, so that it can be left running in the dedicated window (KeY GUI)
+and it is possible to pause and resume it.
+This is not possible from the terminal.
+
+Full statistics are shown.
+
+
+The first run of KeY4CATs IS EXPECTED to show a warning because the main folder .key4cats does not exists.

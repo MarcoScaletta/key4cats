@@ -2,7 +2,7 @@ This folder contains two case studies:
     - casino
     - removeOne
 
-Make sure the env var KEY4CATs evaluates to the path of the current project.
+Make sure the env var KEY4CATs (assigned in the enviroment by default) evaluates to the path of the current project.
 To setup the variable in the current terminal session run (in the current folder)
     "source setup_env"
 
