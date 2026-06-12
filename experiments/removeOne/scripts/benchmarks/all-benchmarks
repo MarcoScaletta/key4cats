@@ -9,6 +9,8 @@ alias key4cats="java -jar $KEY4CATs $@"
 
 THIS_PATH=../../resources/
 
+echo "All the proofs should succeed."
+
 echo "BENCHMARK removeOneOnceCAT"
 key4cats -b -s removeOneOnceCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java RemoveOneCaseStudy -stats
 echo "BENCHMARK removeOneTwiceCAT"
