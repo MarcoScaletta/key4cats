@@ -8,21 +8,22 @@ import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
 import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import de.uka.ilkd.key.proof.io.ProofSaver;
+import de.uka.ilkd.key.settings.ProofSettings;
+import de.uka.ilkd.key.settings.StrategySettings;
 import org.apache.commons.cli.HelpFormatter;
 
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.Logger;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.uka.ilkd.key.core.Main.loadCommandLineFiles;
 
 import org.apache.commons.cli.*;
-//import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KeY4CATs {
@@ -47,6 +48,12 @@ public class KeY4CATs {
             .desc("Targets <CAT_ID> and also all contracts assumed by <CAT_ID> from file <CATSL_FILE>")
             .longOpt("full")
             .hasArg().argName("CAT_ID")
+            .build();
+
+    static Option RULE_APP_LIMIT = Option.builder("max")
+            .desc("Set the number of maximum rule application to <N_RULES>")
+            .longOpt("max-rules")
+            .hasArg().argName("N_RULES")
             .build();
 
     static Option SHOW_STATS = Option.builder("stats")
@@ -130,6 +137,7 @@ public class KeY4CATs {
         loadCATOptions.addOptionGroup(PO_OR_BENCHMARK);
         loadCATOptions.addOption(INTERACTIVE);
         loadCATOptions.addOption(SHOW_STATS);
+        loadCATOptions.addOption(RULE_APP_LIMIT);
 //        loadCATOptions.addOption(HELP_OPTION);
 
 
@@ -137,12 +145,16 @@ public class KeY4CATs {
         loadPOOptions.addOption(INTERACTIVE_PO);
         loadPOOptions.addOption(SHOW_STATS);
         loadPOOptions.addOption(BENCHMARK_PO);
+        loadPOOptions.addOption(RULE_APP_LIMIT);
 
         helpOption.addOption(HELP_OPTION);
 
     }
 
     static ProofGenMode proofGenMode;
+
+    static int maxRuleAppSteps = -1;
+    static int maxRuleAppStepsDEFAULT=10000;
     static boolean requiredVerification;
     static boolean benchmarkRequired;
     static String contractName;
@@ -159,6 +171,7 @@ public class KeY4CATs {
     public static void main(String [] args) throws IOException {
         checkOptions(args);
         checkOptions();
+        checkMaxRuleApp();
         try {
             if(loadingMode == LoadingMode.PO){
                 directory = new File(proofObligationFileName).getParent();
@@ -275,10 +288,32 @@ public class KeY4CATs {
     }
 
     private static void checkOptions(){
+        if((executionMode == KeYMode.GUI) && benchmarkRequired)
+            throw  new RuntimeException("Benchmarks can be run in NON interactive mode (automode). Remove the flag -i or the flag -b, and retry.");
         if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && benchmarkRequired)
             throw  new RuntimeException("Only one proof at a time can be verified as benchmark");
         if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && executionMode == KeYMode.GUI)
             throw  new RuntimeException("Only one proof at a time can be loaded interactively: more interactive proofs are currently not supported");
+    }
+
+    private static void checkMaxRuleApp(){
+        int maxRuleApp = ProofSettings.DEFAULT_SETTINGS.getStrategySettings().getMaxSteps();
+        if(maxRuleAppSteps == -1) {
+            if (maxRuleApp != maxRuleAppStepsDEFAULT) {
+                LOGGER.info("Current setting for limit of rule application (" + maxRuleApp + ") is not the default one (" + maxRuleAppStepsDEFAULT + ")");
+                LOGGER.info("Setting limit of rule application to default (" + maxRuleAppStepsDEFAULT + ")");
+                ProofSettings.DEFAULT_SETTINGS.getStrategySettings().setMaxSteps(maxRuleAppStepsDEFAULT);
+            }
+        }else{
+            if (maxRuleAppSteps == maxRuleAppStepsDEFAULT) {
+                LOGGER.info("The given limit of rule applications is the default one (" + maxRuleAppStepsDEFAULT + "): no changes are needed");
+            }else {
+                LOGGER.info("Setting limit of rule applications to " + maxRuleAppSteps + ". It was " +
+                        maxRuleApp + (maxRuleApp==maxRuleAppStepsDEFAULT ? " (default)" : " (non-default)"));
+            }
+            ProofSettings.DEFAULT_SETTINGS.getStrategySettings().setMaxSteps(maxRuleAppSteps);
+        }
+
     }
 
     private static void checkOptions(String[] args){
@@ -333,7 +368,7 @@ public class KeY4CATs {
         formatter.setWidth(120);
         PrintWriter pw = new PrintWriter(System.out);
         formatter.setOptionComparator(null);
-        String verificationMessage = "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i | -b] [-stats]";
+        String verificationMessage = "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i | -b] [-stats]  [-max]";
         verificationMessage += "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> -no-ver";
 //        verificationMessage += "\n\tkey4cats --help";
         pw.println("LOADING CAT FILE");
@@ -354,7 +389,7 @@ public class KeY4CATs {
         formatter.setWidth(120);
         PrintWriter pw = new PrintWriter(System.out);
         formatter.setOptionComparator(null);
-        String verificationMessage = "\n\tkey4cats -po <KEY_FILE> [-i | -b] [-stats]";
+        String verificationMessage = "\n\tkey4cats -po <KEY_FILE> [-i | -b] [-stats] [-max]";
         pw.println("LOADING KEY FILE");
         pw.println("> Usage: " + verificationMessage);
         String targetOptionsMessage = "<KEY_FILE> can have extensions .key and .proof";
@@ -396,6 +431,13 @@ public class KeY4CATs {
             if(cl.hasOption(JAVA_CLASS)){
                 javaClassFilename = cl.getOptionValue(JAVA_CLASS);
             }
+            if(cl.hasOption(RULE_APP_LIMIT)){
+                int max = Integer.parseInt(cl.getOptionValue(RULE_APP_LIMIT));
+                if(max <= 0){
+                    throw new RuntimeException("The limit of rule applications must be greater than zero. Given value: " + max);
+                }
+                maxRuleAppSteps = max;
+            }
         }
         if(loadingMode == LoadingMode.PO){
             if(cl.hasOption(PROOF_OBLIGATION)) {
@@ -429,7 +471,7 @@ public class KeY4CATs {
         try{
             File keyFile = new File(proofObligationFileName);
 
-            LOGGER.info(String.format("Loading %s ...", proofObligationFileName));
+            LOGGER.info(String.format("Loading %s ...", Paths.get(keyFile.getAbsolutePath()).normalize()));
             KeYEnvironment<DefaultUserInterfaceControl> env = KeYEnvironment.load(keyFile);
             LOGGER.info("Started proof...");
             env.getProofControl().startAndWaitForAutoMode(env.getLoadedProof());
@@ -454,8 +496,8 @@ public class KeY4CATs {
                 proofObligationFileNameFileName.endsWith(".proof")?
                         proofObligationFileNameFileName :
                         String.format("%s.proof", proofObligationFileNameFileName);
-        LOGGER.info(String.format("Saving proof %s ... ", savingProofName));
         File proofFile = new File(savingProofName);
+        LOGGER.info(String.format("Saving proof %s ... ", Paths.get(proofFile.getAbsolutePath()).normalize()));
         ProofSaver ps = new ProofSaver(proof, proofFile, true);
         String error = ps.save();
         if(error != null)

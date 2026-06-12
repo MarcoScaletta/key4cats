@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static key4cats.TraceOp.chop;
@@ -74,7 +75,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
     public void generateProof(String directory, String contractName) throws IOException{
         File keyFile = new File(String.format("%s/%s.key", directory, contractName));
-        LOGGER.info(String.format("Generating proof for %s in file %s", contractName,keyFile));
+        LOGGER.info(String.format("Generating proof for %s in file %s", contractName, Paths.get(keyFile.getAbsolutePath()).normalize()));
         DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(keyFile, false));
         dataOutputStream.writeBytes(this.assembleProof(contractName).toKeY());
         dataOutputStream.flush();

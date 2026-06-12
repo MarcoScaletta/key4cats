@@ -309,7 +309,7 @@ public abstract class AbstractProblemLoader {
         FileRepo fileRepo = createFileRepo();
 
         var timeBeforeEnv = System.nanoTime();
-        LOGGER.info("Loading environment from " + file);
+        LOGGER.info("Loading environment from " + Paths.get(file.getAbsolutePath()).normalize());
         envInput = createEnvInput(fileRepo);
         LOGGER.debug(
             "Environment load took " + PerfScope.formatTime(System.nanoTime() - timeBeforeEnv));
