@@ -16,6 +16,12 @@
     ensures: ~~ ** amount::b1 . `true`;
     expects: ~{placeBet,decideBet}~;
 
+// WORKING
+[twoRoundsCAT] {decideBetCAT;placeBetCAT;} twoRounds:
+    assumes: ~{placeBet,decideBet}~ ** amount::b . `true`;
+    ensures: ~~ ** amount::b1 . `true`;
+    expects: ~{placeBet,decideBet}~;
+
 [wrongRoundCAT] {decideBetCAT;placeBetCAT;} wrongRound:
     assumes: ~{placeBet,decideBet}~ ** amount::b . `true`;
     ensures: ~~ ** amount::b1 . `true`;

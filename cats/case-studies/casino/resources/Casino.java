@@ -1,6 +1,6 @@
 class Casino {
 
-    public static int bet,amount,wallet, guess, coin;
+    public static int bet,amount,wallet, guess, coin, someVar;
     public static void placeBet(boolean sync){
         bet = amount;
         wallet = wallet - bet;
@@ -15,6 +15,18 @@ class Casino {
         return;
     }
     public static void oneRound(boolean sync){
+        wallet = 1;
+        amount = 1;
+        Casino.placeBet(true);
+        Casino.decideBet(true);
+        return;
+    }
+
+    public static void twoRounds(boolean sync){
+        wallet = 10;
+        amount = 1;
+        Casino.placeBet(true);
+        Casino.decideBet(true);
         wallet = 1;
         amount = 1;
         Casino.placeBet(true);
