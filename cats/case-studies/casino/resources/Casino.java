@@ -23,7 +23,23 @@ class Casino {
     }
 
     public static void twoRounds(boolean sync){
-        wallet = 10;
+        wallet = 1;
+        amount = 1;
+        Casino.placeBet(true);
+        Casino.decideBet(true);
+        wallet = 1;
+        amount = 1;
+        Casino.placeBet(true);
+        Casino.decideBet(true);
+        return;
+    }
+
+    public static void threeRounds(boolean sync){
+        wallet = 1;
+        amount = 1;
+        Casino.placeBet(true);
+        Casino.decideBet(true);
+        wallet = 1;
         amount = 1;
         Casino.placeBet(true);
         Casino.decideBet(true);

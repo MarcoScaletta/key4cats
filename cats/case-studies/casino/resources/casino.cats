@@ -22,6 +22,12 @@
     ensures: ~~ ** amount::b1 . `true`;
     expects: ~{placeBet,decideBet}~;
 
+// WORKING
+[threeRoundsCAT] {decideBetCAT;placeBetCAT;} threeRounds:
+    assumes: ~{placeBet,decideBet}~ ** amount::b . `true`;
+    ensures: ~~ ** amount::b1 . `true`;
+    expects: ~{placeBet,decideBet}~;
+
 [wrongRoundCAT] {decideBetCAT;placeBetCAT;} wrongRound:
     assumes: ~{placeBet,decideBet}~ ** amount::b . `true`;
     ensures: ~~ ** amount::b1 . `true`;
