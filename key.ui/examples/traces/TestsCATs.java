@@ -119,4 +119,16 @@ class TestsCATs{
         return;
     }
 
+    public static void twoRounds(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        TestsCATs.placeBet(true);
+        TestsCATs.decideBet(true);
+        wallet = 1;
+        amountToBet = 1;
+        TestsCATs.placeBet(true);
+        TestsCATs.decideBet(true);
+        return;
+    }
+
 }

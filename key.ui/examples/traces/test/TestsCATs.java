@@ -36,8 +36,7 @@ class TestsCATs{
 
     public static void decideBet(boolean sync){ //USED
         if(coinSide == guess){
-            wallet = wallet + bet;
-            wallet = wallet + bet;
+            wallet += 2*bet;
         }
         bet = 0;
         return;
@@ -117,6 +116,18 @@ class TestsCATs{
     public static void removeOneTwice(boolean sync){ //USED
         TestsCATs.removeOne(true);
         TestsCATs.removeOne(true);
+        return;
+    }
+
+    public static void twoRounds(boolean sync){
+        wallet = 1;
+        amountToBet = 1;
+        TestsCATs.placeBet(true);
+        TestsCATs.decideBet(true);
+        wallet = 1;
+        amountToBet = 1;
+        TestsCATs.placeBet(true);
+        TestsCATs.decideBet(true);
         return;
     }
 
