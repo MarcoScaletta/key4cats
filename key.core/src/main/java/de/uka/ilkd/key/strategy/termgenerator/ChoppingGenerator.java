@@ -66,7 +66,7 @@ public class ChoppingGenerator implements TermGenerator {
             // cannot do guided chopping...
             return Collections.emptyIterator();
         }
-        Term firstOfInnerTrace = fullFormulaTM.getTracePairs().getFirst().first;
+        Term firstOfInnerTrace = fullFormulaTM.getTracePairs().get(lastIndexCommonPrefix+1).first;
         Term alternativePreFml = null;
         if(firstOfInnerTrace.op() instanceof SchematicTrace){
             TraceManager alternativePreFmlTM = new TraceManager(longestPreFmlTM.getTracePairs(),services);

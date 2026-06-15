@@ -130,6 +130,7 @@ IS_SCHEMATIC_TRACE_OVER_M: '\\isSchematicTraceOverM';
 HAS_POSTFIX: '\\hasPostfix';
 IS_SCHEMATIC_TRACE_INCLUDED: '\\isSchematicTraceIncluded';
 CONTAINS_EVENT: '\\containsEvent';
+CONTAINS_START: '\\containsStart';
 IS_UPDATE_EVENT: '\\isUpdateEvent';
 NO_VARS_IN_STATES: '\\noVarsInStates';
 IS_EVENT: '\\isEvent';

@@ -20,7 +20,7 @@ public class FinishCondition implements VariableCondition {
         this.methodNameSV = methodNameSV;
     }
 
-    public Term getStartEvent(Term update, Services services){
+    public static Term getStartEvent(Term update, Services services){
         if(update.op() == UpdateJunctor.SEQUENTIAL_UPDATE) {
             if (update.sub(0).op() == HavocUpdate.getHavocUpdate(services)) {
                 if (update.sub(1).op() == UpdateEvent.START_EV)

@@ -25,6 +25,8 @@ public class SameTraceCondition extends VariableConditionAdapter {
 
     @Override
     public boolean check(SchemaVariable var, SVSubstitute instCandidate, SVInstantiations instMap, Services services) {
+        if(trace1 == null || trace2 == null)
+            return true;
         Term trace1Term = trace1.op() instanceof SchemaVariable ? (Term) instMap.getInstantiation((SchemaVariable) trace1.op()) : trace1;
         Term trace2Term = trace2.op() instanceof SchemaVariable ? (Term) instMap.getInstantiation((SchemaVariable) trace2.op()) : trace2;
         if(TraceManager.isTrace(trace1Term) && TraceManager.isTrace(trace2Term)){

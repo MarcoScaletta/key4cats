@@ -406,6 +406,10 @@ public class TacletBuilderManipulators {
             new ConstructorBasedBuilder("containsEvent",
                     ContainsEvent.class, TRACE,TERM);
 
+    public static final AbstractConditionBuilder CONTAINS_START =
+            new ConstructorBasedBuilder("containsStart",
+                    ContainsStart.class, TRACE);
+
     static class JavaTypeToSortConditionBuilder extends AbstractConditionBuilder {
         private final boolean elmen;
 
@@ -500,6 +504,7 @@ public class TacletBuilderManipulators {
                 NO_VARS_IN_STATES, HAS_POSTFIX,
                 IS_EVENT_WITH_METHOD,
                 CONTAINS_EVENT,
+                CONTAINS_START,
                 HAS_POSTFIX_HEAD_TAIL_INST
                 );
         register(STORE_TERM_IN, STORE_STMT_IN, HAS_INVARIANT, GET_INVARIANT, GET_FREE_INVARIANT,
