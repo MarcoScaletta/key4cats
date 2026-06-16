@@ -34,7 +34,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private Identifier currentCAT_ID = null;
     public
     ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
-        Map<String, Contract> contractsMapTMP = new HashMap<>();
+        Map<String, Contract> contractsMapTMP = new LinkedHashMap<>();
         Set<String> contractToBeGeneratedTMP = new HashSet<>();
         this.className = className;
         this.mode = mode;
@@ -139,7 +139,7 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     }
 
     private Map<String,Contract> createContractMap(List<CATsParser.ContractWithIdContext> contractWithIdContext){
-        Map<String,Contract> map = new HashMap<>();
+        Map<String,Contract> map = new LinkedHashMap<>();
         contractWithIdContext.forEach(
                 ctx->{
                     String id = ctx.id().getText();

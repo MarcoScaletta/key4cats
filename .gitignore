@@ -68,7 +68,7 @@ key/key.ui/examples/**/**.proof
 scripts/tools/checkstyle/key_checks_incremental.xml
 checkstyle-diff.txt
 /cats/src/main/java/key4cats/parsers/*
-/cats/src/test/resources/TestsCATs.java
+#/cats/src/test/resources/TestsCATs.java
 /cats/src/test/resources/tracerules.key
 /key.core/src/main/antlr4/KeYLexer.tokens
 /cats/results_info

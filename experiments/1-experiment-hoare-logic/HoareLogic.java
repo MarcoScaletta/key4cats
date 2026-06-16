@@ -35,4 +35,106 @@ class HoareLogic{
         return;
     }
 
+    public static void removeTwenty(boolean sync){
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        HoareLogic.removeTwo(true);
+        return;
+    }
+
+    public static void rmOne(boolean sync){
+        x = x - 1;
+        return;
+    }
+    public static void rmTwo(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+    public static void rmThree(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+    public static void rmFour(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+    public static void rmFive(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+    public static void rmSix(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+
+    public static void rmSeven(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+    public static void rmEight(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+
+    public static void rmNine(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
+
+    public static void rmTen(boolean sync){
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        HoareLogic.rmOne(true);
+        return;
+    }
 }

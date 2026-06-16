@@ -54,7 +54,9 @@ public class CATsTests {
                     "removeOneOnce",
                     "removeOneTwice",
                     "casinoCaseStudyNoDoubleDecision",
-                    "twoRoundsCAT"
+                    "twoRoundsCAT",
+                    "openAndWorkAndCloseCAT",
+                    "openAndWorkTwiceAndCloseCAT"
             }
             )
     public void succeedingProofs(String contract) {
@@ -90,7 +92,9 @@ public class CATsTests {
                     "callPlaceBetOnlyOncePreCondNotMetFail",
                     "casinoCaseStudySimpleFail",
                     "casinoCaseStudySimpleCompletePlaceBetFail",
-                    "removeOneMissingStartEvFail"
+                    "removeOneMissingStartEvFail",
+                    "openAndWorkAndNoCloseCATFail",
+                    "noOpenAndWorkAndCloseCATFail"
             })
     public void failingProofs(String contract) {
         Path file = Paths.get(String.format("src/test/resources/%s.key", contract));
