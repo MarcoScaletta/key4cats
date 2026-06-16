@@ -4,9 +4,9 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import key4cats.parsers.CATs.*;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import com.github.javaparser.JavaParser;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +34,8 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private Identifier currentCAT_ID = null;
     public
     ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
-
-
+        Map<String, Contract> contractsMapTMP = new HashMap<>();
+        Set<String> contractToBeGeneratedTMP = new HashSet<>();
         this.className = className;
         this.mode = mode;
 
@@ -52,25 +52,38 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
 
             CATsLexer java8Lexer = new CATsLexer(CharStreams.fromString(catsFileContent));
             CATsParser parser = new CATsParser(new CommonTokenStream(java8Lexer));
-            CATsParser.ProblemContext problemContext = parser.problem();
+            java8Lexer.removeErrorListeners();
+            parser.removeErrorListeners();
+            java8Lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
+            parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
-                this.contractsMap = createContractMap(problemContext.contractWithId());
-            } catch (Exception e) {
-                throw new RuntimeException(String.format("Exception while building proof obligation: %s", e.getMessage()));
-            }
+            CATsParser.ProblemContext problemContext = parser.problem();
+            contractsMapTMP = createContractMap(problemContext.contractWithId());
             switch (this.mode) {
                 case KeY4CATs.ProofGenMode.SINGLE:
-                    contractToBeGenerated = Set.of(contract);
+                    contractToBeGeneratedTMP = Set.of(contract);
                     break;
                 case KeY4CATs.ProofGenMode.FULL:
-                    contractToBeGenerated = getFullDependency(contract);
+                    contractToBeGeneratedTMP = getFullDependency(contract);
                     break;
                 case KeY4CATs.ProofGenMode.ALL:
-                    contractToBeGenerated = this.contractsMap.keySet();
+                    contractToBeGeneratedTMP = contractsMapTMP.keySet();
                     break;
                 default:
-                    contractToBeGenerated = Set.of();
+                    contractToBeGeneratedTMP = Set.of();
             }
+        } catch (Exception e) {
+            if(e instanceof ParseCancellationException) {
+                LOGGER.error("Error parsing file " + Paths.get(catsFile.getAbsolutePath()).normalize());
+                LOGGER.error("Syntax error: " + e.getMessage());
+                System.exit(1);
+            }
+            else {
+                throw new RuntimeException(String.format("Exception while building proof obligation: %s", e.getMessage()));
+            }
+        }
+        this.contractsMap = contractsMapTMP;
+        this.contractToBeGenerated = contractToBeGeneratedTMP;
     }
 
     public void generateProof(String directory, String contractName) throws IOException{
@@ -356,5 +369,16 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             return new CallId();
         System.err.printf("Context id dmust be either natural or wildcard, but it is:%s%n", ctx.getText());
         return null;
+    }
+}
+
+class ThrowingErrorListener extends BaseErrorListener {
+
+    public static final ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
+
+    @Override
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
+            throws ParseCancellationException {
+        throw new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg);
     }
 }
