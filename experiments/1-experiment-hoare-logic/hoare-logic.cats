@@ -1,0 +1,19 @@
+[removeOneCAT] removeOne :
+    assumes: ~~ ** x::y . `true`;
+    ensures: start(removeOne,\id) ** ~~ ** pop(removeOne,\id) ** x::y1 . `y1=y-1`;
+    expects: ~~;
+
+[removeTwoCAT]{removeOneCAT;} removeTwo :
+    assumes: ~~ ** x::y . `true`;
+    ensures: start(removeTwo,\id) ** ~~ ** pop(removeTwo,\id) ** x::y1 . `y1=y-2`;
+    expects: ~~;
+
+[removeThreeCAT]{removeOneCAT;removeTwoCAT;} removeThree :
+    assumes: ~~ ** x::y . `true`;
+    ensures: start(removeThree,\id) ** ~~ ** pop(removeThree,\id) ** x::y1 . `y1=y-3`;
+    expects: ~~;
+
+[removeTenCAT]{removeOneCAT;removeTwoCAT;removeThreeCAT;} removeTen :
+    assumes: ~~ ** x::y . `true`;
+    ensures: start(removeTen,\id) ** ~~ ** pop(removeTen,\id) ** x::y1 . `y1=y-10`;
+    expects: ~~;
