@@ -13,6 +13,7 @@ key.core/src/main/java/de/uka/ilkd/key/logic/op/TraceEvent.java
 key.core/src/main/java/de/uka/ilkd/key/logic/op/UpdateEvent.java
 key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/ChopForCall.java
 key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/ContainsEvent.java
+key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/ContainsStart.java
 key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/ContainsObservations.java
 key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/EventResolver.java
 key.core/src/main/java/de/uka/ilkd/key/rule/conditions/catsconditions/FinishCondition.java

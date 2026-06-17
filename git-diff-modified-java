@@ -1,0 +1,2 @@
+#!/bin/sh
+git diff --compact-summary --diff-filter=M  a92f04e8 -- "**/*.java"

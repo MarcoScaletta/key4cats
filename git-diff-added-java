@@ -1,0 +1,2 @@
+#!/bin/sh
+git diff --compact-summary --diff-filter=A  a92f04e8 -- "key.core/**/*.java"
