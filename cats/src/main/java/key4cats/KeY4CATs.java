@@ -5,11 +5,13 @@ import de.uka.ilkd.key.control.DefaultUserInterfaceControl;
 import de.uka.ilkd.key.control.KeYEnvironment;
 import de.uka.ilkd.key.gui.MainWindow;
 import de.uka.ilkd.key.gui.WindowUserInterfaceControl;
+import de.uka.ilkd.key.gui.actions.ShowProofStatistics;
 import de.uka.ilkd.key.proof.Proof;
 import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import de.uka.ilkd.key.proof.io.ProofSaver;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.settings.StrategySettings;
+import de.uka.ilkd.key.util.MiscTools;
 import key4cats.parsers.CATs.CATsBaseListener;
 import org.apache.commons.cli.HelpFormatter;
 
@@ -18,6 +20,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -153,6 +156,7 @@ public class KeY4CATs {
     static int maxRuleAppStepsDEFAULT=10000;
     static boolean requiredVerification;
     static boolean benchmarkRequired;
+    static boolean SAVE_CSV = true;
     static int warmupTimes;
     static String contractName;
     static String catsFilename;
@@ -178,6 +182,7 @@ public class KeY4CATs {
                     LOGGER.info("BENCHMARK WAS REQUESTED");
                     LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
                     ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                    SAVE_CSV = false;
                     for(int i=0;i<warmUpTime;i++) {
                         prove(proofObligationFileName);
                         System.out.print((i+1)+ "...");
@@ -186,6 +191,7 @@ public class KeY4CATs {
                     ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.TRACE);
                     LOGGER.info("END WARM UP");
                 }
+                SAVE_CSV = true;
                 prove(proofObligationFileName);
             }
             else {
@@ -205,6 +211,7 @@ public class KeY4CATs {
                             LOGGER.info("BENCHMARK WAS REQUESTED");
                             LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
                             ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                            SAVE_CSV = false;
                             for(int i=0;i<warmUpTime;i++) {
                                 prove(directory, contractName);
                                 System.out.print((i+1)+ "...");
@@ -213,6 +220,7 @@ public class KeY4CATs {
                             ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.TRACE);
                             LOGGER.info("END WARM UP");
                         }
+                        SAVE_CSV = true;
                         prove(directory, contractName);
                     }
                 }
@@ -249,6 +257,7 @@ public class KeY4CATs {
                     LOGGER.info("BENCHMARK WAS REQUESTED");
                     LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
                     ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                    SAVE_CSV = false;
                     for(int j=0;j<warmUpTime;j++) {
                         prove(directory, cName);
                         System.out.print((j+1)+ "...");
@@ -258,6 +267,7 @@ public class KeY4CATs {
                     LOGGER.info("END WARM UP");
                 }
 
+                SAVE_CSV = true;
                 boolean proved = prove(directory, cName);
                 if (!proved)
                     openProofs.add(cName);
@@ -502,6 +512,17 @@ public class KeY4CATs {
                 LOGGER.info(env.getLoadedProof().getStatistics().toString());
             } else
                 LOGGER.info(String.format("%s {n_nodes:%s}{time:%sms}%n",  proofInfo, env.getLoadedProof().countNodes(), env.getLoadedProof().getAutoModeTime()));
+            if(SAVE_CSV) {
+                ShowProofStatistics.getCSVStatisticsMessage(proof);
+                File file = new File(MiscTools.toValidFileName(proof.name().toString()) + ".csv");
+                try (BufferedWriter writer =
+                             new BufferedWriter(
+                                     new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+                    writer.write(ShowProofStatistics.getCSVStatisticsMessage(proof));
+                } catch (IOException e) {
+                    LOGGER.error("Failed to write proof stats", e);
+                }
+            }
             return proved;
         }catch (ProblemLoaderException e){
             throw new RuntimeException(e);
