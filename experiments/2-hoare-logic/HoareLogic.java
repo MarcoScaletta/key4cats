@@ -50,7 +50,7 @@ class HoareLogic{
     }
 
     public static void rmOne(boolean sync){
-        x = x - 1;
+        HoareLogic.removeOne(true);
         return;
     }
     public static void rmTwo(boolean sync){

@@ -1,4 +1,10 @@
-[rmOneCAT] rmOne :
+[removeOneCAT] removeOne :
+    assumes: ~~ ** x::y . `true`;
+    ensures: start(removeOne,\id) ** ~~ ** pop(removeOne,\id) ** x::y1 . `y1=y-1`;
+    expects: ~~;
+
+
+[rmOneCAT] {removeOneCAT;} rmOne :
     assumes: ~~ ** x::y . `true`;
     ensures: start(rmOne,\id) ** ~~ ** pop(rmOne,\id) ** x::y1 . `y1=y-1`;
     expects: ~~;
