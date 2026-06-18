@@ -55,7 +55,7 @@ public class KeY4CATs {
             .build();
 
     static Option RULE_APP_LIMIT = Option.builder("max")
-            .desc("Set the number of maximum rule application to <N_RULES>")
+            .desc("Set the number of maximum rule application to <N_RULES> (default 10K)")
             .longOpt("max-rules")
             .hasArg().argName("N_RULES")
             .build();
@@ -389,13 +389,14 @@ public class KeY4CATs {
         formatter.setWidth(120);
         PrintWriter pw = new PrintWriter(System.out);
         formatter.setOptionComparator(null);
-        String verificationMessage = "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i | -b] [-stats]  [-max]";
+        String verificationMessage = "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> [-i | -b <N_TIMES>] [-stats]  [-max <N_RULES>]";
         verificationMessage += "\n\tkey4cats TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> -no-ver";
 //        verificationMessage += "\n\tkey4cats --help";
-        pw.println("LOADING CAT FILE");
+        pw.println("Usage for KeY4CATs...");
+        pw.println("1. LOADING CATSL FILE");
         pw.println("> Usage: " + verificationMessage);
         pw.println("With '-no-ver' proof obligation are generated but not verified");
-        String targetOptionsMessage = "TARGET can be: '-s <CAT_ID>', '-f <CAT_ID>' (by default all CATs are targetted)";
+        String targetOptionsMessage = "TARGET can be empty, '-s <CAT_ID>', or '-f <CAT_ID>' (if empty  all CATs are targetted)";
         pw.println(targetOptionsMessage);
         pw.println();
         formatter.printOptions(pw, formatter.getWidth(),options,formatter.getLeftPadding(),formatter.getDescPadding());
@@ -410,8 +411,8 @@ public class KeY4CATs {
         formatter.setWidth(120);
         PrintWriter pw = new PrintWriter(System.out);
         formatter.setOptionComparator(null);
-        String verificationMessage = "\n\tkey4cats -po <KEY_FILE> [-i | -b] [-stats] [-max]";
-        pw.println("LOADING KEY FILE");
+        String verificationMessage = "\n\tkey4cats -po <KEY_FILE> [-i | -b <N_TIMES>] [-stats] [-max <N_RULES>]";
+        pw.println("2. LOADING KEY FILE");
         pw.println("> Usage: " + verificationMessage);
         String targetOptionsMessage = "<KEY_FILE> can have extensions .key and .proof";
         pw.println(targetOptionsMessage);
