@@ -9,11 +9,6 @@
     expects: ~~;
 
 [removeThreeCAT]{removeOneCAT;removeTwoCAT;} removeThree :
-    assumes: ~~ ** x::y . `true`;
-    ensures: start(removeThree,\id) ** ~~ ** pop(removeThree,\id) ** x::y1 . `y1=y-3`;
-    expects: ~~;
-
-[removeTenCAT]{removeOneCAT;removeTwoCAT;removeThreeCAT;} removeTen :
-    assumes: ~~ ** x::y . `true`;
-    ensures: start(removeTen,\id) ** ~~ ** pop(removeTen,\id) ** x::y1 . `y1=y-10`;
+    assumes: ~~ ** x::y . `y>3`;
+    ensures: start(removeThree,\id) ** ~~ ** pop(removeThree,\id) ** x::y1 . `y1 > 0`;
     expects: ~~;

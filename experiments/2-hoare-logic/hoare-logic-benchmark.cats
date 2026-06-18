@@ -1,40 +1,40 @@
-[rmOne] rmOne :
+[rmOneCAT] rmOne :
     assumes: ~~ ** x::y . `true`;
     ensures: start(rmOne,\id) ** ~~ ** pop(rmOne,\id) ** x::y1 . `y1=y-1`;
     expects: ~~;
-[rmTwo]{rmOne;} rmTwo :
+[rmTwoCAT]{rmOneCAT;} rmTwo :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-2`;
     expects: ~~;
-[rmThree]{rmOne;} rmThree :
+[rmThreeCAT]{rmOneCAT;} rmThree :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-3`;
     expects: ~~;
-[rmFour]{rmOne;} rmFour :
+[rmFourCAT]{rmOneCAT;} rmFour :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-4`;
     expects: ~~;
-[rmFive]{rmOne;} rmFive :
+[rmFiveCAT]{rmOneCAT;} rmFive :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-5`;
     expects: ~~;
-[rmSix]{rmOne;} rmSix :
+[rmSixCAT]{rmOneCAT;} rmSix :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-6`;
     expects: ~~;
-[rmSeven]{rmOne;} rmSeven :
+[rmSevenCAT]{rmOneCAT;} rmSeven :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-7`;
     expects: ~~;
-[rmEight]{rmOne;} rmEight :
+[rmEightCAT]{rmOneCAT;} rmEight :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-8`;
     expects: ~~;
-[rmNine]{rmOne;} rmNine :
+[rmNineCAT]{rmOneCAT;} rmNine :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-9`;
     expects: ~~;
-[rmTen]{rmOne;} rmTen :
+[rmTenCAT]{rmOneCAT;} rmTen :
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `y1=y-10`;
     expects: ~~;
