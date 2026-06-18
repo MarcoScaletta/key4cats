@@ -34,12 +34,12 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
     private Identifier currentCAT_ID = null;
     public
     ProofCATsBuilder(File catsFile, String contract, String className, KeY4CATs.ProofGenMode mode) throws FileNotFoundException {
-        Map<String, Contract> contractsMapTMP = new LinkedHashMap<>();
-        Set<String> contractToBeGeneratedTMP = new HashSet<>();
         this.className = className;
         this.mode = mode;
+        this.contractsMap = new LinkedHashMap<>();
+        this.contractToBeGenerated = new LinkedHashSet<>();
 
-        javaFileActualSource = catsFile.getParent() + "/" + className + ".java";
+        javaFileActualSource = catsFile.getAbsoluteFile().getParent() + "/" + className + ".java";
         File javaFile = new File(javaFileActualSource);
         if(!javaFile.exists()) {
             throw new RuntimeException("File " + javaFileActualSource + " does not exist.");
@@ -58,19 +58,17 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
             parser.addErrorListener(ThrowingErrorListener.INSTANCE);
 
             CATsParser.ProblemContext problemContext = parser.problem();
-            contractsMapTMP = createContractMap(problemContext.contractWithId());
+            this.contractsMap.putAll(createContractMap(problemContext.contractWithId()));
             switch (this.mode) {
                 case KeY4CATs.ProofGenMode.SINGLE:
-                    contractToBeGeneratedTMP = Set.of(contract);
+                    this.contractToBeGenerated.add(contract);
                     break;
                 case KeY4CATs.ProofGenMode.FULL:
-                    contractToBeGeneratedTMP = getFullDependency(contract);
+                    this.contractToBeGenerated.addAll(getFullDependency(contract));
                     break;
                 case KeY4CATs.ProofGenMode.ALL:
-                    contractToBeGeneratedTMP = contractsMapTMP.keySet();
+                    this.contractToBeGenerated.addAll(this.contractsMap.keySet());
                     break;
-                default:
-                    contractToBeGeneratedTMP = Set.of();
             }
         } catch (Exception e) {
             if(e instanceof ParseCancellationException) {
@@ -82,8 +80,6 @@ public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
                 throw new RuntimeException(String.format("Exception while building proof obligation: %s", e.getMessage()));
             }
         }
-        this.contractsMap = contractsMapTMP;
-        this.contractToBeGenerated = contractToBeGeneratedTMP;
     }
 
     public void generateProof(String directory, String contractName) throws IOException{

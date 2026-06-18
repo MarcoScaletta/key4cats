@@ -10,6 +10,7 @@ import de.uka.ilkd.key.proof.io.ProblemLoaderException;
 import de.uka.ilkd.key.proof.io.ProofSaver;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.settings.StrategySettings;
+import key4cats.parsers.CATs.CATsBaseListener;
 import org.apache.commons.cli.HelpFormatter;
 
 
@@ -70,13 +71,9 @@ public class KeY4CATs {
             .build();
 
     static Option BENCHMARK = Option.builder("b")
-            .desc("Warming up before verification (only for single proofs and non-interactive mode)")
+            .desc("Warming up JVM <N_TIMES> before verification (N_TIMES=10 by default)")
             .longOpt("benchmark")
-            .build();
-
-    static Option BENCHMARK_PO = Option.builder("b")
-            .desc("Warming up before verification of proof obligation")
-            .longOpt("benchmark")
+            .hasArg().argName("N_TIMES").optionalArg(true)
             .build();
 
     static Option CATSL = Option.builder("catsl")
@@ -144,19 +141,19 @@ public class KeY4CATs {
         loadPOOptions.addOption(PROOF_OBLIGATION);
         loadPOOptions.addOption(INTERACTIVE_PO);
         loadPOOptions.addOption(SHOW_STATS);
-        loadPOOptions.addOption(BENCHMARK_PO);
+        loadPOOptions.addOption(BENCHMARK);
         loadPOOptions.addOption(RULE_APP_LIMIT);
 
         helpOption.addOption(HELP_OPTION);
-
     }
 
     static ProofGenMode proofGenMode;
-
+    static final int DEFAULT_BENCHMARK_TIMES = 10;
     static int maxRuleAppSteps = -1;
     static int maxRuleAppStepsDEFAULT=10000;
     static boolean requiredVerification;
     static boolean benchmarkRequired;
+    static int warmupTimes;
     static String contractName;
     static String catsFilename;
     static String javaClassFilename;
@@ -177,7 +174,7 @@ public class KeY4CATs {
                 directory = new File(proofObligationFileName).getParent();
                 LOGGER.info(String.format("Loading proof obligation from %s", proofObligationFileName));
                 if(benchmarkRequired){
-                    int warmUpTime = 10;
+                    int warmUpTime = warmupTimes;
                     LOGGER.info("BENCHMARK WAS REQUESTED");
                     LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
                     ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
@@ -192,8 +189,8 @@ public class KeY4CATs {
                 prove(proofObligationFileName);
             }
             else {
-                File catsFile = new File( catsFilename);
-                directory = catsFile.getParent();
+                File catsFile = new File(catsFilename);
+                directory = catsFile.getAbsoluteFile().getParent();
                 ProofCATsBuilder p = new ProofCATsBuilder(catsFile, contractName, javaClassFilename, proofGenMode);
                 Set<String> contractNames = p.getContractIds();
                 if(!contractNames.iterator().hasNext())
@@ -204,7 +201,7 @@ public class KeY4CATs {
 
                     if (requiredVerification) {
                         if(benchmarkRequired){
-                            int warmUpTime = 10;
+                            int warmUpTime = warmupTimes;
                             LOGGER.info("BENCHMARK WAS REQUESTED");
                             LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
                             ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
@@ -247,6 +244,20 @@ public class KeY4CATs {
             int i = 0;
             for (String cName : contractNames) {
                 i++;
+                if(benchmarkRequired){
+                    int warmUpTime = warmupTimes;
+                    LOGGER.info("BENCHMARK WAS REQUESTED");
+                    LOGGER.info("STARTING WARM UP (executing "+ warmUpTime +" times)");
+                    ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.WARN);
+                    for(int j=0;j<warmUpTime;j++) {
+                        prove(directory, cName);
+                        System.out.print((j+1)+ "...");
+                    }
+                    System.out.println("done");
+                    ((ch.qos.logback.classic.Logger)LoggerFactory.getLogger("ROOT")).setLevel(Level.TRACE);
+                    LOGGER.info("END WARM UP");
+                }
+
                 boolean proved = prove(directory, cName);
                 if (!proved)
                     openProofs.add(cName);
@@ -291,7 +302,7 @@ public class KeY4CATs {
         if((executionMode == KeYMode.GUI) && benchmarkRequired)
             throw  new RuntimeException("Benchmarks can be run in NON interactive mode (automode). Remove the flag -i or the flag -b, and retry.");
         if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && benchmarkRequired)
-            throw  new RuntimeException("Only one proof at a time can be verified as benchmark");
+            LOGGER.info("Benchmark is requested for multiple CATs.");
         if((proofGenMode == ProofGenMode.ALL || proofGenMode == ProofGenMode.FULL) && executionMode == KeYMode.GUI)
             throw  new RuntimeException("Only one proof at a time can be loaded interactively: more interactive proofs are currently not supported");
     }
@@ -412,7 +423,14 @@ public class KeY4CATs {
     }
     private static void parseArgs(CommandLine cl){
         requiredVerification = !cl.hasOption(NO_VER);
-        benchmarkRequired = cl.hasOption(BENCHMARK);
+        if(cl.hasOption(BENCHMARK)){
+            benchmarkRequired = true;
+            if(cl.getOptionValue(BENCHMARK) == null)
+                warmupTimes = DEFAULT_BENCHMARK_TIMES;
+            else
+                warmupTimes= Integer.parseInt(cl.getOptionValue(BENCHMARK));
+        }
+
         if(loadingMode == LoadingMode.CAT){
             if(cl.hasOption(SINGLE_CAT)) {
                 contractName = cl.getOptionValue(SINGLE_CAT);
