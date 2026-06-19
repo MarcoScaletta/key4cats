@@ -43,3 +43,8 @@
     assumes: ~~ ** x::y . `true`;
     ensures: ~~ ** x::y1 . `true` ;
     expects: ~~;
+
+[openAndCloseAndWorkCAT] {openFileCAT;workOnFileCAT;closeFileCAT;}  openAndCloseAndWork :
+    assumes: ~~ ** x::y . `true`;
+    ensures: ~~ ** x::y1 . `true` ;
+    expects: ~~;

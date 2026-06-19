@@ -58,4 +58,11 @@ class FileWork {
         return;
     }
 
+    public static void openAndCloseAndWork(boolean sync){
+        FileWork.openFile(true);
+        FileWork.closeFile(true);
+        FileWork.workOnFile(true);
+        return;
+    }
+
 }
