@@ -24,4 +24,4 @@ key4cats -s rmNineCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -max 40
 echo "Verifying rmTenCAT NO JVM WARM UP"
 key4cats -s rmTenCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -max 80000
 
-python3 plots.py
+python3 plots.py "$@"

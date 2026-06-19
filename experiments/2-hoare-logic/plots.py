@@ -1,5 +1,6 @@
 
 import csv
+import sys
 import matplotlib.pyplot as plt
 
 
@@ -71,8 +72,10 @@ with open('result-benchmark-hoare-logic.csv', 'w') as f:
     for cat_name in cat_name_dicts:
         f.write("\n" + str(cat_name_dicts[cat_name]) + ";" + str(nodes_stats_dict[cat_name]) + ";" + str(time_stats_dict[cat_name]) + ";" + str(avg_stats_dict[cat_name]) )
 
-plt.show()
-
+if len(sys.argv) > 1 and sys.argv[1] == "-no-show":
+    print("not showing plots, as requested. Check \"result_metrics.png\"")
+else:
+    plt.show()
 
 
 
