@@ -1,7 +1,7 @@
 
 
 //replace "addOne" with "addTwo" or "doNothing" to verify that this contract holds for the latter
-[greaterThanBeforeCAT] doNothing:
+[greaterThanBeforeCAT] addOne:
     assumes: ~~ ** x::oldX . `true`;
     ensures: ~~ ** x::newX . `newX>oldX`;
     expects: ~~;
