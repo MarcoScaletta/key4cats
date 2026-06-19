@@ -5,7 +5,7 @@
 
 echo "Verifying rmOneCAT with JVM WARM UP"
 key4cats -s rmOneCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 10
-#echo "Verifying rmTwoCAT with JVM WARM UP"
+echo "Verifying rmTwoCAT with JVM WARM UP"
 key4cats -s rmTwoCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 10
 echo "Verifying rmThreeCAT with JVM WARM UP"
 key4cats -s rmThreeCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 5
@@ -24,3 +24,4 @@ key4cats -s rmNineCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -max 40
 echo "Verifying rmTenCAT NO JVM WARM UP"
 key4cats -s rmTenCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -max 80000
 
+python3 plots.py

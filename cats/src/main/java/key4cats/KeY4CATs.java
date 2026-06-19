@@ -514,7 +514,6 @@ public class KeY4CATs {
             } else
                 LOGGER.info(String.format("%s {n_nodes:%s}{time:%sms}%n",  proofInfo, env.getLoadedProof().countNodes(), env.getLoadedProof().getAutoModeTime()));
             if(SAVE_CSV) {
-                ShowProofStatistics.getCSVStatisticsMessage(proof);
                 File file = new File(MiscTools.toValidFileName(proof.name().toString()) + ".csv");
                 try (BufferedWriter writer =
                              new BufferedWriter(
