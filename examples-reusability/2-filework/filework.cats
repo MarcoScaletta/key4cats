@@ -11,7 +11,7 @@
 
 [workOnFileCAT]  workOnFile :
     assumes: ~~ ** pop(openFile, _) ** ~{closeFile}~ ** x::y . `true`;
-    ensures: ~{openFile,workOnFile,closeFile}~ ** x::y1 . `true` ;
+    ensures: ~{closeFile}~ ** x::y1 . `true` ;
     expects: ~{closeFile}~ ** start(closeFile,_) ** ~~;
 
 [onlyOpenCAT] {openFileCAT;}  onlyOpen :

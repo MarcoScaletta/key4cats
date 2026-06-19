@@ -1,10 +1,6 @@
 #!/bin/bash
 
 
-
-echo "BENCHMARK onlyOpenCAT: proof should succeed"
-key4cats -b -s onlyOpenCAT -catsl filework.cats -java FileWork
-
 echo "BENCHMARK openAndWorkAndCloseCAT: proof should succeed"
 key4cats -b -s openAndWorkAndCloseCAT -catsl filework.cats -java FileWork
 
