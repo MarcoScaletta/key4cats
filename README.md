@@ -1,42 +1,9 @@
 # KeY4CATs -- Trace-based Deductive Verifier
 
-Usage:
+To see the message about the usage run 
 
 ```    
-    cats [-i] [-stats] TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> 
-```
-```
-    cats -no-ver TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS> 
-```
-Where `TARGET` can be: `-s <CAT_ID>`, `-f <CAT_ID>`, or `-all`
-
-
-`-i` and `-stats` are option for the verification.
-
-With `-no-ver` proof obligations are generated but not verified.
-
-Information on the arguments is the following:
-```
--s,--single <CAT_ID>               Targets single contract <CAT_ID> from file <CATSL_FILE>
--f,--full <CAT_ID>                 Targets <CAT_ID> and also all contracts assumed by <CAT_ID> from file <CATSL_FILE>
--all,--all-cats                    Targets all CATs defined in <CATSL_FILE>
--no-ver,--no-verification          Only generates Proof Obligations (.key files)
--catsl,--catsl-file <CATSL_FILE>   Select <CATSL_FILE> to load
--java,--java-file <JAVA_CLASS>     Refer to code in <JAVA_CLASS>.java
--i,--interactive                   Interactive mode via KeY GUI (working for verification of single CAT)
--stats,--statistics                Show statistics of verification
-```
-
-Using gradle do the follwing:
-* Generate the parser for CATs: run the script ``/Users/scal9000/Documents/tools/key/cats/generate-parsers.sh``
-* Add the environment variable: ``KEY=<key-directory>``
-* To generate proof obligations and verify contract(s) run:
-```
-gradle cats:run --args='[-i] [-stats] TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS>'
-```
-* To **only generate** proof obligations run:
-```
-gradle cats:run --args=' -no-ver TARGET -catsl <CATSL_FILE> -java <JAVA_CLASS>'
+    key4cats --help
 ```
 
 ## Syntax of CATSL specification 
