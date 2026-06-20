@@ -1,5 +1,6 @@
-grammar CATs;
-import CATSLexer;
+parser grammar CATsParser;
+
+options { tokenVocab=CATsLexer; } // use tokens from STLexer.g4
 
 
 problem: contractWithId+;

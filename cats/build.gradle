@@ -61,7 +61,7 @@ tasks.register('saveResults'){
 def antlr4OutputCATs = "$projectDir/src/main/java/key4cats/parsers/CATs/"
 task runAntlr4CATs(type: JavaExec) {
     //see incremental task api, prevents rerun if nothing has changed.
-    inputs.files "$projectDir/cats/src/main/antlr4/CATsLexer.g4", "$projectDir/cats/src/main/antlr4/CATs.g4"
+    inputs.files "$projectDir/cats/src/main/antlr4/CATsLexer.g4", "$projectDir/cats/src/main/antlr4/CATsParser.g4"
     outputs.dir antlr4OutputCATs
     classpath = configurations.antlr4
     mainClass.set("org.antlr.v4.Tool")
@@ -69,7 +69,7 @@ task runAntlr4CATs(type: JavaExec) {
             "-Xexact-output-dir", "-o", antlr4OutputCATs,
 //            "--version", "4.13.2",
             "-package", "key4cats.parsers.CATs",
-            "$projectDir/src/main/antlr4/CATsLexer.g4", "$projectDir/src/main/antlr4/CATs.g4"]
+            "$projectDir/src/main/antlr4/CATsLexer.g4", "$projectDir/src/main/antlr4/CATsParser.g4"]
     doFirst {
         file(antlr4OutputCATs).mkdirs()
         println("create $antlr4OutputCATs")

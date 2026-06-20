@@ -12,7 +12,6 @@ import de.uka.ilkd.key.proof.io.ProofSaver;
 import de.uka.ilkd.key.settings.ProofSettings;
 import de.uka.ilkd.key.settings.StrategySettings;
 import de.uka.ilkd.key.util.MiscTools;
-import key4cats.parsers.CATs.CATsBaseListener;
 import org.apache.commons.cli.HelpFormatter;
 
 

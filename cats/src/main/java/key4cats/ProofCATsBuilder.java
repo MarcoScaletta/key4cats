@@ -18,7 +18,7 @@ import java.util.*;
 import static key4cats.TraceOp.chop;
 
 
-public class ProofCATsBuilder extends CATsBaseVisitor<KeYGen>{
+public class ProofCATsBuilder extends CATsParserBaseVisitor<KeYGen>{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProofCATsBuilder.class);
 
