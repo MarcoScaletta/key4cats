@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+
+OUTPUT_FILENAME="invariants.cats"
+INVARIANT_FILENAME="invariant"
+
+INVARIANT=$1
+
+echo "The invariant is: ($INVARIANT)"
+if [ "$#" -eq 0 ]
+then
+  echo "ERROR: No target procedure was given"
+  return
+fi
+
+echo "Generating invariant  CATs in $OUTPUT_FILENAME for"
+OBS_TR_FML="x::OBS_VAR.\`${INVARIANT//"x"/"OBS_VAR"}\`"
+
+PRECOND="${OBS_TR_FML//"OBS_VAR"/"oldX"}"
+POSTCOND="${OBS_TR_FML//"OBS_VAR"/"newX"}"
+
+echo "Creating file $OUTPUT_FILENAME (or resetting if existing)"
+echo "" > $OUTPUT_FILENAME
+for var in "$@"
+do
+    CATNAME=$var"CAT"
+    PROC_TARGET="$var"
+    echo "- \"$var\" as \"$CATNAME\""
+    echo "[$CATNAME] $PROC_TARGET :" | tee -a $OUTPUT_FILENAME
+    echo "\t assumes: ~~ ** $PRECOND;" | tee -a $OUTPUT_FILENAME
+    echo "\t ensures: ~~ ** $POSTCOND;" | tee -a $OUTPUT_FILENAME
+    echo "\t expects: ~~;" | tee -a $OUTPUT_FILENAME
+done
+
