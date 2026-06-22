@@ -11,6 +11,6 @@ key4cats -b -s removeOneTwiceCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java
 echo "Verifying removeOneThriceCAT WITHOUT JVM warmup (warmup of JVM is not necessary)"
 key4cats -s removeOneThriceCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java RemoveOneCaseStudy -stats
 echo "Verifying removeOneQuadCAT WITHOUT JVM warmup"
-echo "\033[1;31m !! JVM warmup for this CAT is unnecessary and NOT RECOMMENDED !!\033[0m"
+printf "\033[1;31m !! JVM warmup for this CAT is unnecessary and NOT RECOMMENDED !!\033[0m\n"
 echo "The proof will be done interactively (remove -i, otherwise)"
 key4cats -i -s removeOneQuadCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java RemoveOneCaseStudy

@@ -4,23 +4,23 @@
 
 
 echo "Verifying rmOneCAT with JVM WARM UP"
-echo "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m"
+printf "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m\n"
 key4cats -s rmOneCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 10
 
 echo "Verifying rmTwoCAT with JVM WARM UP"
-echo "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m"
+printf "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m\n"
 key4cats -s rmTwoCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 10
 
 echo "Verifying rmThreeCAT with JVM WARM UP"
-echo "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m"
+printf "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m\n"
 key4cats -s rmThreeCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 5
 
 echo "Verifying rmFourCAT with JVM WARM UP"
-echo "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m"
+printf "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m\n"
 key4cats -s rmFourCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 5
 
 echo "Verifying rmFiveCAT with JVM WARM UP"
-echo "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m"
+printf "> EXPECTED OUTCOME: \033[32m SUCCESS\033[0m\n"
 key4cats -s rmFiveCAT -catsl hoare-logic-benchmark.cats -java HoareLogic -b 3
 
 echo "Verifying rmSixCAT with JVM WARM UP"

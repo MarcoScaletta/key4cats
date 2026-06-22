@@ -3,6 +3,6 @@
 THIS_PATH=../../resources/
 
 echo "Verifying removeOneQuadCAT WITHOUT JVM warmup"
-echo "\033[1;31m !! JVM warmup for this CAT is unnecessary and NOT RECOMMENDED !!\033[0m"
+printf "\033[1;31m !! JVM warmup for this CAT is unnecessary and NOT RECOMMENDED !!\033[0m\n"
 echo "The proof will be done interactively (remove -i to run it in terminal, not recommended!)"
 key4cats -i -s removeOneQuadCAT -catsl $THIS_PATH/removeOneCaseStudy.cats -java RemoveOneCaseStudy
