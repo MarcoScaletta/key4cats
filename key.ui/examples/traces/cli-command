@@ -1,1 +1,0 @@
-env KEY=/Users/scal9000/documents/tools/key gradle run :cats:run -d --args=' --java-class BufferCaseStudy --cats-file /key.ui/examples/traces/bufferCaseStudy.cats -s next'
