@@ -2,7 +2,7 @@
 
 if [[ -z "${KEY}" ]]; then
   echo "Env. Variable KEY not defined"
-  exit 1
+  return
 else
   KEY4CATs=$KEY/cats/build/libs/KeY4CATs.jar
   java -jar $KEY4CATs $@

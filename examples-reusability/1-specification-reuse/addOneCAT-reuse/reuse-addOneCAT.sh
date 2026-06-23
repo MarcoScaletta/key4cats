@@ -2,7 +2,7 @@
 
 
 
-OUTPUT_FILENAME="specs-reuse.cats"
+OUTPUT_FILENAME="addOneCAT-reuse.cats"
 INPUT_FILE="specs-file-addOne.cats"
 TARGET_PROC_REUSED="addOne"
 

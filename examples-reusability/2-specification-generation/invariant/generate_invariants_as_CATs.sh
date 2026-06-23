@@ -14,14 +14,14 @@ then
   return
 fi
 
+echo "Creating file $OUTPUT_FILENAME (or resetting if existing)"
+echo "" > $OUTPUT_FILENAME
 echo "Generating invariant ($INVARIANT) as CATs in $OUTPUT_FILENAME for "
 OBS_TR_FML="x::OBS_VAR.\`${INVARIANT//"x"/"OBS_VAR"}\`"
 
 PRECOND="${OBS_TR_FML//"OBS_VAR"/"oldX"}"
 POSTCOND="${OBS_TR_FML//"OBS_VAR"/"newX"}"
 
-echo "Creating file $OUTPUT_FILENAME (or resetting if existing)"
-echo "" > $OUTPUT_FILENAME
 for var in "${@:2}"
 do
     CATNAME=$var"CAT"

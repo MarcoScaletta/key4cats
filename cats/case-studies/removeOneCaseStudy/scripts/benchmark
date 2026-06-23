@@ -2,7 +2,7 @@
 
 if [[ -z "${KEY}" ]]; then
   printf "\033[1;31m ERROR: Env. Variable KEY not defined\033[0m\n"
-  exit 1
+  return
 fi
 
 
