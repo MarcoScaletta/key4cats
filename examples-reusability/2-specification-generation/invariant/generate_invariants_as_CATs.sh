@@ -28,8 +28,8 @@ do
     PROC_TARGET="$var"
     echo "- \"$var\" as \"$CATNAME\""
     echo "[$CATNAME] $PROC_TARGET :" | tee -a $OUTPUT_FILENAME
-    echo "\t assumes: ~~ ** $PRECOND;" | tee -a $OUTPUT_FILENAME
-    echo "\t ensures: ~~ ** $POSTCOND;" | tee -a $OUTPUT_FILENAME
-    echo "\t expects: ~~;" | tee -a $OUTPUT_FILENAME
+    echo " assumes: ~~ ** $PRECOND;" | tee -a $OUTPUT_FILENAME
+    echo " ensures: ~~ ** $POSTCOND;" | tee -a $OUTPUT_FILENAME
+    echo " expects: ~~;" | tee -a $OUTPUT_FILENAME
 done
 
