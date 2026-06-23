@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "GENERATING SPECIFICATION REUSE"
-source generate-greater-than-specs-reuse.sh
+source reuse-addOneCAT.sh addTwo doNothing
 
 echo "VERIFYING SPECIFICATION REUSE"
-source verify-greater-than-specs-reuse.sh
+source verify-addOneCAT-reuse.sh
