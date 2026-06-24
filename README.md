@@ -1,7 +1,49 @@
-# KeY4CATs -- Trace-based Deductive Verifier
+# KeY4CATs -- A Deductive Verification Tool for Context-aware Trace Contracts
+
+Basic Requirements:
+- java jdk 21
+- gradle 8.5.0
+
+To build key4cats' .jar run (in the root folder `/key4cats`)
+
+```    
+    ./gradlew :cats:shadowjar
+```
+
+To execute KeY4CATs run
+```
+java -jar PATH_TO_THIS_FOLDER/cats/build/libs/KeY4CATs.jar
+```
+
+For simplicity, in our examples we use the abbreviation `key4cats`, which can be defined for Bash as follows (execute the following in the root folder `key4cats/`
+
+- Copy the definition of `key4cats` to the `~/` folder 
+	```
+	cp .key4cats_setting_bash ~/.key4cats_setting_bash 
+	```
+- Add the definition of the env var `KEY4CATs` (mind the lowecase `s`)
+	```
+ 	echo "export KEY4CATs=$(pwd)/cats/build/libs/KeY4CATs.jar" >> ~/.key4cats_setting_bash
+ 	```
+- Make Bash load this setting for each new terminal
+	```
+ 	echo "source ~/.key4cats_setting_bash" >> ~/.bashrc
+ 	source ~/.bashrc
+ 	```
+For Zsh replace `~/.bashrc` with `~/.zshrc`.
+
+To check that everyting is set properly run the following
+ 
+```
+	cd sanity-checks 
+	source 1-check-env-var.sh 
+	source 2-check-command.sh
+	source 3-check-run-example.sh
+```
+No errors should occur, but only at most two warning, which are expected.
+
 
 To see the message about the usage run 
-
 ```    
     key4cats --help
 ```
@@ -52,7 +94,7 @@ A CAT file (`.cats`) contains a list of CATs.
 <cat>: <signature-cat> ":" <assumes-cl> ";" <ensures-cl> ";" <expects-cl> ";"
 
 <signature-cat>: 
-    "[" <cat-name> "]" "{" List(<cat-name>) "}" <method-name>
+    "[" <cat-name> "]" "{" List(<cat-name>";") "}" <method-name>
 
 <assumes-cl>: "requires:" <pre-trace> <chop> <pre-cond> ";"
 
@@ -61,7 +103,7 @@ A CAT file (`.cats`) contains a list of CATs.
 <expects-cl>: "expects:" <post-trace> ";"
 ```
 * `<cat-name>` (`String`): name of the CAT that is specified.
-* `List(<cat-name>)` (list of `String` with separator `";"`): list of name of CATs for called methods that are assumed to be valid. These CATs must be specified in the same file. If the list is empty the braces can be omitted.
+* `List(<cat-name>";")` (each cat name must be followed by ";"): list of name of CATs for called methods that are assumed to be valid (dependencies). These CATs must be specified in the same file. If the list is empty the braces can be omitted.
 * `<method-name>` (`String`): name of the method to be verified.
 * `<pre-trace>` (`<trace>`): pre-trace of this CAT.
 * `<pre-cond>` (`<trace>`): pre-condition of this CAT.
@@ -75,7 +117,7 @@ A CAT file (`.cats`) contains a list of CATs.
     [catOfM1] m1: ...
     [catOfM2] {} m2: ...
      
-    [catOfM] {catOfM1;catOfM2} m:
+    [catOfM] {catOfM1;catOfM2;} m:
         requires: ~~ ** x::y `y=0`; 
         ensures: ~~ ** x::y1 `y=y1`;
         expects: ~~; 
