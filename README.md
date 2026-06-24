@@ -1,8 +1,9 @@
 # KeY4CATs -- A Deductive Verification Tool for Context-aware Trace Contracts
 
-Basic Requirements:
+Requirements:
 - java jdk 21
 - gradle 8.5.0
+- python3-matplotlib (for plots)
 
 To build key4cats' .jar run (in the root folder `/key4cats`)
 
@@ -17,13 +18,16 @@ java -jar PATH_TO_THIS_FOLDER/key4cats/cats/build/libs/KeY4CATs.jar
 
 For simplicity, in our examples we use the abbreviation `key4cats`, which can be defined for Bash as follows (execute the following in the root folder `key4cats/`
 
+- Enter KeY4CATs' folder
+	```
+ 	cd key4cats/
+ 	```
 - Copy the definition of `key4cats` to the `~/` folder 
 	```
 	cp .key4cats_setting_bash ~/.key4cats_setting_bash 
 	```
 - Add the definition of the env var `KEY4CATs` (mind the lowecase `s`)
 	```
- 	cd key4cats/
  	echo "export KEY4CATs=$(pwd)/cats/build/libs/KeY4CATs.jar" >> ~/.key4cats_setting_bash
  	```
 - Make Bash load this setting for each new terminal
