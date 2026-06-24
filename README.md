@@ -12,7 +12,7 @@ To build key4cats' .jar run (in the root folder `/key4cats`)
 
 To execute KeY4CATs run
 ```
-java -jar PATH_TO_THIS_FOLDER/cats/build/libs/KeY4CATs.jar
+java -jar PATH_TO_THIS_FOLDER/key4cats/cats/build/libs/KeY4CATs.jar
 ```
 
 For simplicity, in our examples we use the abbreviation `key4cats`, which can be defined for Bash as follows (execute the following in the root folder `key4cats/`
@@ -23,6 +23,7 @@ For simplicity, in our examples we use the abbreviation `key4cats`, which can be
 	```
 - Add the definition of the env var `KEY4CATs` (mind the lowecase `s`)
 	```
+ 	cd key4cats/
  	echo "export KEY4CATs=$(pwd)/cats/build/libs/KeY4CATs.jar" >> ~/.key4cats_setting_bash
  	```
 - Make Bash load this setting for each new terminal
