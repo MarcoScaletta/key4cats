@@ -1,0 +1,3 @@
+key4cats() {
+  java -jar $KEY4CATs $@
+}
