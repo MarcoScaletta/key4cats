@@ -21,7 +21,7 @@ echo "-------------------------------------------------------------------------"
 echo "experiment 1-prove-removeThreeCAT.sh"
 time (source 1-prove-removeThreeCAT.sh)
 echo "-------------------------------------------------------------------------"
-echo "experiment 1-prove-removeThreeCATs.sh"
+echo "experiment 2-simple-CATs-benchmark.sh"
 time (source 2-simple-CATs-benchmark.sh -no-show)
 echo "-------------------------------------------------------------------------"
 echo "========================================================================="
